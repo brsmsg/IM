@@ -32,10 +32,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation project(path: ':common')
+    implementation "com.google.guava:guava:$rootProject.ext.guavaVersion"
+    implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
+    implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttpVersion"
     implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
-    implementation "androidx.recyclerview:recyclerview:$rootProject.ext.recyclerviewVersion"
-    implementation "com.google.guava:guava:$rootProject.ext.guavaVersion"
-
 }
-

@@ -37,6 +37,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+    implementation project(path: ':factory')
+    implementation "com.google.guava:guava:$rootProject.ext.guavaVersion"
     implementation project(path: ':common')
 
 }

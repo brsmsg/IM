@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.common.factory.base.BaseContract;
+import com.example.common.factory.base.BasePresenter;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -26,6 +29,12 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
 
         //初始化参数
         initArgs(getArguments());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Nullable

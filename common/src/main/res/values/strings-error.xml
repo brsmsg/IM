@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="err_account_login_empty_input">用户名密码不能为空！</string>
+
+
+</resources>
