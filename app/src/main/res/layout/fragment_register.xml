@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="30dp"
         android:paddingTop="20dp"
-        app:title="@string/label_login"
+        app:title="@string/label_register"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"
         >
 
@@ -32,7 +32,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/edit_username"
+                android:id="@+id/reg_edit_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_username" />
@@ -45,22 +45,18 @@
             android:paddingTop="10dp">
 
             <EditText
-                android:id="@+id/edit_password"
+                android:id="@+id/reg_edit_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_password"/>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txt_register"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btn_behavior"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:textSize="15dp"
-            android:text="@string/label_go_to_register"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="right"
+            android:text="@string/behavior_collect"
             />
 
     </LinearLayout>
@@ -77,12 +73,12 @@
         android:layout_marginBottom="20dp">
 
         <Button
-            android:id="@+id/btn_login"
+            android:id="@+id/btn_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/login_btn"
-        />
+            android:text="@string/register_btn"
+            />
 
     </FrameLayout>
 </LinearLayout>

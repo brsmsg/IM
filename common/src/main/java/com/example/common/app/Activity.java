@@ -1,5 +1,7 @@
 package com.example.common.app;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -95,4 +97,6 @@ public abstract class Activity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+
 }

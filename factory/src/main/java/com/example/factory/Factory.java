@@ -18,10 +18,10 @@ public class Factory {
     private static Factory mFactory = new Factory();
 
     //全局线程池
-    private Executor executor = Executors.newFixedThreadPool(4);
+    private static Executor executor = Executors.newFixedThreadPool(4);
 
     //全局Gson
-    private Gson gson;
+    private static Gson gson = new Gson();
 
     /**
      * 获取单例对象
@@ -32,9 +32,6 @@ public class Factory {
     }
 
     private Factory() {
-        //四个线程的线程池
-
-        gson = new Gson();
     }
 
     public void init(Context context){

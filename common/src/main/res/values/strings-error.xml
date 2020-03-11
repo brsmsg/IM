@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="err_account_login_empty_input">用户名密码不能为空！</string>
-
+    <string name="err_account_empty_input">用户名密码不能为空！</string>
+    <string name="err_service">服务器错误，请重试！</string>
 
 </resources>

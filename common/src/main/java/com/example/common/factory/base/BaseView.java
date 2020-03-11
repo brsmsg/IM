@@ -9,5 +9,6 @@ public interface BaseView<T> {
     void setPresenter(T presenter);
 
     //显示字符串错误
-    void StrError(int string);
+    void showError(int string);
+
 }
