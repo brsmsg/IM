@@ -7,20 +7,53 @@
     tools:context=".Activities.MainActivity"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/edit_query"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="60dp">
 
 
+        <ImageView
+            android:id="@+id/img_portrait"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="15dp"
+            android:clickable="true"
+            android:src="@drawable/default_portrait"
+            />
 
-    <TextView
-        android:id="@+id/txt_result"
+        <TextView
+            android:id="@+id/txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/main_message"
+            android:gravity="center"
+            />
+
+        <ImageView
+            android:id="@+id/img_settings"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/ic_menu"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </FrameLayout>
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="hello world"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp">
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:background="#FFFFFF"
+
+            app:menu="@menu/navigation_items" />
+    </FrameLayout>
 
 </LinearLayout>

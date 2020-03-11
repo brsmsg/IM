@@ -15,4 +15,10 @@
     <string name="behavior_collect">点此进行行为采集</string>
     <string name="register_btn">注册</string>
 
+
+    <!--  主界面  -->
+    <string name="main_message">消息</string>
+    <string name="main_contact">联系人</string>
+    <string name="main_moment">朋友圈</string>
+
 </resources>

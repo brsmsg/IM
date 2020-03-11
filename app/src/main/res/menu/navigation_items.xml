@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/main_message"
+        android:title="@string/main_message"
+        android:icon="@drawable/ic_message"/>
+
+    <item
+        android:id="@+id/main_contact"
+        android:title="@string/main_contact"
+        android:icon="@drawable/ic_contact"/>
+
+    <item
+        android:id="@+id/main_moment"
+        android:title="@string/main_moment"
+        android:icon="@drawable/ic_moment"/>
+
+</menu>

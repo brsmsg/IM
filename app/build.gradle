@@ -40,5 +40,6 @@ dependencies {
     implementation project(path: ':factory')
     implementation "com.google.guava:guava:$rootProject.ext.guavaVersion"
     implementation project(path: ':common')
+    implementation 'com.google.android.material:material:1.2.0-alpha05'
 
 }
