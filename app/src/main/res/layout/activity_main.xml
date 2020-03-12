@@ -43,11 +43,13 @@
 
     </FrameLayout>
     <FrameLayout
+        android:id="@+id/layout_container_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="10dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_bar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="bottom"
