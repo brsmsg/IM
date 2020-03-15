@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -40,6 +41,7 @@ dependencies {
     implementation project(path: ':factory')
     implementation "com.google.guava:guava:$rootProject.ext.guavaVersion"
     implementation project(path: ':common')
-    implementation 'com.google.android.material:material:1.2.0-alpha05'
+    implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
+    implementation 'com.google.android.material:material:1.1.0'
 
 }

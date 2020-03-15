@@ -1,5 +1,7 @@
 package com.example.factory.utils;
 
+import android.util.Log;
+
 import com.example.factory.Factory;
 
 import java.io.IOException;
@@ -22,11 +24,13 @@ public class NetUtils {
      * @param url 要请求的服务器url
      * @return json字符串
      */
-    public static String postJson(Object object,String url){
+    public static String postJson(Object object, String url){
         String result = null;
 
         //得到要发送的json字符串
         String json = Factory.getInstance().getGson().toJson(object);
+
+        Log.d("testJson", json);
 
         OkHttpClient okHttpClient = new OkHttpClient();
 

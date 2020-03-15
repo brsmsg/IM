@@ -42,6 +42,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     protected int getContentLayoutId() {
         return R.layout.fragment_login;
+
     }
 
 //    @Override
@@ -55,11 +56,15 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void onAttach(Context context) {
         super.onAttach(context);
         mTrigger = (FragmentTrigger) context;
+
+
     }
 
     @Override
     public void setPresenter(LoginContract.Presenter presenter) {
         mPresenter = checkNotNull(presenter);
+
+
     }
 
     /**
@@ -89,6 +94,9 @@ public class LoginFragment extends Fragment implements LoginContract.View {
      */
     @OnClick(R.id.btn_login)
     public void login(){
+        mUserName.setText("1");
+        mPassword.setText("1");
+
         String userName = mUserName.getText().toString().trim();
         String password = mPassword.getText().toString().trim();
         mPresenter.login(userName, password);

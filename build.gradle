@@ -38,5 +38,5 @@ ext{
     guavaVersion = '28.2-jre'
     gsonVersion = '2.8.6'
     okhttpVersion = '4.4.0'
-
+    glideVersion = '4.11.0'
 }

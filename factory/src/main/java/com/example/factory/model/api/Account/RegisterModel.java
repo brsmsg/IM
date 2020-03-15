@@ -44,4 +44,5 @@ public class RegisterModel {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

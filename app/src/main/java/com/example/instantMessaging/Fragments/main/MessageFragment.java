@@ -12,4 +12,10 @@ public class MessageFragment extends Fragment {
     protected int getContentLayoutId() {
         return R.layout.fragment_message;
     }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        String url = "http://101.200.240.107/root/resources/pictures/1.jpg";
+    }
 }
