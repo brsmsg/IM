@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="url_login">http://localhost:8080/login</string>
+    <string name="url_login">http://118.31.64.83:8080/account/login</string>
     <string name="url_register">http://localhost:8000/register</string>
 
     <string name="dq">123</string>

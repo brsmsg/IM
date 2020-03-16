@@ -94,8 +94,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
      */
     @OnClick(R.id.btn_login)
     public void login(){
-        mUserName.setText("1");
-        mPassword.setText("1");
+        mUserName.setText("15172382300");
+        mPassword.setText("123456");
 
         String userName = mUserName.getText().toString().trim();
         String password = mPassword.getText().toString().trim();
@@ -118,6 +118,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         getActivity().finish();
 
     }
+
 
     /**
      * 点击跳转注册界面

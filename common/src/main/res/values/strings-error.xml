@@ -2,5 +2,7 @@
 <resources>
     <string name="err_account_empty_input">用户名密码不能为空！</string>
     <string name="err_service">服务器错误，请重试！</string>
+    <string name="err_parameter">用户名或密码错误！</string>
+    <string name="err_duplicate">用户名已经存在！</string>
 
 </resources>

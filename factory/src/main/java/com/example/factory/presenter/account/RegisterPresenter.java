@@ -1,26 +1,20 @@
 package com.example.factory.presenter.account;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.factory.Factory;
 import com.example.factory.R;
-import com.example.factory.R2;
-import com.example.factory.model.api.Account.RegisterModel;
+import com.example.factory.model.api.Account.AccountModel;
 import com.example.factory.utils.NetUtils;
-
-
-import butterknife.BindString;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 
 /**
  * @author brsmsg
  * @time 2020/3/10
  */
 public class RegisterPresenter implements RegisterContract.Presenter{
-    @BindString(R2.string.url_register)
-    String registerUrl;
+
+    private String registerUrl = "http://118.31.64.83:8080/account/register";
 
     private RegisterContract.View mRegisterView;
 
@@ -43,13 +37,16 @@ public class RegisterPresenter implements RegisterContract.Presenter{
             Factory.getInstance().getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
-                    RegisterModel registerModel = new RegisterModel(userName, password);
+                    AccountModel accountModel = new AccountModel(userName, password);
 
-//                    String result = NetUtils.postJson(registerModel, registerUrl);
-                    String result = "{\"status\": \"success\"}";
+                    String result = NetUtils.postJson(accountModel, registerUrl);
+//                    String result = "{\"status\": \"success\"}";
+
+                    Log.d("Register", "result");
                     if(result != null){
                         parseRegisterResult(result);
                     }else {
+                        //请求服务器出现错误
                         mRegisterView.showError(R.string.err_service);
                     }
                 }
@@ -60,13 +57,13 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
     @Override
     public void parseRegisterResult(String result) {
-        RegisterModel registerModel = Factory.getInstance()
-                .getGson().fromJson(result, RegisterModel.class);
-        String status = registerModel.getStatus();
-        if(status.equals("success")){
+        AccountModel accountModel = Factory.getInstance()
+                .getGson().fromJson(result, AccountModel.class);
+        String status = accountModel.getMsg();
+        if(status == null){
             mRegisterView.registerSuccess();
         }else{
-            mRegisterView.showError(R.string.err_service);
+            mRegisterView.showError(R.string.err_duplicate);
         }
     }
 

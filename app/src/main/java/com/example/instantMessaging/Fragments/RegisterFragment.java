@@ -1,6 +1,7 @@
 package com.example.instantMessaging.Fragments;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.common.app.Fragment;
 import com.example.factory.presenter.account.RegisterContract;
+import com.example.instantMessaging.Activities.BehaviorActivity;
 import com.example.instantMessaging.R;
 
 import butterknife.BindView;
@@ -92,6 +94,9 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
      */
     @OnClick(R.id.btn_behavior)
     public void recordBehavior(){
+
+        BehaviorActivity.show(getActivity());
+        Log.d("11231", String.valueOf(getActivity()));
         mRegister.setEnabled(true);
     }
 
@@ -104,7 +109,6 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
             @Override
             public void run() {
                 Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
-
                 mTrigger.changeFragment();
             }
         });

@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +24,8 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnItemClick;
+
 import static com.google.common.base.Preconditions.*;
 
 /**
@@ -69,6 +72,9 @@ public class ContactFragment extends Fragment implements ContactContract.View{
     public void initContact(List<User> userList) {
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         ContactRecyclerAdapter adapter = new ContactRecyclerAdapter(getContext(), userList);
+        //添加点击事件
+        adapter.setOnItemClickListener((view, user) ->
+                Toast.makeText(getActivity(), user.getUserName().toString(), Toast.LENGTH_SHORT).show());
         mRecycler.setAdapter(adapter);
     }
 
