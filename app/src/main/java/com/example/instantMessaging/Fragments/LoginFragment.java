@@ -5,11 +5,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.example.common.app.Fragment;
 import com.example.factory.presenter.account.LoginContract;
-import com.example.instantMessaging.Activities.AccountActivity;
 import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.R;
 

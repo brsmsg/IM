@@ -25,6 +25,7 @@
         <activity android:name=".Activities.AccountActivity" />
         <activity android:name=".Activities.MainActivity" />
         <activity android:name=".Activities.BehaviorActivity" />
+        <activity android:name=".Activities.MessageActivity" />
     </application>
 
 </manifest>
