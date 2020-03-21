@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
  * @time 2020/3/15
  */
 public class RawMotion {
+    //标签
+    private String label;
     //x坐标
     private double xCoordinate;
     //y坐标
@@ -20,8 +22,9 @@ public class RawMotion {
     //time
     private long time;
 
-    public RawMotion(double xCoordinate, double yCoordinate,
+    public RawMotion(String label, double xCoordinate, double yCoordinate,
                      double pressure, double area, int action, long time) {
+        this.label = label;
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         this.pressure = pressure;
@@ -76,6 +79,14 @@ public class RawMotion {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @NonNull

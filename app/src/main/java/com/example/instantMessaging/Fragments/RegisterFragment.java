@@ -96,7 +96,6 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     public void recordBehavior(){
 
         BehaviorActivity.show(getActivity());
-        Log.d("11231", String.valueOf(getActivity()));
         mRegister.setEnabled(true);
     }
 

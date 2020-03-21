@@ -10,8 +10,25 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        multiDexEnabled true
+
+        multiDexEnabled true
     }
+
+    afterEvaluate {
+        tasks.matching {
+            it.name.startsWith('dex')
+        }.each { dx ->
+            if (dx.additionalParameters == null) {
+                dx.additionalParameters = []
+            }
+            dx.additionalParameters += '--multi-dex' // enable multidex
+
+            // optional
+            dx.additionalParameters += "--main-dex-list=$projectDir/class-list.txt".toString() // enable the main-dex-list
+            dx.additionalParameters += '--minimal-main-dex'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -43,5 +60,8 @@ dependencies {
     implementation project(path: ':common')
     implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
     implementation 'com.google.android.material:material:1.1.0'
+    implementation 'org.conscrypt:conscrypt-android:2.4.0'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
 
 }

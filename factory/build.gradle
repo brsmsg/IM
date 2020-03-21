@@ -36,6 +36,5 @@ dependencies {
     implementation "com.google.guava:guava:$rootProject.ext.guavaVersion"
     implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttpVersion"
-    implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+
 }
