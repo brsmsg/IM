@@ -24,6 +24,12 @@ public class User {
         this.description = description;
     }
 
+    public User(String username, String faceImage, String description) {
+        this.username = username;
+        this.faceImage = faceImage;
+        this.description = description;
+    }
+
     public String getId() {
         return id;
     }

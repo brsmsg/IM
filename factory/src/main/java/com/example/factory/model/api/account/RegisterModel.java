@@ -1,12 +1,10 @@
-package com.example.factory.model.api.Account;
-
-import com.example.factory.model.User;
+package com.example.factory.model.api.account;
 
 /**
  * @author brsmsg
  * @time 2020/3/23
  */
-public class LoginModel{
+public class RegisterModel {
     //发送
     private String username;
 
@@ -17,7 +15,7 @@ public class LoginModel{
 
     private String msg;
 
-    private User data;
+    private String id;
 
     //失败返回
     private String timestamp;
@@ -30,21 +28,18 @@ public class LoginModel{
 
     private String path;
 
-    //发送请求
-    public LoginModel(String username, String password) {
+    public RegisterModel(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    //成功
-    public LoginModel(String code, String msg, User data) {
+    public RegisterModel(String code, String msg, String id) {
         this.code = code;
         this.msg = msg;
-        this.data = data;
+        this.id = id;
     }
 
-    //失败
-    public LoginModel(String timestamp, String status, String error, String message, String path) {
+    public RegisterModel(String timestamp, String status, String error, String message, String path) {
         this.timestamp = timestamp;
         this.status = status;
         this.error = error;
@@ -84,12 +79,12 @@ public class LoginModel{
         this.msg = msg;
     }
 
-    public User getData() {
-        return data;
+    public String getId() {
+        return id;
     }
 
-    public void setData(User data) {
-        this.data = data;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTimestamp() {

@@ -1,47 +1,52 @@
-package com.example.factory.model.api.Account;
+package com.example.factory.model.api.account;
+
+import androidx.annotation.NonNull;
 
 /**
  * @author brsmsg
- * @time 2020/3/23
+ * @time 2020/3/9
  */
-public class RegisterModel {
-    //发送
+public class AccountModel {
+
     private String username;
 
     private String password;
-
-    // 成功返回
+    //成功返回状态码
     private String code;
-
+    //成功返回消息
     private String msg;
-
-    private String id;
-
-    //失败返回
+    //成功返回数据
+    private String data;
+    //失败返回时间戳
+    private String timeStamp;
+    //失败返回状态码
     private String timestamp;
-
-    private String status;
-
+    //失败返回错误
     private String error;
-
+    //失败返回message
     private String message;
-
+    //失败返回url
     private String path;
 
-    public RegisterModel(String username, String password) {
+
+    //发送
+    public AccountModel(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public RegisterModel(String code, String msg, String id) {
+
+    //返回成功
+    public AccountModel(String code, String msg, String data) {
         this.code = code;
         this.msg = msg;
-        this.id = id;
+        this.data = data;
     }
 
-    public RegisterModel(String timestamp, String status, String error, String message, String path) {
+    //返回失败
+    public AccountModel(String timeStamp, String timestamp, String error, String message, String path) {
+        this.timeStamp = timeStamp;
         this.timestamp = timestamp;
-        this.status = status;
         this.error = error;
         this.message = message;
         this.path = path;
@@ -79,36 +84,12 @@ public class RegisterModel {
         this.msg = msg;
     }
 
-    public String getId() {
-        return id;
+    public String getData() {
+        return data;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getMessage() {
@@ -119,11 +100,11 @@ public class RegisterModel {
         this.message = message;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
+    @NonNull
+    @Override
+    public String toString() {
+        return getUsername() + "\n" + getPassword() + "\n"
+                + getCode() + "\n" + getData() + "\n"
+                +getMsg() + "\n";
     }
 }

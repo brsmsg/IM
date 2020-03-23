@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.example.factory.Factory;
 import com.example.factory.R;
-import com.example.factory.model.api.Account.AccountModel;
-import com.example.factory.model.api.Account.RegisterModel;
+import com.example.factory.model.api.account.AccountModel;
+import com.example.factory.model.api.account.RegisterModel;
 import com.example.factory.utils.NetUtils;
 
 /**

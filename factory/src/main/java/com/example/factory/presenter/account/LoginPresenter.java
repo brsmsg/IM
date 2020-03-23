@@ -6,7 +6,7 @@ import android.util.Log;
 import com.example.factory.Factory;
 import com.example.factory.R;
 import com.example.factory.model.User;
-import com.example.factory.model.api.Account.LoginModel;
+import com.example.factory.model.api.account.LoginModel;
 import com.example.factory.utils.NetUtils;
 
 

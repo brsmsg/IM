@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.factory.Factory;
 import com.example.factory.R;
 import com.example.factory.model.User;
+import com.example.factory.model.api.contact.Contact;
 import com.example.factory.utils.NetUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -31,9 +32,25 @@ public class ContactPresenter implements ContactContract.Presenter{
 //        String result = NetUtils.postJson(user, "123");
 
 
-        String result = "[{\"username\": \"KBH\",\"faceImage\": \"http://101.200.240.107/images/1.jpg\", \"description\": \"hahahahahaha\"}, " +
-                "{\"username\": \"KangBaihan\", \"faceImage\": \"http://101.200.240.107/images/2.jpg\", \"description\": \"happyeveryday\"}]";
+        String result = "{\n" +
+                "    \"code\": 0,\n" +
+                "    \"msg\": \"success\",\n" +
+                "    \"data\": [\n" +
+                "        {\n" +
+                "            \"username\": \"15172382300\",\n" +
+                "            \"faceImage\": \"http://101.200.240.107/images/1.jpg\",\n" +
+                "            \"description\": 123456\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"username\": \"18571549924\",\n" +
+                "            \"faceImage\": \"http://101.200.240.107/images/2.jpg\",\n" +
+                "            \"description\": kbh\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
         if(result != null){
+            Log.d("result", result);
             parseContactResult(result);
         }else{
             mContactView.showError(R.string.err_service);
@@ -44,13 +61,12 @@ public class ContactPresenter implements ContactContract.Presenter{
     }
 
     void parseContactResult(String result){
-        List<User> contactList = Factory.getInstance().getGson()
-                .fromJson(result, new TypeToken<List<User>>(){}.getType());
-        for(User contact: contactList){
-//            Log.d("Contact", "userName： " + contact.getUserName());
-//            Log.d("Contact", "portrait： " + contact.getPortrait());
-//            Log.d("Contact", "desc： " + contact.getDesc());
-
+        Contact contact = Factory.getInstance().getGson()
+                .fromJson(result, Contact.class);
+        List<User> contactList = contact.getData();
+        for(User contactitem:contactList){
+            Log.d("name", contactitem.getUsername());
+            Log.d("image", contactitem.getFaceImage());
         }
         mContactView.initContact(contactList);
     }

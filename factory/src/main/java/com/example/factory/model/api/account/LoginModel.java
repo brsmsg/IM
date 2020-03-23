@@ -1,52 +1,52 @@
-package com.example.factory.model.api.Account;
+package com.example.factory.model.api.account;
 
-import androidx.annotation.NonNull;
+import com.example.factory.model.User;
 
 /**
  * @author brsmsg
- * @time 2020/3/9
+ * @time 2020/3/23
  */
-public class AccountModel {
-
+public class LoginModel{
+    //发送
     private String username;
 
     private String password;
-    //成功返回状态码
+
+    // 成功返回
     private String code;
-    //成功返回消息
+
     private String msg;
-    //成功返回数据
-    private String data;
-    //失败返回时间戳
-    private String timeStamp;
-    //失败返回状态码
+
+    private User data;
+
+    //失败返回
     private String timestamp;
-    //失败返回错误
+
+    private String status;
+
     private String error;
-    //失败返回message
+
     private String message;
-    //失败返回url
+
     private String path;
 
-
-    //发送
-    public AccountModel(String username, String password) {
+    //发送请求
+    public LoginModel(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-
-    //返回成功
-    public AccountModel(String code, String msg, String data) {
+    //成功
+    public LoginModel(String code, String msg, User data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
     }
 
-    //返回失败
-    public AccountModel(String timeStamp, String timestamp, String error, String message, String path) {
-        this.timeStamp = timeStamp;
+    //失败
+    public LoginModel(String timestamp, String status, String error, String message, String path) {
         this.timestamp = timestamp;
+        this.status = status;
         this.error = error;
         this.message = message;
         this.path = path;
@@ -84,12 +84,36 @@ public class AccountModel {
         this.msg = msg;
     }
 
-    public String getData() {
+    public User getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(User data) {
         this.data = data;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 
     public String getMessage() {
@@ -100,11 +124,11 @@ public class AccountModel {
         this.message = message;
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return getUsername() + "\n" + getPassword() + "\n"
-                + getCode() + "\n" + getData() + "\n"
-                +getMsg() + "\n";
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }
