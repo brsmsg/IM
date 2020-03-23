@@ -4,9 +4,11 @@ import android.util.Log;
 
 import com.example.factory.Factory;
 import com.example.factory.model.RawMotion;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -28,9 +30,10 @@ public class NetUtils {
      */
     public static String postJson(Object object, String url){
         String result = null;
-
+        //获取gson对象
+        Gson gson = Factory.getInstance().getGson();
         //得到要发送的json字符串
-        String json = Factory.getInstance().getGson().toJson(object);
+        String json = gson.toJson(object);
 
         Log.d("testJson", json);
 
@@ -49,16 +52,16 @@ public class NetUtils {
 
         try {
             Response response = okHttpClient.newCall(request).execute();
-            Log.d("success? ", String.valueOf(response.isSuccessful()));
 
-            result = response.body().string();
+            result = Objects.requireNonNull(response.body()).string();
+            Log.d("result", result);
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
-            Log.d("result", result);
             return result;
         }
     }
+
 
 
     public static String postJson(List<RawMotion> objectList, String url){

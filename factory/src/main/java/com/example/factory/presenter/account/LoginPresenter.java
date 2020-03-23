@@ -5,7 +5,8 @@ import android.util.Log;
 
 import com.example.factory.Factory;
 import com.example.factory.R;
-import com.example.factory.model.api.Account.AccountModel;
+import com.example.factory.model.User;
+import com.example.factory.model.api.Account.LoginModel;
 import com.example.factory.utils.NetUtils;
 
 
@@ -32,18 +33,18 @@ public class LoginPresenter implements LoginContract.Presenter{
     }
 
     @Override
-    public void login(final String userName, final String password) {
+    public void login(final String username, final String password) {
         //判断用户名密码是否为空
-        if(TextUtils.isEmpty(userName) || TextUtils.isEmpty(password)){
+        if(TextUtils.isEmpty(username) || TextUtils.isEmpty(password)){
             mLoginView.showError(R.string.err_account_empty_input);
         }else{
             //开启子线程进行登录操作
             Factory.getInstance().getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
-                    AccountModel accountModel = new AccountModel(userName, password);
+                    LoginModel loginModel = new LoginModel(username, password);
                     //发送json并取得返回数据
-                    String result = NetUtils.postJson(accountModel, loginUrl);
+                    String result = NetUtils.postJson(loginModel, loginUrl);
 
 
 //                        String result = "{\"status\":\"success\", \"userName\": \"kbh\", \"id\": \"1\"}";
@@ -67,18 +68,15 @@ public class LoginPresenter implements LoginContract.Presenter{
      */
     @Override
     public void parseLoginResult(String result) {
-        AccountModel accountModel = Factory.getInstance()
-                .getGson().fromJson(result, AccountModel.class);
-
-        Log.d("accountModel", accountModel.toString());
-        String status = accountModel.getMsg();
-        String id = accountModel.getCode();
-        String data = accountModel.getData();
-
-        if (status == null){
-            mLoginView.showError(R.string.err_parameter);
-        }else{
+        LoginModel loginModel = Factory.getInstance()
+                .getGson().fromJson(result, LoginModel.class);
+        String msg = loginModel.getMsg();
+        if(msg != null && msg.equals("success")) {
+            User user = loginModel.getData();
             mLoginView.loginSuccess();
+        }else{
+            mLoginView.showError(R.string.err_parameter);
         }
     }
+
 }

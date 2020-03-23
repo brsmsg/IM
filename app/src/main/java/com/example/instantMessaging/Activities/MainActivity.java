@@ -40,6 +40,8 @@ public class MainActivity extends Activity
     @BindView(R.id.bottom_bar)
     BottomNavigationView mBottomBar;
 
+    @BindView(R.id.txt_title)
+    TextView mTitle;
 
     @Override
     protected int getContentLayotId() {
@@ -72,9 +74,11 @@ public class MainActivity extends Activity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
             case R.id.main_message:
+                mTitle.setText(R.string.main_message);
                 changeFragment(mMessageFragment);
                 return true;
             case R.id.main_contact:
+                mTitle.setText(R.string.main_contact);
                 if(mContactFragment == null){
                     mContactFragment = new ContactFragment();
                 }
@@ -84,6 +88,7 @@ public class MainActivity extends Activity
                 Log.d("testBottomVav", "contact");
                 return true;
             case R.id.main_moment:
+                mTitle.setText(R.string.main_moment);
                 if(mMomentFragment == null){
                     mMomentFragment = new MomentFragment();
                 }
@@ -114,6 +119,5 @@ public class MainActivity extends Activity
 
 
     }
-
 
 }

@@ -18,6 +18,8 @@ public class ContactPresenter implements ContactContract.Presenter{
 
     private ContactContract.View mContactView;
 
+    private String contactUrl = "http://118.31.64.83:8080/friend/getFriend";
+
     public ContactPresenter(ContactContract.View contactView ){
         mContactView = contactView;
         contactView.setPresenter(this);
@@ -27,8 +29,10 @@ public class ContactPresenter implements ContactContract.Presenter{
     public void start() {
         User user = new User("1");
 //        String result = NetUtils.postJson(user, "123");
-        String result = "[{\"userName\": \"KBH\",\"portrait\": \"http://101.200.240.107/images/1.jpg\", \"desc\": \"hahahahahaha\"}, " +
-                "{\"userName\": \"KangBaihan\", \"portrait\": \"http://101.200.240.107/images/2.jpg\", \"desc\": \"happyeveryday\"}]";
+
+
+        String result = "[{\"username\": \"KBH\",\"faceImage\": \"http://101.200.240.107/images/1.jpg\", \"description\": \"hahahahahaha\"}, " +
+                "{\"username\": \"KangBaihan\", \"faceImage\": \"http://101.200.240.107/images/2.jpg\", \"description\": \"happyeveryday\"}]";
         if(result != null){
             parseContactResult(result);
         }else{
@@ -43,9 +47,9 @@ public class ContactPresenter implements ContactContract.Presenter{
         List<User> contactList = Factory.getInstance().getGson()
                 .fromJson(result, new TypeToken<List<User>>(){}.getType());
         for(User contact: contactList){
-            Log.d("Contact", "userName： " + contact.getUserName());
-            Log.d("Contact", "portrait： " + contact.getPortrait());
-            Log.d("Contact", "desc： " + contact.getDesc());
+//            Log.d("Contact", "userName： " + contact.getUserName());
+//            Log.d("Contact", "portrait： " + contact.getPortrait());
+//            Log.d("Contact", "desc： " + contact.getDesc());
 
         }
         mContactView.initContact(contactList);

@@ -59,9 +59,9 @@ public class ContactRecyclerAdapter
 
         User user = mUserList.get(position);
 
-        Glide.with(mContext).load(user.getPortrait()).into(holder.mPortrait);
-        holder.mDesc.setText(user.getDesc());
-        holder.mUserName.setText(user.getUserName());
+        Glide.with(mContext).load(user.getFaceImage()).into(holder.mPortrait);
+        holder.mDesc.setText(user.getDescription());
+        holder.mUserName.setText(user.getUsername());
     }
 
     @Override

@@ -35,7 +35,9 @@
                 android:id="@+id/reg_edit_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/login_username" />
+                android:hint="@string/login_username"
+                android:maxLines="1"
+                android:inputType="text"/>
         </LinearLayout>
 
         <LinearLayout
@@ -48,7 +50,9 @@
                 android:id="@+id/reg_edit_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/login_password"/>
+                android:hint="@string/login_password"
+                android:maxLines="1"
+                android:inputType="textPassword"/>
 
         </LinearLayout>
 

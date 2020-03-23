@@ -6,25 +6,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.common.app.Fragment;
-import com.example.common.widget.recycler.BaseRecyclerAdapter;
 import com.example.common.widget.recycler.RecyclerAdapter;
 import com.example.factory.model.User;
 import com.example.factory.presenter.contact.ContactContract;
+import com.example.instantMessaging.Activities.MessageActivity;
 import com.example.instantMessaging.Fragments.main.adapter.ContactRecyclerAdapter;
 import com.example.instantMessaging.R;
 
-import org.checkerframework.checker.units.qual.C;
-
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnItemClick;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -73,8 +68,14 @@ public class ContactFragment extends Fragment implements ContactContract.View{
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         ContactRecyclerAdapter adapter = new ContactRecyclerAdapter(getContext(), userList);
         //添加点击事件
-        adapter.setOnItemClickListener((view, user) ->
-                Toast.makeText(getActivity(), user.getUserName().toString(), Toast.LENGTH_SHORT).show());
+        adapter.setOnItemClickListener(new ContactRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, User user) {
+                Toast.makeText(getActivity(), user.getUsername(), Toast.LENGTH_SHORT).show();
+                MessageActivity.show(getActivity(), user);
+
+            }
+        });
         mRecycler.setAdapter(adapter);
     }
 

@@ -21,4 +21,7 @@
     <string name="main_contact">联系人</string>
     <string name="main_moment">朋友圈</string>
 
+
+    <!--  消息界面  -->
+    <string name="btn_message_send">发送</string>
 </resources>

@@ -5,25 +5,23 @@ package com.example.factory.model;
  * @time 2020/3/13
  */
 public class User {
-
+    //id
     private String id;
 
-    private String userName;
+    //用户名
+    private String username;
 
-    private String portrait;
+    //头像
+    private String faceImage;
 
-    private String desc;
+    //描述
+    private String description;
 
-    private String gender;
-
-    public User(String id){
+    public User(String id, String username, String faceImage, String description) {
         this.id = id;
-    }
-
-    public User(String userName, String portrait, String desc) {
-        this.userName = userName;
-        this.portrait = portrait;
-        this.desc = desc;
+        this.username = username;
+        this.faceImage = faceImage;
+        this.description = description;
     }
 
     public String getId() {
@@ -33,36 +31,35 @@ public class User {
     public void setId(String id) {
         this.id = id;
     }
-
-    public String getUserName() {
-        return userName;
+    public User(String id) {
+        this.id = id;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
     }
 
-    public String getPortrait() {
-        return portrait;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setPortrait(String portrait) {
-        this.portrait = portrait;
+    public String getFaceImage() {
+        return faceImage;
     }
 
-    public String getDesc() {
-        return desc;
+    public void setFaceImage(String faceImage) {
+        this.faceImage = faceImage;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public String getDescription() {
+        return description;
     }
 
-    public String getGender() {
-        return gender;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+
 }
+
+

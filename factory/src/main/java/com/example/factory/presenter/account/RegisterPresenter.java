@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.factory.Factory;
 import com.example.factory.R;
 import com.example.factory.model.api.Account.AccountModel;
+import com.example.factory.model.api.Account.RegisterModel;
 import com.example.factory.utils.NetUtils;
 
 /**
@@ -57,10 +58,10 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
     @Override
     public void parseRegisterResult(String result) {
-        AccountModel accountModel = Factory.getInstance()
-                .getGson().fromJson(result, AccountModel.class);
-        String status = accountModel.getMsg();
-        if(status == null){
+        RegisterModel registerModel = Factory.getInstance()
+                .getGson().fromJson(result, RegisterModel.class);
+        String msg = registerModel.getMsg();
+        if(msg != null && equals("success")){
             mRegisterView.registerSuccess();
         }else{
             mRegisterView.showError(R.string.err_duplicate);
