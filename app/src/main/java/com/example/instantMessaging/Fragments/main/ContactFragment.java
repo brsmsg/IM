@@ -73,7 +73,6 @@ public class ContactFragment extends Fragment implements ContactContract.View{
             public void onItemClick(View view, User user) {
                 Toast.makeText(getActivity(), user.getUsername(), Toast.LENGTH_SHORT).show();
                 MessageActivity.show(getActivity(), user);
-
             }
         });
         mRecycler.setAdapter(adapter);

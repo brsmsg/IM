@@ -97,7 +97,7 @@ public class ContactRecyclerAdapter
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.txt_userName_contact)
         TextView mUserName;
@@ -108,7 +108,7 @@ public class ContactRecyclerAdapter
         @BindView(R.id.img_portrait_contact)
         ImageView mPortrait;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

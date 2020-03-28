@@ -60,18 +60,42 @@
             android:id="@+id/txt_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:textSize="15dp"
-            android:text="@string/label_go_to_register"
-            android:layout_marginTop="10dp"
             android:layout_gravity="right"
-            />
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/label_go_to_register"
+            android:textSize="15sp" />
 
     </LinearLayout>
 
-    <Space
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox_rmb_pwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="记住密码"
+            android:layout_weight="1"
+            android:layout_marginStart="50dp"
+            android:checked="true"
+            />
+
+        <CheckBox
+            android:id="@+id/checkbox_auto_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="自动登录"
+            android:layout_weight="1"
+            android:layout_marginStart="50dp"/>
+
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="2"
         />
 
@@ -89,4 +113,5 @@
         />
 
     </FrameLayout>
+
 </LinearLayout>

@@ -19,9 +19,9 @@ import com.example.instantMessaging.R;
  */
 public class MessageActivity extends Activity {
     //用户名
-    private static final String KEY_USERNAME = "KEY_USERNAME";
+    public static final String KEY_USERNAME = "KEY_USERNAME";
     //头像url
-    private static final String KEY_PORTRAIT_URL = "KEY_PORTRAIT_URL";
+    public static final String KEY_PORTRAIT_URL = "KEY_PORTRAIT_URL";
 
     private ChatFragment mChatFragment;
 
