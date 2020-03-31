@@ -2,18 +2,18 @@ package com.example.instantMessaging.Activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Message;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.common.app.Activity;
 import com.example.common.app.Fragment;
+import com.example.factory.model.User;
 import com.example.factory.presenter.contact.ContactPresenter;
 import com.example.instantMessaging.Fragments.main.ContactFragment;
 import com.example.instantMessaging.Fragments.main.MessageFragment;
@@ -26,6 +26,13 @@ import butterknife.OnClick;
 
 public class MainActivity extends Activity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    //用户id
+    public final static String MY_ID = "MY_ID";
+    //用户头像
+    public final static String MY_PORTRAIT = "MY_PORTRAIT";
+    //用户名
+    public final static String MY_USERNAME = "MY_USERNAME";
 
     private Fragment mCurrentFragment;
     //消息界面
@@ -42,6 +49,9 @@ public class MainActivity extends Activity
 
     @BindView(R.id.txt_title)
     TextView mTitle;
+
+    @BindView(R.id.img_portrait)
+    ImageView mPortrait;
 
     @Override
     protected int getContentLayotId() {
@@ -60,14 +70,24 @@ public class MainActivity extends Activity
         mCurrentFragment = mMessageFragment;
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.layout_container_main, mMessageFragment).commit();
-    }
 
+        //初始化头像
+        String portraitUrl = getIntent().getExtras().getString(MY_PORTRAIT);
+        if ( portraitUrl != null){
+            Glide.with(this).load(portraitUrl).into(mPortrait);
+            Log.d("portraitUrl", portraitUrl);
+        }
+
+    }
     /**
      * 显示入口
      */
-    public static void show(Context context){
-        context.startActivity(new Intent(context, MainActivity.class));
-
+    public static void show(Context context, User user){
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(MY_ID, user.getId());
+        intent.putExtra(MY_PORTRAIT, user.getFaceImage());
+        intent.putExtra(MY_USERNAME, user.getUsername());
+        context.startActivity(intent);
     }
 
 
@@ -120,7 +140,7 @@ public class MainActivity extends Activity
     }
 
     public void linkWebSocket(){
-        
+
     }
 
 }

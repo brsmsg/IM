@@ -11,6 +11,7 @@ import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.example.common.app.Fragment;
+import com.example.factory.model.User;
 import com.example.factory.presenter.account.LoginContract;
 import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.R;
@@ -179,7 +180,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
      * 登录成功
      */
     @Override
-    public void loginSuccess() {
+    public void loginSuccess(User user) {
         getActivity().runOnUiThread(new Runnable(){
             @Override
             public void run() {
@@ -193,7 +194,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
             editor.commit();
         }
 
-        MainActivity.show(getActivity());
+        MainActivity.show(getActivity(), user);
         getActivity().finish();
 
     }

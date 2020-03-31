@@ -36,7 +36,6 @@ public class DiffUtils<T extends DiffUtils.Differ<T>> extends DiffUtil.Callback 
         T itemOld = mOldList.get(oldItemPosition);
         T itemNew = mNewList.get(newItemPosition);
 
-        Log.d("same?", String.valueOf(itemNew.isSame(itemOld)));
         return itemNew.isSame(itemOld);
     }
 
@@ -46,7 +45,6 @@ public class DiffUtils<T extends DiffUtils.Differ<T>> extends DiffUtil.Callback 
         T itemOld = mOldList.get(oldItemPosition);
         T itemNew = mNewList.get(newItemPosition);
 
-        Log.d("change?", String.valueOf(itemNew.isContentSame(itemOld)));
         return itemNew.isContentSame(itemOld);
     }
 

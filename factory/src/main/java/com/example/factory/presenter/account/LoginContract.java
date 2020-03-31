@@ -3,6 +3,7 @@ package com.example.factory.presenter.account;
 import com.example.common.factory.base.BaseContract;
 import com.example.common.factory.base.BasePresenter;
 import com.example.common.factory.base.BaseView;
+import com.example.factory.model.User;
 import com.google.gson.Gson;
 
 /**
@@ -12,7 +13,7 @@ import com.google.gson.Gson;
 public interface LoginContract extends BaseContract {
     interface View extends BaseView<Presenter>{
         //登录成功
-        void loginSuccess();
+        void loginSuccess(User user);
 
     }
 

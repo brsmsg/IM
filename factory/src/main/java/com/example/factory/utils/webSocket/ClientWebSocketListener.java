@@ -19,12 +19,14 @@ public final class ClientWebSocketListener extends WebSocketListener {
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
         //建立连接时回调
+        super.onOpen(webSocket, response);
         webSocket.send("hello world");
         webSocket.send("welcome");
     }
 
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
+        super.onMessage(webSocket, text);
         Log.d("onMessage return", text);
     }
 

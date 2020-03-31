@@ -18,7 +18,7 @@ public class LoginPresenter implements LoginContract.Presenter{
 
     private final String loginUrl = "http://118.31.64.83:8080/account/login";
 
-    private final String webSocketUrl = "ws://echo.websocket.org";
+    private final String webSocketUrl = "ws://118.31.64.83:8081/ws";
 
     private LoginContract.View mLoginView;
 
@@ -76,8 +76,17 @@ public class LoginPresenter implements LoginContract.Presenter{
 
             //初始化websocket
             Factory.getInstance().initWebSocket(webSocketUrl);
-
-            mLoginView.loginSuccess();
+            Factory.getInstance().getWebSocket().send("{\n" +
+                    "  \"action\": 1,\n" +
+                    "  \"message\": {\n" +
+                    "    \"sendUserId\": \"\",\n" +
+                    "    \"receiveUserId\": \"\",\n" +
+                    "    \"msg\": \"\",\n" +
+                    "    \"msgId\": \"\"\n" +
+                    "  },\n" +
+                    "  \"extend\": \"用于存放签收的Id\"\n" +
+                    "}");
+            mLoginView.loginSuccess(user);
         }else{
             mLoginView.showError(R.string.err_parameter);
         }
