@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.factory.Factory;
 import com.example.factory.model.RawMotion;
+import com.example.factory.utils.webSocket.ClientWebSocketListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 /**
  * @author brsmsg
@@ -111,6 +114,17 @@ public class NetUtils {
             return result;
 
         }
+    }
 
+    public static WebSocket initWebSocket(String url, ClientWebSocketListener listener){
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        WebSocket webSocket = okHttpClient.newWebSocket(request, listener);
+        return webSocket;
     }
 }

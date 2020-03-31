@@ -36,5 +36,9 @@ dependencies {
     implementation "com.google.guava:guava:$rootProject.ext.guavaVersion"
     implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttpVersion"
+    implementation "androidx.recyclerview:recyclerview:$rootProject.ext.recyclerviewVersion"
 
+    implementation "com.github.agrosner.dbflow:core:5.0.0-alpha1"
+    implementation "com.github.agrosner.dbflow:lib:5.0.0-alpha1"
+    annotationProcessor "com.github.agrosner.dbflow:processor:5.0.0-alpha1"
 }

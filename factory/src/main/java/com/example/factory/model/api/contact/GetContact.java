@@ -1,6 +1,7 @@
 package com.example.factory.model.api.contact;
 
 import com.example.factory.model.User;
+import com.example.factory.model.db.Contact;
 
 import java.util.List;
 
@@ -8,14 +9,14 @@ import java.util.List;
  * @author brsmsg
  * @time 2020/3/23
  */
-public class Contact {
+public class GetContact {
     private String code;
 
     private String msg;
 
-    private List<User> data;
+    private List<Contact> data;
 
-    public Contact(String code, String msg, List<User> data) {
+    public GetContact(String code, String msg, List<Contact> data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -37,11 +38,11 @@ public class Contact {
         this.msg = msg;
     }
 
-    public List<User> getData() {
+    public List<Contact> getData() {
         return data;
     }
 
-    public void setData(List<User> data) {
+    public void setData(List<Contact> data) {
         this.data = data;
     }
 }

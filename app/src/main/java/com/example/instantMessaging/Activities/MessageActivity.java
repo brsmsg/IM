@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.common.app.Activity;
 import com.example.common.app.Fragment;
 import com.example.factory.model.User;
+import com.example.factory.model.db.Contact;
 import com.example.instantMessaging.Fragments.message.ChatFragment;
 import com.example.instantMessaging.R;
 
@@ -38,12 +39,12 @@ public class MessageActivity extends Activity {
     /**
      * 展示聊天界面
      * @param context
-     * @param user
+     * @param contact
      */
-    public static void show(Context context, User user){
+    public static void show(Context context, Contact contact){
         Intent intent = new Intent(context, MessageActivity.class);
-        intent.putExtra(KEY_USERNAME, user.getUsername());
-        intent.putExtra(KEY_PORTRAIT_URL, user.getFaceImage());
+        intent.putExtra(KEY_USERNAME, contact.getUsername());
+        intent.putExtra(KEY_PORTRAIT_URL, contact.getFaceImage());
         context.startActivity(intent);
     }
 

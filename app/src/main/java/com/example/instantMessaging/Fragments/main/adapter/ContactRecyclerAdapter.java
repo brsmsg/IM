@@ -9,10 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.factory.model.User;
+import com.example.factory.model.db.Contact;
+import com.example.factory.utils.DiffUtils;
 import com.example.instantMessaging.Fragments.main.ContactFragment;
 import com.example.instantMessaging.R;
 
@@ -33,13 +36,13 @@ public class ContactRecyclerAdapter
 
     private OnItemClickListener mOnItemClickListener;
 
-    private List<User> mUserList;
+    private List<Contact> mContactList;
 
     private Context mContext;
 
-    public ContactRecyclerAdapter(Context context, List<User> userList){
+    public ContactRecyclerAdapter(Context context, List<Contact> contactList){
         this.mContext = context;
-        this.mUserList = userList;
+        this.mContactList = contactList;
     }
 
     @NonNull
@@ -57,16 +60,50 @@ public class ContactRecyclerAdapter
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.itemView.setTag(position);
 
-        User user = mUserList.get(position);
+        Contact contact = mContactList.get(position);
 
-        Glide.with(mContext).load(user.getFaceImage()).into(holder.mPortrait);
-        holder.mDesc.setText(user.getDescription());
-        holder.mUserName.setText(user.getUsername());
+        Glide.with(mContext).load(contact.getFaceImage()).into(holder.mPortrait);
+        holder.mDesc.setText(contact.getDescription());
+        holder.mUserName.setText(contact.getUsername());
     }
 
     @Override
     public int getItemCount() {
-        return mUserList.size();
+        return mContactList.size();
+    }
+
+    /**
+     * 替换部分数据
+     * @param contactList
+     */
+    public void replace(List<Contact> contactList){
+        DiffUtil.Callback callback = new DiffUtils<>(mContactList, contactList);
+        for(Contact c:mContactList){
+            Log.d("oldList", c.toString());
+        }
+
+        for(Contact c:contactList){
+            Log.d("newList", c.toString());
+        }
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback);
+        Log.d("difference", diffResult.toString());
+
+        replaceAll(contactList);
+        diffResult.dispatchUpdatesTo(this);
+    }
+
+
+    /**
+     * 更新所有数据
+     */
+    public void replaceAll(List<Contact> contactList){
+        mContactList.clear();
+        if(contactList == null || contactList.size() == 0){
+            return;
+        }
+        mContactList.addAll(contactList);
+        notifyDataSetChanged();
     }
 
     /**
@@ -85,7 +122,7 @@ public class ContactRecyclerAdapter
     public void onClick(View v) {
         if(mOnItemClickListener != null){
             int pos = (int) v.getTag();
-            mOnItemClickListener.onItemClick(v, mUserList.get(pos));
+            mOnItemClickListener.onItemClick(v, mContactList.get(pos));
         }
     }
 
@@ -93,7 +130,7 @@ public class ContactRecyclerAdapter
      * 监听接口
      */
     public interface OnItemClickListener{
-        void onItemClick(View view, User user);
+        void onItemClick(View view, Contact contact);
     }
 
 
@@ -112,6 +149,5 @@ public class ContactRecyclerAdapter
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
     }
 }

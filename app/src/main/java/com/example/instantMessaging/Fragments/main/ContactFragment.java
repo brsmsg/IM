@@ -1,9 +1,6 @@
 package com.example.instantMessaging.Fragments.main;
 
-import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.common.app.Fragment;
 import com.example.common.widget.recycler.RecyclerAdapter;
 import com.example.factory.model.User;
+import com.example.factory.model.db.Contact;
 import com.example.factory.presenter.contact.ContactContract;
 import com.example.instantMessaging.Activities.MessageActivity;
 import com.example.instantMessaging.Fragments.main.adapter.ContactRecyclerAdapter;
@@ -34,7 +32,7 @@ public class ContactFragment extends Fragment implements ContactContract.View{
     @BindView(R.id.recycler_contact)
     RecyclerView mRecycler;
 
-    private RecyclerAdapter<User> mContactAdapter;
+    private ContactRecyclerAdapter mContactAdapter;
 
     //empty constructor
     public ContactFragment(){
@@ -51,6 +49,7 @@ public class ContactFragment extends Fragment implements ContactContract.View{
     protected void initData() {
         super.initData();
         mPresenter.start();
+        mPresenter.refresh();
     }
 
     @Override
@@ -63,21 +62,28 @@ public class ContactFragment extends Fragment implements ContactContract.View{
 
     }
 
+    /**
+     * 初始化联系人列表
+     * @param contactList
+     */
     @Override
-    public void initContact(List<User> userList) {
+    public void initContact(List<Contact> contactList) {
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        ContactRecyclerAdapter adapter = new ContactRecyclerAdapter(getContext(), userList);
+        mContactAdapter = new ContactRecyclerAdapter(getContext(), contactList);
         //添加点击事件
-        adapter.setOnItemClickListener(new ContactRecyclerAdapter.OnItemClickListener() {
+        mContactAdapter.setOnItemClickListener(new ContactRecyclerAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, User user) {
-                Toast.makeText(getActivity(), user.getUsername(), Toast.LENGTH_SHORT).show();
-                MessageActivity.show(getActivity(), user);
+            public void onItemClick(View view, Contact contact) {
+                Toast.makeText(getActivity(), contact.getUsername(), Toast.LENGTH_SHORT).show();
+                MessageActivity.show(getActivity(), contact);
             }
         });
-        mRecycler.setAdapter(adapter);
+        mRecycler.setAdapter(mContactAdapter);
     }
 
-
-
+    @Override
+    public void refreshContact(List<Contact> contactList) {
+        mContactAdapter.replace(contactList);
+//        mContactAdapter.replaceAll(contactList);
+    }
 }

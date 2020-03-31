@@ -67,6 +67,7 @@ public class MainActivity extends Activity
      */
     public static void show(Context context){
         context.startActivity(new Intent(context, MainActivity.class));
+
     }
 
 
@@ -116,8 +117,10 @@ public class MainActivity extends Activity
             }
             mCurrentFragment = fragment;
         }
+    }
 
-
+    public void linkWebSocket(){
+        
     }
 
 }

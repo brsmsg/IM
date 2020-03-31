@@ -15,10 +15,10 @@ import com.example.factory.utils.NetUtils;
  * @time 2020/3/7
  */
 public class LoginPresenter implements LoginContract.Presenter{
-//    @BindString(R2.string.url_login)
-//    String loginUrl;
 
-    private String loginUrl = "http://118.31.64.83:8080/account/login";
+    private final String loginUrl = "http://118.31.64.83:8080/account/login";
+
+    private final String webSocketUrl = "ws://echo.websocket.org";
 
     private LoginContract.View mLoginView;
 
@@ -73,6 +73,10 @@ public class LoginPresenter implements LoginContract.Presenter{
         String msg = loginModel.getMsg();
         if(msg != null && msg.equals("success")) {
             User user = loginModel.getData();
+
+            //初始化websocket
+            Factory.getInstance().initWebSocket(webSocketUrl);
+
             mLoginView.loginSuccess();
         }else{
             mLoginView.showError(R.string.err_parameter);

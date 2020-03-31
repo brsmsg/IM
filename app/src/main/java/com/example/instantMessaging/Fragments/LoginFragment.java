@@ -191,8 +191,6 @@ public class LoginFragment extends Fragment implements LoginContract.View {
             editor.putString(USERNAME, mUserName.getText().toString().trim());
             editor.putString(PASSWORD, mPassword.getText().toString().trim());
             editor.commit();
-            Log.d("sp username", sp.getString(USERNAME, ""));
-            Log.d("sp username", sp.getString(PASSWORD, ""));
         }
 
         MainActivity.show(getActivity());
