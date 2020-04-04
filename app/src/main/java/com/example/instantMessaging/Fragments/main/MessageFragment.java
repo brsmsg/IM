@@ -86,7 +86,10 @@ public class MessageFragment extends Fragment implements SessionContract.View {
         mSessionAdapter.setOnItemClickLIstener(new SessionRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, SessionUI session) {
+                //展示MessageActivity
                 MessageActivity.show(getActivity(), session, myId, myPortrait);
+                //签收消息
+                mPresenter.signMessage(session.getId());
             }
         });
 

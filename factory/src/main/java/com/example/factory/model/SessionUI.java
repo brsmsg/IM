@@ -1,5 +1,7 @@
 package com.example.factory.model;
 
+import androidx.annotation.Nullable;
+
 /**
  * @author brsmsg
  * @time 2020/4/4
@@ -51,4 +53,5 @@ public class SessionUI {
     public void setLastMsg(String lastMsg) {
         this.lastMsg = lastMsg;
     }
+
 }

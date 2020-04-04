@@ -33,4 +33,11 @@ public class WebSocketUtils {
         Factory.getInstance().getWebSocket().send(jsonStr);
     }
 
+    public static void sign(String msgIdList){
+        WebSocketModel model = new WebSocketModel(3, new Msg("", "", "", ""), msgIdList);
+        String jsonStr = transJson(model);
+        Log.d("signJsonStr", jsonStr);
+//        Factory.getInstance().getWebSocket().send(jsonStr);
+    }
+
 }

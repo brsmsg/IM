@@ -45,7 +45,7 @@ public class SessionRecyclerAdapter
     public void add(SessionUI session){
         //相同的用户删除原来会话并在最上面插入现有会话
         for(int i = 0; i<mSessionList.size(); i++){
-            if(mSessionList.get(i).getUsername().equals(session.getUsername())){
+            if(mSessionList.get(i).getId().equals(session.getId())){
                 Log.d("need2remove", String.valueOf(i));
                 mSessionList.remove(i);
                 notifyItemChanged(i);

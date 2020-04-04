@@ -19,6 +19,9 @@ public interface SessionContract extends BaseContract {
     }
 
     interface Presenter extends BasePresenter{
+        //接收消息
         void receiveMessage(String content);
+        //签收消息
+        void signMessage(String id);
     }
 }

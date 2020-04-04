@@ -1,9 +1,11 @@
 package com.example.factory.presenter.Session;
 
+import android.icu.util.LocaleData;
 import android.util.Log;
 
 import com.dbflow5.config.FlowManager;
 import com.dbflow5.query.SQLite;
+import com.example.factory.Factory;
 import com.example.factory.model.SessionUI;
 import com.example.factory.model.api.webSocket.Msg;
 import com.example.factory.model.api.webSocket.WebSocketModel;
@@ -13,7 +15,9 @@ import com.example.factory.model.db.Contact_Table;
 import com.example.factory.utils.webSocket.WebSocketUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author brsmsg
@@ -22,6 +26,9 @@ import java.util.List;
 public class SessionPresenter implements SessionContract.Presenter {
 
     private SessionContract.View mSessionView;
+    //id 和 msgId 的key-value
+    private Map<String, List<String>> msgMap = new HashMap<>();
+    private List<String> msgIdList;
 
     public SessionPresenter(SessionContract.View sessionView){
         mSessionView = sessionView;
@@ -37,10 +44,12 @@ public class SessionPresenter implements SessionContract.Presenter {
     @Override
     public void receiveMessage(String content){
         WebSocketModel model =  WebSocketUtils.getMessage(content);
+        //消息内容
         Msg msg = model.getMessage();
         String myId = msg.getReceiveUserId();
         String oppositeId = msg.getSendUserId();
         String msgContent = msg.getMsg();
+        String msgId = msg.getMsgId();
 
         //根据id查询其他信息数据
         Contact contact = SQLite.select()
@@ -55,11 +64,47 @@ public class SessionPresenter implements SessionContract.Presenter {
             Log.d("SessionPortrait", portrait);
             Log.d("SessionUsername", username);
 
-
             SessionUI session = new SessionUI(id, portrait, username, msgContent);
+            //未读消息的HashMap更新
+            if(msgMap.get(id) == null){
+                msgIdList = new ArrayList<>();
+                msgIdList.add(msgId);
+                msgMap.put(id, msgIdList);
+            }else{
+                msgIdList = msgMap.get(id);
+                msgIdList.add(msgId);
+                msgMap.put(id, msgIdList);
+            }
+
+
+            for(Map.Entry<String, List<String>> e:msgMap.entrySet()){
+                Log.d("id", e.getKey());
+                for(String s:e.getValue()) {
+                    Log.d("list", s);
+                }
+            }
+
+            //UI 更新
             mSessionView.refreshUI(session);
+
         }
     }
 
+    @Override
+    public void signMessage(String id) {
+        msgIdList = msgMap.get(id);
+        StringBuilder msgIdStr = new StringBuilder();
+        for(String msgId:msgIdList){
+            if(msgIdStr.toString().equals("")){
+                msgIdStr.append(msgId);
+            }else{
+                msgIdStr.append(",")
+                        .append(msgId);
+            }
+        }
+        Log.d("msgIdList", msgIdStr.toString());
+
+        WebSocketUtils.sign(msgIdStr.toString());
+    }
 
 }
