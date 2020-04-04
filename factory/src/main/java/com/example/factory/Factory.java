@@ -2,18 +2,26 @@ package com.example.factory;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 
 import com.dbflow5.config.FlowConfig;
 import com.dbflow5.config.FlowManager;
+import com.example.factory.model.api.webSocket.Msg;
+import com.example.factory.model.api.webSocket.WebSocketModel;
 import com.example.factory.utils.NetUtils;
 import com.example.factory.utils.webSocket.ClientWebSocketListener;
+import com.example.factory.utils.webSocket.WebSocketUtils;
 import com.google.gson.Gson;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.WebSocket;
 
 /**
@@ -36,7 +44,9 @@ public class Factory {
     private static WebSocket mWebSocket;
 
     //全局webSocket监听
-    private static ClientWebSocketListener mWebSocketListener = new ClientWebSocketListener();
+    private static ClientWebSocketListener mWebSocketListener = new ClientWebSocketListener(){
+
+    };
 
     /**
      * 获取单例对象
@@ -49,7 +59,7 @@ public class Factory {
     private Factory() {
     }
 
-    public void init(Context context){
+    public void setContext(Context context){
         mContext = context;
     }
 
@@ -69,14 +79,41 @@ public class Factory {
         return gson;
     }
 
-    public void initWebSocket(String url){
+    /**
+     * 初始化webSocket
+     * @param url webSocket 路径
+     */
+    public void initWebSocket(String url, final String id, final Context context){
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
         Request request = new Request.Builder()
                 .url(url)
                 .build();
 
-        mWebSocket = okHttpClient.newWebSocket(request, mWebSocketListener);
+        mWebSocket = okHttpClient.newWebSocket(request, new ClientWebSocketListener(){
+            //重写onOpen方法
+            @Override
+            public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
+                super.onOpen(webSocket, response);
+                WebSocketModel initModel = new WebSocketModel(1, new Msg(id,"", "", ""), "");
+                String initJson = WebSocketUtils.transJson(initModel);
+                webSocket.send(initJson);
+                Log.d("onOpen", initJson);
+            }
+
+            //重写onMesaage方法
+            @Override
+            public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
+                super.onMessage(webSocket, text);
+                Log.d("onMessage return", text);
+
+                //收到消息后发送广播
+                Intent intent = new Intent();
+                intent.putExtra("MSG", text);
+                intent.setAction("com.example.broadcast.MESSAGE");
+                context.sendBroadcast(intent);
+            }
+        });
     }
 
     public WebSocket getWebSocket(){

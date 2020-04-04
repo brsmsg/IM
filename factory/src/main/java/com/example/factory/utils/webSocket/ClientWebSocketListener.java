@@ -1,6 +1,10 @@
 package com.example.factory.utils.webSocket;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.example.factory.model.api.webSocket.Msg;
+import com.example.factory.model.api.webSocket.WebSocketModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,20 +18,24 @@ import okio.ByteString;
  * @author brsmsg
  * @time 2020/3/31
  */
-public final class ClientWebSocketListener extends WebSocketListener {
+public class ClientWebSocketListener extends WebSocketListener {
+
+    private static Msg msg;
+
+    private Context mContext;
+
+
 
     @Override
     public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
         //建立连接时回调
         super.onOpen(webSocket, response);
-        webSocket.send("hello world");
-        webSocket.send("welcome");
     }
 
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
+        //收到消息
         super.onMessage(webSocket, text);
-        Log.d("onMessage return", text);
     }
 
     @Override
@@ -52,7 +60,5 @@ public final class ClientWebSocketListener extends WebSocketListener {
         //连接失败
         super.onFailure(webSocket, t, response);
     }
-
-
 
 }

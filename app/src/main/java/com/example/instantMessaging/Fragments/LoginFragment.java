@@ -99,6 +99,9 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         mUserName.setText(sp.getString("USERNAME", ""));
         //获得登录状态
 
+        //test 不自动登录
+        editor.putBoolean(AUTO_ISCHECK, false).commit();
+
         mRemember.setChecked(sp.getBoolean(REM_ISCHECK, true));
         mAutoLogin.setChecked(sp.getBoolean(AUTO_ISCHECK, false));
 

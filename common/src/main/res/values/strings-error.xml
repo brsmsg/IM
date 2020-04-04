@@ -5,4 +5,7 @@
     <string name="err_parameter">用户名或密码错误！</string>
     <string name="err_duplicate">用户名已经存在！</string>
 
+
+    <!--  发送消息界面  -->
+    <string name="err_message_empty">不能发送空的内容！</string>
 </resources>

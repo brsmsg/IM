@@ -1,5 +1,6 @@
 package com.example.instantMessaging.Fragments.main;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import com.example.common.widget.recycler.RecyclerAdapter;
 import com.example.factory.model.User;
 import com.example.factory.model.db.Contact;
 import com.example.factory.presenter.contact.ContactContract;
+import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.Activities.MessageActivity;
 import com.example.instantMessaging.Fragments.main.adapter.ContactRecyclerAdapter;
 import com.example.instantMessaging.R;
@@ -34,6 +36,9 @@ public class ContactFragment extends Fragment implements ContactContract.View{
 
     private ContactRecyclerAdapter mContactAdapter;
 
+    private String myId;
+    private String myPortrait;
+
     //empty constructor
     public ContactFragment(){
 
@@ -50,6 +55,13 @@ public class ContactFragment extends Fragment implements ContactContract.View{
         super.initData();
         mPresenter.start();
         mPresenter.refresh();
+    }
+
+    @Override
+    protected void initArgs(Bundle bundle) {
+        super.initArgs(bundle);
+        myId = bundle.getString(MainActivity.MY_ID);
+        myPortrait = bundle.getString(MainActivity.MY_PORTRAIT);
     }
 
     @Override
@@ -75,7 +87,7 @@ public class ContactFragment extends Fragment implements ContactContract.View{
             @Override
             public void onItemClick(View view, Contact contact) {
                 Toast.makeText(getActivity(), contact.getUsername(), Toast.LENGTH_SHORT).show();
-                MessageActivity.show(getActivity(), contact);
+                MessageActivity.show(getActivity(), contact, myId, myPortrait);
             }
         });
         mRecycler.setAdapter(mContactAdapter);

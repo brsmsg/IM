@@ -12,7 +12,6 @@ import com.example.factory.model.db.AppDatabase;
 import com.example.factory.model.db.Contact;
 import com.example.factory.model.db.Contact_Table;
 
-
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class ContactPresenter implements ContactContract.Presenter{
 
     public ContactPresenter(ContactContract.View contactView ){
         mContactView = contactView;
-        contactView.setPresenter(this);
+        mContactView.setPresenter(this);
     }
 
     @Override
@@ -51,6 +50,10 @@ public class ContactPresenter implements ContactContract.Presenter{
                 .from(Contact.class)
                 .queryList(FlowManager.getDatabase(AppDatabase.class));
 
+        for(Contact c:contactList){
+            Log.d("database Contact", c.toString());
+        }
+
         mContactView.initContact(contactList);
     }
 
@@ -64,13 +67,13 @@ public class ContactPresenter implements ContactContract.Presenter{
                 "    \"msg\": \"success\",\n" +
                 "    \"data\": [\n" +
                 "        {\n" +
-                "            \"id\": \"3\", \n"+
+                "            \"id\": \"brsmsg_1584334193760542892\", \n"+
                 "            \"username\": \"15172382300\",\n" +
                 "            \"faceImage\": \"http://101.200.240.107/images/1.jpg\",\n" +
                 "            \"description\": 123456\n" +
                 "        },\n" +
                 "        {\n" +
-                "            \"id\": \"4\", \n"+
+                "            \"id\": \"brsmsg_1585897820995103737\", \n"+
                 "            \"username\": \"18571549924\",\n" +
                 "            \"faceImage\": \"http://101.200.240.107/images/2.jpg\",\n" +
                 "            \"description\": kbh\n" +
@@ -79,7 +82,7 @@ public class ContactPresenter implements ContactContract.Presenter{
                 "}";
 
         if(result != null){
-            Log.d("result", result);
+//            Log.d("result", result);
             parseContactResult(result);
         }else{
             mContactView.showError(R.string.err_service);
@@ -90,10 +93,10 @@ public class ContactPresenter implements ContactContract.Presenter{
         GetContact getContact = Factory.getInstance().getGson()
                 .fromJson(result, GetContact.class);
         List<Contact> newContactList = getContact.getData();
-        for(Contact contactitem:newContactList){
-            Log.d("name", contactitem.getUsername());
-            Log.d("image", contactitem.getFaceImage());
-        }
+//        for(Contact contactitem:newContactList){
+//            Log.d("name", contactitem.getUsername());
+//            Log.d("image", contactitem.getFaceImage());
+//        }
         mContactView.refreshContact(newContactList);
 
         //本地数据库更新
@@ -104,9 +107,9 @@ public class ContactPresenter implements ContactContract.Presenter{
                 .from(Contact.class)
                 .queryList(FlowManager.getDatabase(AppDatabase.class));
 
-        for(Contact c:contactList){
-            Log.d("after save", c.toString());
-        }
+//        for(Contact c:contactList){
+//            Log.d("after save", c.toString());
+//        }
     }
 
 }

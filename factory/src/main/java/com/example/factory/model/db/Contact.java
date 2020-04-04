@@ -31,8 +31,6 @@ public class Contact extends BaseModel implements DiffUtils.Differ<Contact> {
     public Contact() {
     }
 
-
-
     public String getId() {
         return id;
     }

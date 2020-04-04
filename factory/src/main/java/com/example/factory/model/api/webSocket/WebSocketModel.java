@@ -13,6 +13,12 @@ public class WebSocketModel {
     //签收id
     private String extend;
 
+    public WebSocketModel(int action, Msg message, String extend) {
+        this.action = action;
+        this.message = message;
+        this.extend = extend;
+    }
+
     public int getAction() {
         return action;
     }

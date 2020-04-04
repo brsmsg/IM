@@ -40,9 +40,11 @@
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
+        android:layout_marginBottom="60dp"
         />
 
     <LinearLayout
@@ -50,9 +52,11 @@
         android:layout_height="60dp"
         android:layout_gravity="bottom"
         android:orientation="horizontal"
+        android:background="#FFFFFF"
         >
 
         <EditText
+            android:id="@+id/edit_msg"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

@@ -14,6 +14,14 @@ public class Msg {
     //消息id
     private String msgId;
 
+
+    public Msg(String sendUserId, String receiveUserId, String msg, String msgId) {
+        this.sendUserId = sendUserId;
+        this.receiveUserId = receiveUserId;
+        this.msg = msg;
+        this.msgId = msgId;
+    }
+
     public String getSendUserId() {
         return sendUserId;
     }

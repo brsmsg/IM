@@ -24,4 +24,5 @@
 
     <!--  消息界面  -->
     <string name="btn_message_send">发送</string>
+
 </resources>

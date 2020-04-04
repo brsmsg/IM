@@ -26,7 +26,7 @@ import okhttp3.WebSocketListener;
 public class NetUtils {
 
     /**
-     * 进行post操作
+     * post一个对象
      * @param object 要传转化为json的model类
      * @param url 要请求的服务器url
      * @return json字符串
@@ -41,17 +41,13 @@ public class NetUtils {
         Log.d("testJson", json);
 
         OkHttpClient okHttpClient = new OkHttpClient();
-
         RequestBody body = RequestBody.create(json,
                 MediaType.parse("application/json; charset=utf-8"));
-
-
 
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
-
 
         try {
             Response response = okHttpClient.newCall(request).execute();
@@ -65,8 +61,12 @@ public class NetUtils {
         }
     }
 
-
-
+    /**
+     * 发送json数组
+     * @param objectList list
+     * @param url url
+     * @return 返回的信息
+     */
     public static String postJson(List<RawMotion> objectList, String url){
         String result = null;
 
@@ -95,12 +95,8 @@ public class NetUtils {
                 .post(body)
                 .build();
 
-        Log.d("request", request.toString());
-
         try {
             Response response = okHttpClient.newCall(request).execute();
-
-            Log.d("success? ", String.valueOf(response.isSuccessful()));
 
             result = response.body().string();
         } catch (IOException e) {
@@ -116,15 +112,5 @@ public class NetUtils {
         }
     }
 
-    public static WebSocket initWebSocket(String url, ClientWebSocketListener listener){
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        WebSocket webSocket = okHttpClient.newWebSocket(request, listener);
-        return webSocket;
-    }
 }

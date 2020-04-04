@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.factory.model.SessionUI;
 import com.example.factory.model.User;
 import com.example.factory.model.db.Contact;
 import com.example.factory.utils.DiffUtils;
@@ -44,6 +45,7 @@ public class ContactRecyclerAdapter
         this.mContext = context;
         this.mContactList = contactList;
     }
+
 
     @NonNull
     @Override
@@ -79,15 +81,15 @@ public class ContactRecyclerAdapter
     public void replace(List<Contact> contactList){
         DiffUtil.Callback callback = new DiffUtils<>(mContactList, contactList);
         for(Contact c:mContactList){
-            Log.d("oldList", c.toString());
+//            Log.d("oldList", c.toString());
         }
 
         for(Contact c:contactList){
-            Log.d("newList", c.toString());
+//            Log.d("newList", c.toString());
         }
 
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback);
-        Log.d("difference", diffResult.toString());
+//        Log.d("difference", diffResult.toString());
 
         replaceAll(contactList);
         diffResult.dispatchUpdatesTo(this);

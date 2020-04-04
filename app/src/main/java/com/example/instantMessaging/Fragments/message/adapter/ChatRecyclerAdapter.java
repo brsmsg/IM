@@ -1,5 +1,6 @@
 package com.example.instantMessaging.Fragments.message.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.factory.model.Msg;
+import com.bumptech.glide.Glide;
+import com.example.factory.model.MsgUI;
 import com.example.instantMessaging.R;
 
 import java.util.List;
@@ -23,10 +25,18 @@ import butterknife.ButterKnife;
  * @time 2020/3/25
  */
 public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapter.ViewHolder> {
-    private List<Msg> mMsgList;
+    private List<MsgUI> mMsgUIList;
 
-    public ChatRecyclerAdapter(List<Msg> msgLIst){
-        this.mMsgList = msgLIst;
+    private Context mContext;
+
+    public ChatRecyclerAdapter(Context context, List<MsgUI> msgUILIst){
+        this.mContext = context;
+        this.mMsgUIList = msgUILIst;
+    }
+
+    public void add(MsgUI msg){
+        mMsgUIList.add(msg);
+        notifyItemChanged(mMsgUIList.size() - 1);
     }
 
     @NonNull
@@ -40,23 +50,25 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Msg msg = mMsgList.get(position);
+        MsgUI msgUI = mMsgUIList.get(position);
         //左侧消息
-        if(msg.getType() == Msg.TYPE_RECEIVED){
+        if(msgUI.getType() == MsgUI.TYPE_RECEIVED){
             holder.leftLayout.setVisibility(View.VISIBLE);
             holder.rightLayout.setVisibility(View.GONE);
-            holder.leftMsg.setText(msg.getContent());
-        }else{
+            holder.leftMsg.setText(msgUI.getContent());
+            Glide.with(mContext).load(msgUI.getPortrait()).into(holder.leftPortrait);
+        }else if(msgUI.getType() == MsgUI.TYPE_SEND){
             //右侧消息
             holder.rightLayout.setVisibility(View.VISIBLE);
             holder.leftLayout.setVisibility(View.GONE);
-            holder.rightMsg.setText(msg.getContent());
+            holder.rightMsg.setText(msgUI.getContent());
+            Glide.with(mContext).load(msgUI.getPortrait()).into(holder.rightPortrait);
         }
     }
 
     @Override
     public int getItemCount() {
-        return mMsgList.size();
+        return mMsgUIList.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
