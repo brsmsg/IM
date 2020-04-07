@@ -253,7 +253,10 @@ public class MainActivity extends Activity
     }
 
 
-    //点击头像显示DrawerLayout
+    /**
+     * 点击ToolBar头像和设置
+     * @param view View
+     */
     @OnClick({R.id.img_portrait,R.id.img_settings})
     public void onViewClicked(View view){
         switch(view.getId()){
@@ -271,7 +274,12 @@ public class MainActivity extends Activity
         }
     }
 
-    //得到Intent结果后处理
+    /**
+     * 得到intend后处理
+     * @param requestCode int
+     * @param resultCode int
+     * @param data Intend
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -319,7 +327,12 @@ public class MainActivity extends Activity
         }
     }
 
-    //权限申请回调
+    /**
+     * 权限申请回调
+     * @param requestCode int
+     * @param permissions String[]
+     * @param grantResults int[]
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch(requestCode){
@@ -344,8 +357,10 @@ public class MainActivity extends Activity
         }
     }
 
-
-    //处理Android4.4以上版本的图片
+    /**
+     * 处理4.4以上图片
+     * @param uri uri
+     */
     private void  handleImageOnKitKat(Uri uri){
         String imagePath = null;
         if (DocumentsContract.isDocumentUri(this,uri)){
@@ -370,13 +385,21 @@ public class MainActivity extends Activity
         displayImage(imagePath);
     }
 
-    //处理Android4.4以下版本的图片
+    /**
+     * 处理4.4以下图片
+     * @param uri
+     */
     private void handleImageBeforeKitKat(Uri uri){
         String imagePath = getImagePath(uri,null);
         displayImage(imagePath);
     }
 
-    //获取图片真实路径
+    /**
+     * 获取真实路径
+     * @param uri Uri
+     * @param selection String
+     * @return
+     */
     private String getImagePath(Uri uri,String selection){
         String path = null;
         //通过uri和selection来获取图片真实路径
@@ -390,7 +413,10 @@ public class MainActivity extends Activity
         return path;
     }
 
-    //根据路径显示图片
+    /**
+     * 根据路径显示图片
+     * @param imagePath
+     */
     private void displayImage(String imagePath){
         if (imagePath != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
@@ -401,5 +427,11 @@ public class MainActivity extends Activity
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mPopupWindow!=null){
+            mPopupWindow.dismiss();
+        }
+    }
 }
