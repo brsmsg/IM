@@ -68,4 +68,6 @@ dependencies {
     implementation "com.github.agrosner.dbflow:lib:5.0.0-alpha1"
     annotationProcessor "com.github.agrosner.dbflow:processor:5.0.0-alpha1"
 
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }

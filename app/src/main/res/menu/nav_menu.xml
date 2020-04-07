@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/icon_account"
+            android:icon="@drawable/icon_account"
+            android:title="@string/login_username"/>
+        <item
+            android:id="@+id/icon_settings"
+            android:icon="@drawable/icon_settings"
+            android:title="@string/change_secret"/>
+    </group>
+
+</menu>
