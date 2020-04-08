@@ -3,11 +3,14 @@ package com.example.factory.presenter.account;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.common.RSA.RsaEncryptUtil;
 import com.example.factory.Factory;
 import com.example.factory.R;
 import com.example.factory.model.User;
 import com.example.factory.model.api.account.LoginModel;
 import com.example.factory.utils.NetUtils;
+
+import java.security.NoSuchAlgorithmException;
 
 
 /**
@@ -39,6 +42,29 @@ public class LoginPresenter implements LoginContract.Presenter{
             Factory.getInstance().getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
+
+                    //注册生成密钥对
+                    try {
+                        RsaEncryptUtil.genKeyPair();
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+                    //生成公钥
+                    String publicKey = RsaEncryptUtil.getPublicKey();
+                    //生成私钥
+                    String privateKey = RsaEncryptUtil.getPrivateKey();
+
+//                    try {
+//                        String encryptStr = RsaEncryptUtil.encrypt("hello", publicKey);
+//                        Log.d("encrypt", encryptStr);
+//
+//                        String result = RsaEncryptUtil.decrypt(after, privateKey);
+//                        Log.d("decrypt", result);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+
+
                     LoginModel loginModel = new LoginModel(username, password);
                     //发送json并取得返回数据
                     String result = NetUtils.postJson(loginModel, loginUrl);

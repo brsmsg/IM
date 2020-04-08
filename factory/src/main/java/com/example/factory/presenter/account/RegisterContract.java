@@ -11,7 +11,7 @@ import com.example.common.factory.base.BaseView;
 public interface RegisterContract extends BaseContract {
     interface View extends BaseView<Presenter>{
         //注册成功
-        void registerSuccess();
+        void registerSuccess(String id);
     }
 
     interface Presenter extends BasePresenter{

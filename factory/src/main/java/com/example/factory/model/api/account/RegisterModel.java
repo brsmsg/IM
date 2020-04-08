@@ -15,7 +15,7 @@ public class RegisterModel {
 
     private String msg;
 
-    private String id;
+    private String data;
 
     //失败返回
     private String timestamp;
@@ -36,7 +36,7 @@ public class RegisterModel {
     public RegisterModel(String code, String msg, String id) {
         this.code = code;
         this.msg = msg;
-        this.id = id;
+        this.data = data;
     }
 
     public RegisterModel(String timestamp, String status, String error, String message, String path) {
@@ -79,12 +79,12 @@ public class RegisterModel {
         this.msg = msg;
     }
 
-    public String getId() {
-        return id;
+    public String getData() {
+        return data;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getTimestamp() {

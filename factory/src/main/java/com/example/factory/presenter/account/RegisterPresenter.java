@@ -3,11 +3,14 @@ package com.example.factory.presenter.account;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.common.RSA.RsaEncryptUtil;
 import com.example.factory.Factory;
 import com.example.factory.R;
 import com.example.factory.model.api.account.AccountModel;
 import com.example.factory.model.api.account.RegisterModel;
 import com.example.factory.utils.NetUtils;
+
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author brsmsg
@@ -38,6 +41,7 @@ public class RegisterPresenter implements RegisterContract.Presenter{
             Factory.getInstance().getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
+
                     AccountModel accountModel = new AccountModel(userName, password);
 
                     String result = NetUtils.postJson(accountModel, registerUrl);
@@ -61,8 +65,10 @@ public class RegisterPresenter implements RegisterContract.Presenter{
         RegisterModel registerModel = Factory.getInstance()
                 .getGson().fromJson(result, RegisterModel.class);
         String msg = registerModel.getMsg();
-        if(msg != null && equals("success")){
-            mRegisterView.registerSuccess();
+        if(msg != null && msg.equals("success")){
+            String id = registerModel.getData();
+
+            mRegisterView.registerSuccess(id);
         }else{
             mRegisterView.showError(R.string.err_duplicate);
         }

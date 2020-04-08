@@ -105,7 +105,6 @@ public class MainActivity extends Activity
     private CircleImageView mPersonPortrait;
 
 
-
     @Override
     protected int getContentLayotId() {
         return R.layout.activity_main;

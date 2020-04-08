@@ -9,6 +9,8 @@ import com.example.factory.model.RawMotion;
 import com.example.factory.utils.NetUtils;
 import com.example.instantMessaging.R;
 
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
@@ -29,9 +31,11 @@ public class BehaviorActivity extends Activity {
 
     private String trainUrl = "http://101.200.240.107:8000/dataProcess";
 
+    private List<RawMotion> mRawMotionList = new ArrayList<>();
 
-    private List<RawMotion> mRawMorionList = new ArrayList<>();
+    public static final String KEY_ID = "ID";
 
+    private static String id;
     @BindView(R.id.x)
     TextView mX;
 
@@ -53,11 +57,18 @@ public class BehaviorActivity extends Activity {
     @Override
     protected int getContentLayotId() {
         return R.layout.activity_behavior;
-
     }
 
-    public static void show(Context context){
-        context.startActivity(new Intent(context, BehaviorActivity.class));
+    public static void show(Context context, String id){
+        Intent intent = new Intent(context, BehaviorActivity.class);
+        intent.putExtra(KEY_ID, id);
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected boolean initArgs(Bundle bundle) {
+        id = bundle.getString(KEY_ID);
+        return !TextUtils.isEmpty(id);
     }
 
     @Override
@@ -70,15 +81,15 @@ public class BehaviorActivity extends Activity {
         mArea.setText(String.valueOf(event.getSize()));
 
 
-        RawMotion rawMotion = new RawMotion("brsmsg", event.getX(), event.getY(),
+        RawMotion rawMotion = new RawMotion(id, event.getX(), event.getY(),
                 event.getPressure(), event.getSize(),
                 event.getAction(), event.getEventTime());
         Log.d("ActionDown", rawMotion.toString());
 
 
 
-        mRawMorionList.add(rawMotion);
-        Log.d("rawsize: ", String.valueOf(mRawMorionList.size()));
+        mRawMotionList.add(rawMotion);
+        Log.d("rawSize: ", String.valueOf(mRawMotionList.size()));
 
         return super.onTouchEvent(event);
     }
@@ -88,8 +99,8 @@ public class BehaviorActivity extends Activity {
         Factory.getInstance().getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                NetUtils.postJson(mRawMorionList, trainUrl);
-                Log.d("size", String.valueOf(mRawMorionList.size()));
+                NetUtils.postJson(mRawMotionList, trainUrl);
+                Log.d("size", String.valueOf(mRawMotionList.size()));
             }
         });
 

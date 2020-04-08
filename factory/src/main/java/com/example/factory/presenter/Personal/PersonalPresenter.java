@@ -3,7 +3,6 @@ package com.example.factory.presenter.Personal;
 import com.example.factory.Factory;
 import com.example.factory.model.User;
 import com.example.factory.model.api.account.PersonalModel;
-import com.example.factory.model.api.account.PersonalModel;
 
 /**
  * The type Personal presenter.
@@ -47,8 +46,6 @@ public class PersonalPresenter implements PersonalContract.Presenter {
                 /*PersonalModel personalModel = new PersonalModel();*/
             }
         });
-
     }
-
 
 }

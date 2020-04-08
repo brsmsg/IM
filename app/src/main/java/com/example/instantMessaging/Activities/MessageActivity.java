@@ -119,7 +119,6 @@ public class MessageActivity extends Activity {
                 .add(R.id.layout_container_message, mChatFragment).commit();
 
         mChatPresenter = new ChatPresenter(mChatFragment);
-        Log.d("presenter", mChatFragment.toString());
 
     }
 

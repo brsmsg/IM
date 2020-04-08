@@ -53,7 +53,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     protected void initWidget(View root) {
         super.initWidget(root);
         //初始化控件时让注册按钮不可用
-        mRegister.setEnabled(false);
+//        mRegister.setEnabled(false);
     }
 
     @Override
@@ -88,26 +88,27 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
         mPresenter.register(regUserName, regPassword);
     }
 
-    /**
-     * 点击上传行为按钮
-     */
-    @OnClick(R.id.btn_behavior)
-    public void recordBehavior(){
-
-        BehaviorActivity.show(getActivity());
-        mRegister.setEnabled(true);
-    }
+//    /**
+//     * 点击上传行为按钮
+//     */
+//    @OnClick(R.id.btn_behavior)
+//    public void recordBehavior(){
+//
+//        BehaviorActivity.show(getActivity());
+//        mRegister.setEnabled(true);
+//    }
 
     /**
      * 注册成功返回登录界面
      */
     @Override
-    public void registerSuccess() {
+    public void registerSuccess(String id) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
-                mTrigger.changeFragment();
+                BehaviorActivity.show(getActivity(), id);
+//                mTrigger.changeFragment();
             }
         });
 
