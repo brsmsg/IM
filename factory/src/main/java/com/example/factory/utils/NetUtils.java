@@ -113,4 +113,8 @@ public class NetUtils {
     }
 
 
+    public static String postKeyValue(String key, String value){
+        return "";
+    }
+
 }

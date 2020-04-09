@@ -16,6 +16,8 @@ public interface SessionContract extends BaseContract {
         void initRecycler(List<SessionUI> sessionList);
 
         void refreshUI(SessionUI session);
+
+        void refreshMsg(String id, String content);
     }
 
     interface Presenter extends BasePresenter{
@@ -23,5 +25,7 @@ public interface SessionContract extends BaseContract {
         void receiveMessage(String content);
         //签收消息
         void signMessage(String id);
+        //更新session消息
+        void updateDecryptedMsg(String id, String content);
     }
 }

@@ -55,6 +55,20 @@ public class SessionRecyclerAdapter
         notifyItemChanged(0);
     }
 
+    /**
+     * 解密后刷新最后一条消息
+     * @param id 要更新的会话的联系人的id
+     * @param encryptedContent 解密后的信息
+     */
+    public void refresh(String id, String encryptedContent){
+        for(int i = 0; i < mSessionList.size(); i++){
+            if(id.equals(mSessionList.get(i).getId())){
+                mSessionList.get(i).setLastMsg(encryptedContent);
+                notifyItemChanged(i);
+            }
+        }
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -1,6 +1,7 @@
 package com.example.instantMessaging.Fragments.message.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.common.RSA.RsaEncryptUtil;
 import com.example.factory.model.MsgUI;
 import com.example.instantMessaging.R;
 
@@ -28,16 +30,17 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     private List<MsgUI> mMsgUIList;
 
     private Context mContext;
+    // 已解码的位置
+    private int mIndex;
 
     public ChatRecyclerAdapter(Context context, List<MsgUI> msgUILIst){
         this.mContext = context;
         this.mMsgUIList = msgUILIst;
+        mIndex = 0;
     }
 
-    public void add(MsgUI msg){
-        mMsgUIList.add(msg);
-        notifyItemChanged(mMsgUIList.size() - 1);
-    }
+
+
 
     @NonNull
     @Override
@@ -69,6 +72,45 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     @Override
     public int getItemCount() {
         return mMsgUIList.size();
+    }
+    /**
+     * 添加新消息
+     * @param msg
+     */
+    public void add(MsgUI msg){
+        mMsgUIList.add(msg);
+        notifyItemChanged(mMsgUIList.size() - 1);
+    }
+
+    /**
+     * 解密后刷新
+     */
+    public void refresh(String privateKey){
+        for (MsgUI msgItem:mMsgUIList){
+            if(msgItem.getType() == MsgUI.TYPE_RECEIVED
+                    && msgItem.getDecrypted() == MsgUI.UNDECRYPTED){
+                String encryptedContent = msgItem.getContent();
+                String decryptedContent = "";
+                // 进行解密
+                try {
+                    decryptedContent = RsaEncryptUtil.decrypt(encryptedContent, privateKey);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(!TextUtils.isEmpty(decryptedContent)){
+                    msgItem.setContent(decryptedContent);
+                    msgItem.setDecrypted(MsgUI.DECRYPTED);
+                }
+            }
+        }
+        //index移动到末尾
+        mIndex = mMsgUIList.size() - 1;
+        // 通知数据集进行了修改
+        notifyDataSetChanged();
+    }
+
+    public String getLastMsg(){
+        return mMsgUIList.get(mMsgUIList.size() - 1).getContent();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{

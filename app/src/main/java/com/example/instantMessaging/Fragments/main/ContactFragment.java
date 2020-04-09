@@ -38,6 +38,8 @@ public class ContactFragment extends Fragment implements ContactContract.View{
 
     private String myId;
     private String myPortrait;
+    private String mPublicKey;
+    private String mPrivateKey;
 
     //empty constructor
     public ContactFragment(){
@@ -62,6 +64,9 @@ public class ContactFragment extends Fragment implements ContactContract.View{
         super.initArgs(bundle);
         myId = bundle.getString(MainActivity.MY_ID);
         myPortrait = bundle.getString(MainActivity.MY_PORTRAIT);
+        mPublicKey = bundle.getString(MainActivity.PUBLIC_KEY);
+        mPrivateKey = bundle.getString(MainActivity.PRIVATE_KEY);
+
     }
 
     @Override
@@ -87,7 +92,7 @@ public class ContactFragment extends Fragment implements ContactContract.View{
             @Override
             public void onItemClick(View view, Contact contact) {
                 Toast.makeText(getActivity(), contact.getUsername(), Toast.LENGTH_SHORT).show();
-                MessageActivity.show(getActivity(), contact, myId, myPortrait);
+                MessageActivity.show(getActivity(), contact, myId, myPortrait, mPublicKey, mPrivateKey);
             }
         });
         mRecycler.setAdapter(mContactAdapter);

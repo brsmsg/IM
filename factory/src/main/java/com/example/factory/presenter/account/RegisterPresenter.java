@@ -27,7 +27,6 @@ public class RegisterPresenter implements RegisterContract.Presenter{
         mRegisterView.setPresenter(this);
     }
 
-
     @Override
     public void behaviorRecord() {
 

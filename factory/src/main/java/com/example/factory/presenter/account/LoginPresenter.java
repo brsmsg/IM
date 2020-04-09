@@ -1,5 +1,6 @@
 package com.example.factory.presenter.account;
 
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import com.example.factory.model.api.account.LoginModel;
 import com.example.factory.utils.NetUtils;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 
 
 /**
@@ -65,7 +67,7 @@ public class LoginPresenter implements LoginContract.Presenter{
 //                    }
 
 
-                    LoginModel loginModel = new LoginModel(username, password);
+                    LoginModel loginModel = new LoginModel(username, password, publicKey);
                     //发送json并取得返回数据
                     String result = NetUtils.postJson(loginModel, loginUrl);
 
@@ -74,7 +76,7 @@ public class LoginPresenter implements LoginContract.Presenter{
 //                        String result = null;
                         if(result != null) {
                             Log.d("return", result);
-                            parseLoginResult(result);
+                            parseLoginResult(result, publicKey, privateKey);
                         }else{
                             //请求服务器出现错误
                             mLoginView.showError(R.string.err_service);
@@ -86,18 +88,20 @@ public class LoginPresenter implements LoginContract.Presenter{
     }
 
     /**
-     * 解析登录请求返回的数据
-     * @param result 返回的json数据
+     * 解析登录返回数据
+     * @param result 返回数据
+     * @param publicKey 公钥
+     * @param privateKey 私钥
      */
     @Override
-    public void parseLoginResult(String result) {
+    public void parseLoginResult(String result, String publicKey, String privateKey) {
         LoginModel loginModel = Factory.getInstance()
                 .getGson().fromJson(result, LoginModel.class);
         String msg = loginModel.getMsg();
         if(msg != null && msg.equals("success")) {
             User user = loginModel.getData();
 
-            mLoginView.loginSuccess(user);
+            mLoginView.loginSuccess(user, publicKey, privateKey);
         }else{
             mLoginView.showError(R.string.err_parameter);
         }

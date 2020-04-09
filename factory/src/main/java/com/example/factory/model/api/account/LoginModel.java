@@ -12,6 +12,8 @@ public class LoginModel{
 
     private String password;
 
+    private String publicKey;
+
     // 成功返回
     private String code;
 
@@ -31,7 +33,7 @@ public class LoginModel{
     private String path;
 
     //发送请求
-    public LoginModel(String username, String password) {
+    public LoginModel(String username, String password, String publicKey) {
         this.username = username;
         this.password = password;
     }
@@ -66,6 +68,14 @@ public class LoginModel{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
     }
 
     public String getCode() {

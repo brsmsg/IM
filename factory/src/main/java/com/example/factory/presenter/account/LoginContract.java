@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 public interface LoginContract extends BaseContract {
     interface View extends BaseView<Presenter>{
         //登录成功
-        void loginSuccess(User user);
+        void loginSuccess(User user, String publicKey, String privateKey);
 
     }
 
@@ -22,6 +22,6 @@ public interface LoginContract extends BaseContract {
         void login(String userName, String password);
 
         //解析登录请求的返回数据
-        void parseLoginResult(String result);
+        void parseLoginResult(String result, String publicKey, String privateKey);
     }
 }

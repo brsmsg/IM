@@ -28,12 +28,12 @@
 
 
         <ImageView
-            android:id="@+id/img_settings"
+            android:id="@+id/img_decrypt"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="15dp"
-            android:src="@drawable/ic_menu"
+            android:src="@drawable/ic_decrypt"
             android:clickable="true"
             android:focusable="true" />
 

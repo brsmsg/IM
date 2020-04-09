@@ -65,10 +65,14 @@ public class MainActivity extends Activity
     public final static String MY_ID = "MY_ID";
     public final static String MY_PORTRAIT = "MY_PORTRAIT";
     public final static String MY_USERNAME = "MY_USERNAME";
+    public final static String PUBLIC_KEY = "PUBLIC_KEY";
+    public final static String PRIVATE_KEY = "PRIVATE_KEY";
 
     private String myId;
     private String myPortrait;
     private String myUsername;
+    private String mPublicKey;
+    private String mPrivateKey;
 
     private ContactPresenter mContactPresenter;
     private SessionPresenter mSessionPresenter;
@@ -159,11 +163,18 @@ public class MainActivity extends Activity
         myId = getIntent().getExtras().getString(MY_ID);
         myUsername = getIntent().getExtras().getString(MY_USERNAME);
         myPortrait = getIntent().getExtras().getString(MY_PORTRAIT);
+        //初始化公私钥
+        mPublicKey = getIntent().getExtras().getString(PUBLIC_KEY);
+        mPrivateKey = getIntent().getExtras().getString(PRIVATE_KEY);
+
         //为bundle赋值
         bundle = new Bundle();
         bundle.putString(MY_ID, myId);
         bundle.putString(MY_USERNAME, myUsername);
         bundle.putString(MY_PORTRAIT, myPortrait);
+        bundle.putString(PUBLIC_KEY, mPublicKey);
+        bundle.putString(PRIVATE_KEY, mPrivateKey);
+
         //传给MessageFragment
         mMessageFragment.setArguments(bundle);
         //初始化头像
@@ -179,12 +190,14 @@ public class MainActivity extends Activity
     /**
      * 显示入口
      */
-    public static void show(Context context, User user){
+    public static void show(Context context, User user, String publicKey, String privateKey){
         Intent intent = new Intent(context, MainActivity.class);
 
         intent.putExtra(MY_ID, user.getId());
         intent.putExtra(MY_PORTRAIT, user.getFaceImage());
         intent.putExtra(MY_USERNAME, user.getUsername());
+        intent.putExtra(PUBLIC_KEY, publicKey);
+        intent.putExtra(PRIVATE_KEY, privateKey);
         Log.d("accountId", user.getId());
         context.startActivity(intent);
     }
@@ -200,12 +213,12 @@ public class MainActivity extends Activity
                 mTitle.setText(R.string.main_contact);
                 if(mContactFragment == null){
                     mContactFragment = new ContactFragment();
+                    //传值给contactFragment
                     mContactFragment.setArguments(bundle);
                 }
                 //创建联系人presenter实例
                 mContactPresenter = new ContactPresenter(mContactFragment);
                 changeFragment(mContactFragment);
-                Log.d("testBottomVav", "contact");
                 return true;
             case R.id.main_moment:
                 mTitle.setText(R.string.main_moment);
@@ -213,7 +226,6 @@ public class MainActivity extends Activity
                     mMomentFragment = new MomentFragment();
                 }
                 changeFragment(mMomentFragment);
-                Log.d("1213", "moment");
                 return true;
         }
         return false;

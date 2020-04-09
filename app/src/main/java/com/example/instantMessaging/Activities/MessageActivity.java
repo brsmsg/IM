@@ -39,6 +39,9 @@ public class MessageActivity extends Activity {
     private String myId;
     private String myPortrait;
 
+    private String mPublicKey;
+    private String mPrivateKey;
+
     private ChatFragment mChatFragment;
 
     private ChatPresenter mChatPresenter;
@@ -55,13 +58,17 @@ public class MessageActivity extends Activity {
      * @param myId myId
      * @param myPortrait myPortrait
      */
-    public static void show(Context context, Contact contact, String myId, String myPortrait){
+    public static void show(Context context, Contact contact, String myId, String myPortrait,
+                            String publicKey, String privateKey){
         Intent intent = new Intent(context, MessageActivity.class);
         intent.putExtra(KEY_USERNAME, contact.getUsername());
         intent.putExtra(KEY_PORTRAIT_URL, contact.getFaceImage());
         intent.putExtra(KEY_OPPOSITE_ID, contact.getId());
         intent.putExtra(MainActivity.MY_ID, myId);
         intent.putExtra(MainActivity.MY_PORTRAIT, myPortrait);
+        intent.putExtra(MainActivity.PUBLIC_KEY, publicKey);
+        intent.putExtra(MainActivity.PRIVATE_KEY, privateKey);
+
         context.startActivity(intent);
     }
 
@@ -72,13 +79,17 @@ public class MessageActivity extends Activity {
      * @param myId myId
      * @param myPortrait myPortrait
      */
-    public static void show(Context context, SessionUI session, String myId, String myPortrait){
+    public static void show(Context context, SessionUI session, String myId, String myPortrait,
+                            String publicKey, String privateKey){
         Intent intent = new Intent(context, MessageActivity.class);
         intent.putExtra(KEY_USERNAME, session.getUsername());
         intent.putExtra(KEY_PORTRAIT_URL, session.getPortrait());
         intent.putExtra(KEY_OPPOSITE_ID, session.getId());
         intent.putExtra(MainActivity.MY_ID, myId);
         intent.putExtra(MainActivity.MY_PORTRAIT, myPortrait);
+        intent.putExtra(MainActivity.PUBLIC_KEY, publicKey);
+        intent.putExtra(MainActivity.PRIVATE_KEY, privateKey);
+
         context.startActivity(intent);
     }
 
@@ -95,6 +106,8 @@ public class MessageActivity extends Activity {
         mOppositeId = bundle.getString(KEY_OPPOSITE_ID);
         myId = bundle.getString(MainActivity.MY_ID);
         myPortrait = bundle.getString(MainActivity.MY_PORTRAIT);
+        mPublicKey = bundle.getString(MainActivity.PUBLIC_KEY);
+        mPrivateKey = bundle.getString(MainActivity.PRIVATE_KEY);
 
         return !(TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPortrait))
                 ||TextUtils.isEmpty(mOppositeId);
@@ -113,6 +126,9 @@ public class MessageActivity extends Activity {
         bundle.putString(KEY_OPPOSITE_ID, mOppositeId);
         bundle.putString(MainActivity.MY_ID, myId);
         bundle.putString(MainActivity.MY_PORTRAIT, myPortrait);
+        bundle.putString(MainActivity.PUBLIC_KEY, mPublicKey);
+        bundle.putString(MainActivity.PRIVATE_KEY, mPrivateKey);
+
         mChatFragment.setArguments(bundle);
 
         getSupportFragmentManager().beginTransaction()

@@ -64,7 +64,7 @@ public class SessionPresenter implements SessionContract.Presenter {
             Log.d("SessionPortrait", portrait);
             Log.d("SessionUsername", username);
 
-            SessionUI session = new SessionUI(id, portrait, username, msgContent);
+            SessionUI session = new SessionUI(id, portrait, username, "请解密后查看");
             //未读消息的HashMap更新
             if(msgMap.get(id) == null){
                 msgIdList = new ArrayList<>();
@@ -107,4 +107,8 @@ public class SessionPresenter implements SessionContract.Presenter {
         WebSocketUtils.sign(msgIdStr.toString());
     }
 
+    @Override
+    public void updateDecryptedMsg(String id, String content) {
+        mSessionView.refreshMsg(id, content);
+    }
 }

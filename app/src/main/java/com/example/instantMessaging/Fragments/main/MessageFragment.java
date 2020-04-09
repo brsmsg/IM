@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import java.util.Objects;
 import java.util.zip.Inflater;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * @author brsmsg
@@ -34,6 +36,7 @@ import butterknife.BindView;
 public class MessageFragment extends Fragment implements SessionContract.View {
 
     private MyReceiver mReceiver;
+    private DecryptedReceiver mDecryptedReceiver;
 
     private SessionRecyclerAdapter mSessionAdapter;
 
@@ -41,6 +44,9 @@ public class MessageFragment extends Fragment implements SessionContract.View {
 
     private String myId;
     private String myPortrait;
+    private String mPublicKey;
+    private String mPrivateKey;
+
 
     @BindView(R.id.recycler_session)
     RecyclerView mRecycler;
@@ -59,6 +65,12 @@ public class MessageFragment extends Fragment implements SessionContract.View {
         filter.addAction("com.example.broadcast.MESSAGE");
         Objects.requireNonNull(getActivity()).registerReceiver(mReceiver, filter);
 
+        //注册更新最新消息的广播
+        mDecryptedReceiver = new DecryptedReceiver();
+        IntentFilter decryptedFilter = new IntentFilter();
+        decryptedFilter.addAction("com.example.broadcast.UPDATE_SESSION");
+        getActivity().registerReceiver(mDecryptedReceiver, decryptedFilter);
+
         mPresenter.start();
     }
 
@@ -67,6 +79,8 @@ public class MessageFragment extends Fragment implements SessionContract.View {
         super.initArgs(bundle);
         myId = bundle.getString(MainActivity.MY_ID);
         myPortrait = bundle.getString(MainActivity.MY_PORTRAIT);
+        mPublicKey = bundle.getString(MainActivity.PUBLIC_KEY);
+        mPrivateKey = bundle.getString(MainActivity.PRIVATE_KEY);
     }
 
     @Override
@@ -87,12 +101,11 @@ public class MessageFragment extends Fragment implements SessionContract.View {
             @Override
             public void onItemClick(View view, SessionUI session) {
                 //展示MessageActivity
-                MessageActivity.show(getActivity(), session, myId, myPortrait);
+                MessageActivity.show(getActivity(), session, myId, myPortrait, mPublicKey, mPrivateKey);
                 //签收消息
                 mPresenter.signMessage(session.getId());
             }
         });
-
 
         mRecycler.setAdapter(mSessionAdapter);
     }
@@ -102,11 +115,17 @@ public class MessageFragment extends Fragment implements SessionContract.View {
         mSessionAdapter.add(session);
     }
 
+    @Override
+    public void refreshMsg(String id, String content) {
+        mSessionAdapter.refresh(id, content);
+
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         Objects.requireNonNull(getActivity()).unregisterReceiver(mReceiver);
+        getActivity().unregisterReceiver(mDecryptedReceiver);
     }
 
 
@@ -118,8 +137,20 @@ public class MessageFragment extends Fragment implements SessionContract.View {
             String msg = intent.getExtras().getString("MSG");
 
             mPresenter.receiveMessage(msg);
-
         }
     }
 
+
+    class DecryptedReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String id = intent.getExtras().getString("ID");
+            String content = intent.getExtras().getString("LAST_MSG");
+            Log.d("Broadcast id", id);
+            Log.d("Broadcast msg", content);
+
+            mPresenter.updateDecryptedMsg(id, content);
+        }
+    }
 }

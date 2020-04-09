@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Fragment;
 import com.example.factory.Factory;
 import com.example.factory.model.MsgUI;
@@ -51,6 +52,9 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     //自己的id, 头像
     private String myId;
     private String myPortrait;
+    //公钥私钥
+    private String mPublicKey;
+    private String mPrivateKey;
 
     private ChatRecyclerAdapter mChatAdapter;
 
@@ -78,6 +82,9 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         mOppositeId = bundle.getString(MessageActivity.KEY_OPPOSITE_ID);
         myId = bundle.getString(MainActivity.MY_ID);
         myPortrait = bundle.getString(MainActivity.MY_PORTRAIT);
+        mPublicKey = bundle.getString(MainActivity.PUBLIC_KEY);
+        mPrivateKey = bundle.getString(MainActivity.PRIVATE_KEY);
+
     }
 
     @Override
@@ -141,16 +148,28 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         getActivity().finish();
     }
 
-
+    /**
+     * 点击发送
+     */
     @OnClick(R.id.btn_send)
     void send(){
         String msg = mContent.getText().toString();
 
         if(!TextUtils.isEmpty(msg)) {
-            mPresenter.sendMessage(msg, myPortrait, myId, mOppositeId);
+            mPresenter.sendMessage(msg, myPortrait, myId, mOppositeId, mPublicKey);
         }else{
             showError(R.string.err_message_empty);
         }
+    }
+
+    /**
+     * 点击解密img
+     */
+    @OnClick(R.id.img_decrypt)
+    void decrypt(){
+        mChatAdapter.refresh(mPrivateKey);
+        //向messageFragment发送广播
+        mPresenter.updateSession(getActivity(), mOppositeId, mChatAdapter.getLastMsg());
     }
 
     @Override
@@ -160,6 +179,9 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         Objects.requireNonNull(getActivity()).unregisterReceiver(mReceiver);
     }
 
+    /**
+     * 广播接收器
+     */
     class MyReceiver extends BroadcastReceiver{
 
         @Override

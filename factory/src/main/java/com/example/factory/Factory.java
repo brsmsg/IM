@@ -43,6 +43,7 @@ public class Factory {
     //全局websocketclient
     private static WebSocket mWebSocket;
 
+
     //全局webSocket监听
     private static ClientWebSocketListener mWebSocketListener = new ClientWebSocketListener(){
 

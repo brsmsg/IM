@@ -183,7 +183,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
      * 登录成功
      */
     @Override
-    public void loginSuccess(User user) {
+    public void loginSuccess(User user, String publicKey, String privateKey) {
         getActivity().runOnUiThread(new Runnable(){
             @Override
             public void run() {
@@ -197,7 +197,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
             editor.commit();
         }
 
-        MainActivity.show(getActivity(), user);
+        MainActivity.show(getActivity(), user, publicKey, privateKey);
         getActivity().finish();
 
     }
