@@ -23,6 +23,8 @@ public class MomentFragment extends Fragment {
         super.initData();
     }
 
-    public void test();
+    public void test() {
+
+    }
 
 }
