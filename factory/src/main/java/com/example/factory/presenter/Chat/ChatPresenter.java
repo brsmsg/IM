@@ -79,5 +79,6 @@ public class ChatPresenter implements ChatContract.Presenter {
         intent.setAction("com.example.broadcast.UPDATE_SESSION");
         Log.d("lastMsg", lastMsg);
         context.sendBroadcast(intent);
+
     }
 }
