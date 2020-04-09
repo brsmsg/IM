@@ -36,6 +36,7 @@ public class LoginModel{
     public LoginModel(String username, String password, String publicKey) {
         this.username = username;
         this.password = password;
+        this.publicKey = publicKey;
     }
 
     //成功
