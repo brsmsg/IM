@@ -86,6 +86,9 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
      * 解密后刷新
      */
     public void refresh(String privateKey){
+        if (mMsgUIList.size() == 0){
+            return;
+        }
         for (MsgUI msgItem:mMsgUIList){
             if(msgItem.getType() == MsgUI.TYPE_RECEIVED
                     && msgItem.getDecrypted() == MsgUI.UNDECRYPTED){
@@ -110,6 +113,9 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     }
 
     public String getLastMsg(){
+        if(mMsgUIList.size() == 0){
+            return "";
+        }
         return mMsgUIList.get(mMsgUIList.size() - 1).getContent();
     }
 

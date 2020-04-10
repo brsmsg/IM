@@ -23,8 +23,5 @@ public class SearchFragment extends Fragment {
         super.initData();
     }
 
-    public void test() {
-
-    }
 
 }

@@ -166,10 +166,16 @@ public class ChatFragment extends Fragment implements ChatContract.View {
      * 点击解密img
      */
     @OnClick(R.id.img_decrypt)
-    void decrypt(){
+    void decrypt() {
         mChatAdapter.refresh(mPrivateKey);
         //向messageFragment发送广播
-        mPresenter.updateSession(getActivity(), mOppositeId, mChatAdapter.getLastMsg());
+        String lastMsg = mChatAdapter.getLastMsg();
+        if (TextUtils.isEmpty(lastMsg)) {
+            Toast.makeText(getActivity(), "没有需要解密的消息", Toast.LENGTH_SHORT).show();
+        } else {
+            mPresenter.updateSession(getActivity(), mOppositeId, mChatAdapter.getLastMsg());
+
+        }
     }
 
     @Override
