@@ -64,10 +64,12 @@ public class ChatPresenter implements ChatContract.Presenter {
         String myId = msg.getReceiveUserId();
         String oppositeId = msg.getSendUserId();
         String msgContent = msg.getMsg();
+        String msgId = msg.getMsgId();
 
         MsgUI msgUI = new MsgUI(msgContent,oppositePortrait, MsgUI.TYPE_RECEIVED, MsgUI.UNDECRYPTED);
         Log.d("receive", content);
         mChatView.refreshUI(msgUI);
+        WebSocketUtils.sign(msgId);
     }
 
     @Override
