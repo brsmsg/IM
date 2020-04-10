@@ -11,7 +11,7 @@ import butterknife.BindView;
  * @author brsmsg
  * @time 2020/3/12
  */
-public class MomentFragment extends Fragment {
+public class SearchFragment extends Fragment {
 
     @Override
     protected int getContentLayoutId() {
