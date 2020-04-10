@@ -27,7 +27,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.common.app.Activity;
@@ -39,7 +38,7 @@ import com.example.factory.presenter.contact.ContactPresenter;
 import com.example.instantMessaging.Activities.PopWindow.MPopupWindow;
 import com.example.instantMessaging.Fragments.main.ContactFragment;
 import com.example.instantMessaging.Fragments.main.MessageFragment;
-import com.example.instantMessaging.Fragments.main.MomentFragment;
+import com.example.instantMessaging.Fragments.main.SearchFragment;
 import com.example.instantMessaging.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -59,7 +58,7 @@ public class MainActivity extends Activity
     //联系人界面
     private ContactFragment mContactFragment;
     //朋友圈界面
-    private MomentFragment mMomentFragment;
+    private SearchFragment mSearchFragment;
 
     //用户id,头像，用户名以及KEY
     public final static String MY_ID = "MY_ID";
@@ -222,10 +221,10 @@ public class MainActivity extends Activity
                 return true;
             case R.id.main_moment:
                 mTitle.setText(R.string.main_moment);
-                if(mMomentFragment == null){
-                    mMomentFragment = new MomentFragment();
+                if(mSearchFragment == null){
+                    mSearchFragment = new SearchFragment();
                 }
-                changeFragment(mMomentFragment);
+                changeFragment(mSearchFragment);
                 return true;
         }
         return false;
