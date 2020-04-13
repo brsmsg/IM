@@ -5,13 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import androidx.fragment.app.FragmentManager;
 
 import com.example.common.app.Activity;
 import com.example.common.app.Fragment;
+import com.example.factory.Factory;
+import com.example.factory.model.RawMotion;
 import com.example.factory.model.SessionUI;
 import com.example.factory.model.User;
 import com.example.factory.model.api.webSocket.WebSocketModel;
@@ -20,6 +24,9 @@ import com.example.factory.presenter.Chat.ChatPresenter;
 import com.example.factory.utils.webSocket.WebSocketUtils;
 import com.example.instantMessaging.Fragments.message.ChatFragment;
 import com.example.instantMessaging.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author brsmsg
@@ -45,6 +52,9 @@ public class MessageActivity extends Activity {
     private ChatFragment mChatFragment;
 
     private ChatPresenter mChatPresenter;
+
+    //触摸事件回调接口
+    private TouchListener mTouchListener;
 
     @Override
     protected int getContentLayotId() {
@@ -135,7 +145,36 @@ public class MessageActivity extends Activity {
                 .add(R.id.layout_container_message, mChatFragment).commit();
 
         mChatPresenter = new ChatPresenter(mChatFragment);
+    }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(mTouchListener != null){
+            mTouchListener.onTouch(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 注册
+     * @param touchListener 监听接口
+     */
+    public void registerTouchListener(TouchListener touchListener){
+        this.mTouchListener = touchListener;
+    }
+
+    /**
+     * 销毁监听
+     */
+    public void unregisterTouchListener(){
+        this.mTouchListener = null;
+    }
+
+    /**
+     * 触摸回调接口定义
+     */
+    public interface TouchListener{
+        public void onTouch(MotionEvent event);
     }
 
 

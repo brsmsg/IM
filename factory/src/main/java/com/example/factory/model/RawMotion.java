@@ -96,7 +96,7 @@ public class RawMotion {
                 +"yCoordinate: " + getyCoordinate()
                 +"pressure: " + getPressure()
                 +"area: " + getArea()
-                +"time: " + getTime() +"\n"
+                +"time: " + getTime()
                 +"Action: " + getAction() + "\n";
     }
 }

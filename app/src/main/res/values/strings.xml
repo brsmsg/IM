@@ -15,6 +15,9 @@
     <string name="behavior_collect">点此进行行为采集</string>
     <string name="register_btn">注册</string>
 
+    <!--行为界面-->
+    <string name="btn_upload">上传</string>
+    <string name="btn_predict">验证</string>
 
     <!--  主界面  -->
     <string name="main_message">消息</string>

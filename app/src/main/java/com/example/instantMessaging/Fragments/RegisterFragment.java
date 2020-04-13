@@ -107,7 +107,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
             @Override
             public void run() {
                 Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
-                BehaviorActivity.show(getActivity(), id);
+                BehaviorActivity.show(getActivity(), id, "register");
 //                mTrigger.changeFragment();
             }
         });

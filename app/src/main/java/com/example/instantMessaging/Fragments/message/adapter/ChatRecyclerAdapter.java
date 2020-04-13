@@ -39,9 +39,6 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
         mIndex = 0;
     }
 
-
-
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -73,6 +70,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     public int getItemCount() {
         return mMsgUIList.size();
     }
+
     /**
      * 添加新消息
      * @param msg
@@ -83,20 +81,47 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
     }
 
     /**
+     * 加密后刷新
+     */
+    public void encryptRefresh(){
+        if (mMsgUIList.size() == 0){
+            return;
+        }
+        for(MsgUI msgItem:mMsgUIList){
+            if(msgItem.getDecrypted() == MsgUI.DECRYPTED){
+                String decryptedContent = msgItem.getContent();
+                String encryptedContent = "";
+
+                try {
+                    encryptedContent = RsaEncryptUtil.encrypt(decryptedContent, RsaEncryptUtil.getPublicKey());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(!TextUtils.isEmpty(encryptedContent)){
+                    msgItem.setContent(encryptedContent);
+                    msgItem.setDecrypted(MsgUI.UNDECRYPTED);
+                }
+
+            }
+        }
+
+        notifyDataSetChanged();
+    }
+
+    /**
      * 解密后刷新
      */
-    public void refresh(String privateKey){
+    public void decryptRefresh(){
         if (mMsgUIList.size() == 0){
             return;
         }
         for (MsgUI msgItem:mMsgUIList){
-            if(msgItem.getType() == MsgUI.TYPE_RECEIVED
-                    && msgItem.getDecrypted() == MsgUI.UNDECRYPTED){
+            if(msgItem.getDecrypted() == MsgUI.UNDECRYPTED){
                 String encryptedContent = msgItem.getContent();
                 String decryptedContent = "";
                 // 进行解密
                 try {
-                    decryptedContent = RsaEncryptUtil.decrypt(encryptedContent, privateKey);
+                    decryptedContent = RsaEncryptUtil.decrypt(encryptedContent, RsaEncryptUtil.getPrivateKey());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -88,8 +88,6 @@ public class NetUtils {
         RequestBody body = RequestBody.create(json,
                 MediaType.parse("application/json; charset=utf-8"));
 
-        Log.d("body", body.toString());
-
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
@@ -113,8 +111,5 @@ public class NetUtils {
     }
 
 
-    public static String postKeyValue(String key, String value){
-        return "";
-    }
 
 }
