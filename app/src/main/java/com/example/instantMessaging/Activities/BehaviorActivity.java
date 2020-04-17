@@ -3,9 +3,12 @@ package com.example.instantMessaging.Activities;
 import android.content.Context;
 import android.content.Intent;
 
+import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Activity;
 import com.example.factory.Factory;
 import com.example.factory.model.RawMotion;
+import com.example.factory.model.User;
+import com.example.factory.model.api.account.LoginModel;
 import com.example.factory.utils.NetUtils;
 import com.example.instantMessaging.R;
 
@@ -24,11 +27,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.example.factory.model.db.Contact_Table.publicKey;
 
 /**
  * @author brsmsg
@@ -38,6 +44,7 @@ public class BehaviorActivity extends Activity {
 
     private String trainUrl = "http://101.200.240.107:8000/dataProcess";
     private String predictUrl = "http://101.200.240.107:8000/predict";
+    private final String loginUrl = "http://118.31.64.83:8080/account/login";
 
     private List<RawMotion> mRawMotionList = new ArrayList<>();
 
@@ -45,10 +52,18 @@ public class BehaviorActivity extends Activity {
 
     public static final String KEY_ID = "ID";
     public static final String KEY_STATUS = "STATUS";
+    public static final String KEY_USERNAME = "USER_NAME";
+    public static final String KEY_PASSWORD = "PASSWORD";
+
+
+    //滑动次数
+    private int mTimes;
 
     private String mStatus;
     //尝试机会
     private int mChances;
+    private String mUsername;
+    private String mPassword;
 
     private static String id;
 
@@ -73,6 +88,9 @@ public class BehaviorActivity extends Activity {
     @BindView(R.id.btn_predict)
     Button mPredict;
 
+    @BindView(R.id.txt_behavior)
+    TextView mBehaviorId;
+
     @Override
     protected int getContentLayotId() {
         return R.layout.activity_behavior;
@@ -85,21 +103,38 @@ public class BehaviorActivity extends Activity {
         context.startActivity(intent);
     }
 
+
+
+    public static void show(Context context, String id, String username, String password, String status){
+        Intent intent = new Intent(context, BehaviorActivity.class);
+        intent.putExtra(KEY_ID, id);
+        intent.putExtra(KEY_STATUS, status);
+        intent.putExtra(KEY_USERNAME, username);
+        intent.putExtra(KEY_PASSWORD, password);
+        context.startActivity(intent);
+    }
+
     @Override
     protected boolean initArgs(Bundle bundle) {
         id = bundle.getString(KEY_ID);
         mStatus = bundle.getString(KEY_STATUS);
+        mUsername = bundle.getString(KEY_USERNAME);
+        mPassword = bundle.getString(KEY_PASSWORD);
         mContext = this;
         mChances = 3;
+        mTimes = 10;
         return !TextUtils.isEmpty(id);
     }
 
     @Override
     protected void initWidget() {
         super.initWidget();
+        mBehaviorId.setText(id + "请单手滑动屏幕10次");
         if(mStatus.equals("register")){
             mUpload.setVisibility(View.VISIBLE);
             mPredict.setVisibility(View.INVISIBLE);
+            //上传按钮不能使用
+            mUpload.setEnabled(false);
         }else{
             mUpload.setVisibility(View.INVISIBLE);
             mPredict.setVisibility(View.VISIBLE);
@@ -122,9 +157,17 @@ public class BehaviorActivity extends Activity {
         Log.d("ActionDown", rawMotion.toString());
 
 
-
         mRawMotionList.add(rawMotion);
-        Log.d("rawSize: ", String.valueOf(mRawMotionList.size()));
+        if (event.getAction() == 1){
+            mTimes --;
+            if(mTimes != 0){
+                //提示
+                Toast.makeText(this, "还需滑动" + String.valueOf(mTimes) + "次", Toast.LENGTH_SHORT ).show();
+            }else{
+                mUpload.setEnabled(true);
+                Toast.makeText(this, "数据收集完成，请点击上传", Toast.LENGTH_SHORT ).show();
+            }
+        }
 
         return super.onTouchEvent(event);
     }
@@ -138,6 +181,13 @@ public class BehaviorActivity extends Activity {
                 Log.d("size", String.valueOf(mRawMotionList.size()));
             }
         });
+
+        //发送广播登录
+        Intent intent = new Intent();
+        intent.putExtra("USERNAME", mUsername);
+        intent.putExtra("PASSWORD", mPassword);
+        intent.setAction("com.example.broadcast.LOGIN");
+        mContext.sendBroadcast(intent);
         finish();
     }
 

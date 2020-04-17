@@ -1,6 +1,9 @@
 package com.example.instantMessaging.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Button;
@@ -14,11 +17,14 @@ import com.example.common.app.Fragment;
 import com.example.factory.model.User;
 import com.example.factory.presenter.account.LoginContract;
 import com.example.instantMessaging.Activities.MainActivity;
+import com.example.instantMessaging.Activities.MessageActivity;
+import com.example.instantMessaging.Fragments.message.ChatFragment;
 import com.example.instantMessaging.R;
 
 import org.checkerframework.checker.units.qual.A;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
@@ -39,6 +45,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     private SharedPreferences sp;
 
     private SharedPreferences.Editor editor;
+
+    private MyReceiver mReceiver;
 
     //用户名key
     private final String USERNAME = "USERNAME";
@@ -91,6 +99,14 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     protected void initData() {
         super.initData();
+
+        //动态注册广播
+        mReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        //设置广播类型
+        intentFilter.addAction("com.example.broadcast.LOGIN");
+        Objects.requireNonNull(getActivity()).registerReceiver(mReceiver, intentFilter);
+
         //实例化sharedPreference对象
         sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         //实例化editor
@@ -100,7 +116,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         //获得登录状态
 
         //test 不自动登录
-        editor.putBoolean(AUTO_ISCHECK, false).commit();
+//        editor.putBoolean(AUTO_ISCHECK, false).commit();
 
         mRemember.setChecked(sp.getBoolean(REM_ISCHECK, true));
         mAutoLogin.setChecked(sp.getBoolean(AUTO_ISCHECK, false));
@@ -113,6 +129,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
                 login();
             }
         }
+
     }
 
     /**
@@ -210,4 +227,17 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void goToRegister(){
         mTrigger.changeFragment();
     }
+
+    class MyReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String username = intent.getExtras().getString("USERNAME");
+            String password = intent.getExtras().getString("PASSWORD");
+            mUserName.setText(username);
+            mPassword.setText(password);
+        }
+    }
+
+
 }

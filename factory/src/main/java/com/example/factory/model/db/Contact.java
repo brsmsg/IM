@@ -15,7 +15,7 @@ import java.util.Objects;
  * @author brsmsg
  * @time 2020/3/29
  */
-@Table(database = AppDatabase.class)
+@Table(database = MyAppDB.class)
 public class Contact extends BaseModel implements DiffUtils.Differ<Contact> {
 
     @Column
@@ -27,6 +27,10 @@ public class Contact extends BaseModel implements DiffUtils.Differ<Contact> {
     private String faceImage;
     @Column
     private String description;
+
+    @Column
+    private String publicKey;
+
 
     public Contact() {
     }
@@ -63,11 +67,21 @@ public class Contact extends BaseModel implements DiffUtils.Differ<Contact> {
         this.description = description;
     }
 
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return "id: " + id + "\n"
-                +"username: " + username + "\n";
+                +"username: " + username + "\n"
+                +"faceImage" + faceImage + "\n"
+                +"publicKey" + publicKey + "\n";
     }
 
     @Override
@@ -97,4 +111,5 @@ public class Contact extends BaseModel implements DiffUtils.Differ<Contact> {
                 Objects.equals(faceImage, old.faceImage) &&
                 Objects.equals(description, old.description);
     }
+
 }

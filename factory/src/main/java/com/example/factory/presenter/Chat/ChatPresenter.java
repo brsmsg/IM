@@ -100,7 +100,7 @@ public class ChatPresenter implements ChatContract.Presenter {
             }
         };
         //延迟60s，周期60s
-        mTimer.schedule(mTimerTask, 10*1000, 10*1000);
+        mTimer.schedule(mTimerTask, 0, 10*1000);
 
     }
 
@@ -119,7 +119,7 @@ public class ChatPresenter implements ChatContract.Presenter {
         String encryptedMsg = "";
         //公钥加密
         try {
-            encryptedMsg= RsaEncryptUtil.encrypt(content, publicKey);
+            encryptedMsg = RsaEncryptUtil.encrypt(content, publicKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -131,7 +131,6 @@ public class ChatPresenter implements ChatContract.Presenter {
         MsgUI msgUI = new MsgUI(content, myPortrait, MsgUI.TYPE_SEND, MsgUI.DECRYPTED);
 
         mChatView.refreshUI(msgUI);
-
     }
 
     /**
@@ -150,6 +149,7 @@ public class ChatPresenter implements ChatContract.Presenter {
 
         String decryptedMsg =  "";
         try {
+            //直接解密
             decryptedMsg = RsaEncryptUtil.decrypt(msgContent, RsaEncryptUtil.getPrivateKey());
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,19 +159,31 @@ public class ChatPresenter implements ChatContract.Presenter {
             MsgUI msgUI = new MsgUI(decryptedMsg, oppositePortrait, MsgUI.TYPE_RECEIVED, MsgUI.DECRYPTED);
             Log.d("receive", content);
             mChatView.refreshUI(msgUI);
+            //直接签收消息
             WebSocketUtils.sign(msgId);
         }
     }
 
+
+    /**
+     * 更新session
+     * @param context
+     * @param oppositeId
+     * @param lastMsg
+     * @param action "decrypt"/"send"/"encrypt"
+     */
     @Override
-    public void updateSession(Context context, String oppositeId, String lastMsg) {
+    public void updateSession(Context context, String oppositeId, String lastMsg, String publicKey, String action) {
         Intent intent = new Intent();
         intent.putExtra("ID", oppositeId);
         intent.putExtra("LAST_MSG", lastMsg);
+        intent.putExtra("PUBLIC_KEY", publicKey);
+        intent.putExtra("ACTION", action);
         intent.setAction("com.example.broadcast.UPDATE_SESSION");
         Log.d("lastMsg", lastMsg);
         context.sendBroadcast(intent);
     }
+
 
     /**
      * 去掉点击事件，只保留滑动事件

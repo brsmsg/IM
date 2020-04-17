@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="请滑动屏幕"
+        android:text="请单手滑动屏幕10次"
         android:textSize="20dp"
         />
 

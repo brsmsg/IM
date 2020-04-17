@@ -44,9 +44,8 @@ public class SessionRecyclerAdapter
      */
     public void add(SessionUI session){
         //相同的用户删除原来会话并在最上面插入现有会话
-        for(int i = 0; i<mSessionList.size(); i++){
+        for(int i = 0; i < mSessionList.size(); i++){
             if(mSessionList.get(i).getId().equals(session.getId())){
-                Log.d("need2remove", String.valueOf(i));
                 mSessionList.remove(i);
                 notifyItemChanged(i);
             }
@@ -54,6 +53,7 @@ public class SessionRecyclerAdapter
         mSessionList.add(0, session);
         notifyItemChanged(0);
     }
+
 
     /**
      * 解密后刷新最后一条消息

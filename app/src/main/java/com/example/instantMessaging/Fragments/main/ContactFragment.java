@@ -38,8 +38,6 @@ public class ContactFragment extends Fragment implements ContactContract.View{
 
     private String myId;
     private String myPortrait;
-    private String mPublicKey;
-    private String mPrivateKey;
 
     //empty constructor
     public ContactFragment(){
@@ -56,7 +54,7 @@ public class ContactFragment extends Fragment implements ContactContract.View{
     protected void initData() {
         super.initData();
         mPresenter.start();
-        mPresenter.refresh();
+        mPresenter.refresh(myId);
     }
 
     @Override
@@ -64,8 +62,6 @@ public class ContactFragment extends Fragment implements ContactContract.View{
         super.initArgs(bundle);
         myId = bundle.getString(MainActivity.MY_ID);
         myPortrait = bundle.getString(MainActivity.MY_PORTRAIT);
-        mPublicKey = bundle.getString(MainActivity.PUBLIC_KEY);
-        mPrivateKey = bundle.getString(MainActivity.PRIVATE_KEY);
 
     }
 
@@ -91,8 +87,8 @@ public class ContactFragment extends Fragment implements ContactContract.View{
         mContactAdapter.setOnItemClickListener(new ContactRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Contact contact) {
+                MessageActivity.show(getActivity(), contact, myId, myPortrait);
                 Toast.makeText(getActivity(), contact.getUsername(), Toast.LENGTH_SHORT).show();
-                MessageActivity.show(getActivity(), contact, myId, myPortrait, mPublicKey, mPrivateKey);
             }
         });
         mRecycler.setAdapter(mContactAdapter);
@@ -100,7 +96,12 @@ public class ContactFragment extends Fragment implements ContactContract.View{
 
     @Override
     public void refreshContact(List<Contact> contactList) {
-        mContactAdapter.replace(contactList);
-//        mContactAdapter.replaceAll(contactList);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mContactAdapter.replace(contactList);
+            }
+        });
+
     }
 }

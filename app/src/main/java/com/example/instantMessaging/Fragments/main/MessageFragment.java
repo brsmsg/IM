@@ -12,9 +12,14 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dbflow5.config.FlowManager;
+import com.dbflow5.query.SQLite;
+import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Fragment;
 import com.example.factory.model.SessionUI;
 import com.example.factory.model.db.Contact;
+import com.example.factory.model.db.Contact_Table;
+import com.example.factory.model.db.MyAppDB;
 import com.example.factory.presenter.Session.SessionContract;
 import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.Activities.MessageActivity;
@@ -44,9 +49,6 @@ public class MessageFragment extends Fragment implements SessionContract.View {
 
     private String myId;
     private String myPortrait;
-    private String mPublicKey;
-    private String mPrivateKey;
-
 
     @BindView(R.id.recycler_session)
     RecyclerView mRecycler;
@@ -79,8 +81,6 @@ public class MessageFragment extends Fragment implements SessionContract.View {
         super.initArgs(bundle);
         myId = bundle.getString(MainActivity.MY_ID);
         myPortrait = bundle.getString(MainActivity.MY_PORTRAIT);
-        mPublicKey = bundle.getString(MainActivity.PUBLIC_KEY);
-        mPrivateKey = bundle.getString(MainActivity.PRIVATE_KEY);
     }
 
     @Override
@@ -101,7 +101,9 @@ public class MessageFragment extends Fragment implements SessionContract.View {
             @Override
             public void onItemClick(View view, SessionUI session) {
                 //展示MessageActivity
-                MessageActivity.show(getActivity(), session, myId, myPortrait, mPublicKey, mPrivateKey);
+                MessageActivity.show(getActivity(), session, myId, myPortrait);
+                Log.d("publicKey", session.getPublicKey());
+
                 //签收消息
                 mPresenter.signMessage(session.getId());
             }
@@ -145,12 +147,44 @@ public class MessageFragment extends Fragment implements SessionContract.View {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String id = intent.getExtras().getString("ID");
             String content = intent.getExtras().getString("LAST_MSG");
-            Log.d("Broadcast id", id);
-            Log.d("Broadcast msg", content);
+//            String publicKey = intent.getExtras().getString("PUBLIC_KEY");
+            String action = intent.getExtras().getString("ACTION");
 
-            mPresenter.updateDecryptedMsg(id, content);
+
+            //根据id查询其他信息数据
+            Contact contact = SQLite.select()
+                    .from(Contact.class)
+                    .where(Contact_Table.id.is(id))
+                    .querySingle(FlowManager.getDatabase(MyAppDB.class));
+
+            String portrait = "";
+            String username = "";
+            String publicKey = "";
+            if(contact != null){
+                portrait = contact.getFaceImage();
+                username = contact.getUsername();
+                publicKey = contact.getPublicKey();
+
+            }
+            switch (action){
+                //发送消息更新
+                case "send":
+                    SessionUI session = new SessionUI(id, portrait, username, content, publicKey);
+                    //UI更新
+                    refreshUI(session);
+                    break;
+                //加密解密更新
+                case "encrypt":
+                case "decrypt":
+                    mPresenter.updateDecryptedMsg(id, content);
+                    break;
+            }
+
+//            mPresenter.updateDecryptedMsg(id, content);
         }
+
     }
 }

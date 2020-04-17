@@ -40,7 +40,7 @@ public interface ChatContract extends BaseContract {
         void receiveMessage(String content, String oppositePortrait);
 
         //更新会话界面
-        void updateSession(Context context, String oppositeId, String lastMsg);
+        void updateSession(Context context, String oppositeId, String lastMsg, String publicKey, String action);
 
         //移除点击事件
         List<RawMotion> removeClickEvent(List<RawMotion> rawMotionList);

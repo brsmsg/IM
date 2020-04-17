@@ -35,6 +35,8 @@ import com.example.factory.Factory;
 import com.example.factory.model.User;
 import com.example.factory.presenter.Session.SessionPresenter;
 import com.example.factory.presenter.contact.ContactPresenter;
+import com.example.factory.utils.NetUtils;
+import com.example.factory.utils.OssService;
 import com.example.instantMessaging.Activities.PopWindow.MPopupWindow;
 import com.example.instantMessaging.Fragments.main.ContactFragment;
 import com.example.instantMessaging.Fragments.main.MessageFragment;
@@ -60,6 +62,8 @@ public class MainActivity extends Activity
     //朋友圈界面
     private SearchFragment mSearchFragment;
 
+    private final static String updatePortraitUrl = "http://118.31.64.83:8080/account/update/portrait";
+
     //用户id,头像，用户名以及KEY
     public final static String MY_ID = "MY_ID";
     public final static String MY_PORTRAIT = "MY_PORTRAIT";
@@ -67,11 +71,15 @@ public class MainActivity extends Activity
     public final static String PUBLIC_KEY = "PUBLIC_KEY";
     public final static String PRIVATE_KEY = "PRIVATE_KEY";
 
+    private final static String OSS_ACCESS_KEY = "LTAI4GFdaTqVVh6ysNsTZHWA";
+    private final static String OSS_ACCESS_SECRET = "QiAs0nubviXOoLXxiQeQ5l7TZDN03M";
+    private final static String OSS_ENDPOINT = "oss-cn-beijing.aliyuncs.com";
+    private final static String OSS_BUCKET_NAME = "kbh";
+    private final static String OSS_URL = "https://kbh.oss-cn-beijing.aliyuncs.com/";
+
     private String myId;
     private String myPortrait;
     private String myUsername;
-    private String mPublicKey;
-    private String mPrivateKey;
 
     private ContactPresenter mContactPresenter;
     private SessionPresenter mSessionPresenter;
@@ -162,17 +170,12 @@ public class MainActivity extends Activity
         myId = getIntent().getExtras().getString(MY_ID);
         myUsername = getIntent().getExtras().getString(MY_USERNAME);
         myPortrait = getIntent().getExtras().getString(MY_PORTRAIT);
-        //初始化公私钥
-        mPublicKey = getIntent().getExtras().getString(PUBLIC_KEY);
-        mPrivateKey = getIntent().getExtras().getString(PRIVATE_KEY);
 
         //为bundle赋值
         bundle = new Bundle();
         bundle.putString(MY_ID, myId);
         bundle.putString(MY_USERNAME, myUsername);
         bundle.putString(MY_PORTRAIT, myPortrait);
-        bundle.putString(PUBLIC_KEY, mPublicKey);
-        bundle.putString(PRIVATE_KEY, mPrivateKey);
 
         //传给MessageFragment
         mMessageFragment.setArguments(bundle);
@@ -432,6 +435,49 @@ public class MainActivity extends Activity
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             mPersonPortrait.setImageBitmap(bitmap);
             mPortrait.setImageBitmap(bitmap);
+
+
+            //上传图片到阿里云oss
+            Factory.getInstance().getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    //初始化OssService类，参数分别是Content，accessKeyId，accessKeySecret，endpoint，bucketName（后4个参数是您自己阿里云Oss中参数）
+                    OssService ossService = new OssService(getApplicationContext(), OSS_ACCESS_KEY, OSS_ACCESS_SECRET, OSS_ENDPOINT, OSS_BUCKET_NAME);
+                    //初始化OSSClient
+                    ossService.initOSSClient();
+                    //开始上传，参数分别为content，上传的文件名filename，上传的文件路径filePath
+                    ossService.beginupload(getApplication(), myId, imagePath);
+
+                    //更新url
+                    myPortrait = OSS_URL + myId;
+                    //更新bundle
+                    bundle.remove(MY_PORTRAIT);
+                    bundle.putString(MY_PORTRAIT, myPortrait);
+
+                    //发送服务器
+                    String result = null;
+                    result = NetUtils.postKeyValue("id", myId, "portrait", myPortrait, updatePortraitUrl);
+                    if(result != null){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplication(), "更换头像成功", Toast.LENGTH_SHORT);
+                            }
+                        });
+                    }else{
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplication(), "服务器错误，请重试", Toast.LENGTH_SHORT);
+                            }
+                        });
+                    }
+                }
+            });
+
+
+
+
         }else{
             Toast.makeText(this,"Failed to get image",Toast.LENGTH_SHORT).show();
         }

@@ -56,13 +56,17 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
             holder.leftLayout.setVisibility(View.VISIBLE);
             holder.rightLayout.setVisibility(View.GONE);
             holder.leftMsg.setText(msgUI.getContent());
-            Glide.with(mContext).load(msgUI.getPortrait()).into(holder.leftPortrait);
+            if(msgUI.getPortrait() != null) {
+                Glide.with(mContext).load(msgUI.getPortrait()).into(holder.leftPortrait);
+            }
         }else if(msgUI.getType() == MsgUI.TYPE_SEND){
             //右侧消息
             holder.rightLayout.setVisibility(View.VISIBLE);
             holder.leftLayout.setVisibility(View.GONE);
             holder.rightMsg.setText(msgUI.getContent());
-            Glide.with(mContext).load(msgUI.getPortrait()).into(holder.rightPortrait);
+            if(msgUI.getPortrait() != null){
+                Glide.with(mContext).load(msgUI.getPortrait()).into(holder.rightPortrait);
+            }
         }
     }
 

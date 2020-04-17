@@ -70,4 +70,9 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.4.5'
+    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
+    implementation 'com.squareup.okio:okio:1.9.0'
+
 }

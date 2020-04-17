@@ -1,17 +1,16 @@
 package com.example.factory.presenter.Session;
 
-import android.icu.util.LocaleData;
 import android.util.Log;
 
 import com.dbflow5.config.FlowManager;
 import com.dbflow5.query.SQLite;
-import com.example.factory.Factory;
+import com.example.common.RSA.RsaEncryptUtil;
 import com.example.factory.model.SessionUI;
 import com.example.factory.model.api.webSocket.Msg;
 import com.example.factory.model.api.webSocket.WebSocketModel;
-import com.example.factory.model.db.AppDatabase;
 import com.example.factory.model.db.Contact;
 import com.example.factory.model.db.Contact_Table;
+import com.example.factory.model.db.MyAppDB;
 import com.example.factory.utils.webSocket.WebSocketUtils;
 
 import java.util.ArrayList;
@@ -55,16 +54,21 @@ public class SessionPresenter implements SessionContract.Presenter {
         Contact contact = SQLite.select()
                 .from(Contact.class)
                 .where(Contact_Table.id.is(oppositeId))
-                .querySingle(FlowManager.getDatabase(AppDatabase.class));
+                .querySingle(FlowManager.getDatabase(MyAppDB.class));
 
         if(contact != null) {
             String portrait = contact.getFaceImage();
             String username = contact.getUsername();
             String id = contact.getId();
-            Log.d("SessionPortrait", portrait);
-            Log.d("SessionUsername", username);
+            String publicKey = contact.getPublicKey();
 
-            SessionUI session = new SessionUI(id, portrait, username, "请解密后查看");
+            SessionUI session = null;
+            try {
+                session = new SessionUI(id, portrait, username, RsaEncryptUtil.decrypt(msgContent, RsaEncryptUtil.getPrivateKey()), publicKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             //未读消息的HashMap更新
             if(msgMap.get(id) == null){
                 msgIdList = new ArrayList<>();
@@ -77,12 +81,12 @@ public class SessionPresenter implements SessionContract.Presenter {
             }
 
 
-            for(Map.Entry<String, List<String>> e:msgMap.entrySet()){
-                Log.d("id", e.getKey());
-                for(String s:e.getValue()) {
-                    Log.d("list", s);
-                }
-            }
+//            for(Map.Entry<String, List<String>> e:msgMap.entrySet()){
+//                Log.d("id", e.getKey());
+//                for(String s:e.getValue()) {
+//                    Log.d("list", s);
+//                }
+//            }
 
             //UI 更新
             mSessionView.refreshUI(session);
@@ -94,6 +98,10 @@ public class SessionPresenter implements SessionContract.Presenter {
     public void signMessage(String id) {
         msgIdList = msgMap.get(id);
         StringBuilder msgIdStr = new StringBuilder();
+        //没有需要签收消息
+        if(msgIdList == null ){
+            return;
+        }
         for(String msgId:msgIdList){
             if(msgIdStr.toString().equals("")){
                 msgIdStr.append(msgId);

@@ -15,11 +15,14 @@ public class SessionUI {
 
     private String lastMsg;
 
-    public SessionUI(String id, String portrait, String username, String lastMsg) {
+    private String publicKey;
+
+    public SessionUI(String id, String portrait, String username, String lastMsg, String publicKey) {
         this.id = id;
         this.portrait = portrait;
         this.username = username;
         this.lastMsg = lastMsg;
+        this.publicKey = publicKey;
     }
 
     public String getId() {
@@ -54,4 +57,11 @@ public class SessionUI {
         this.lastMsg = lastMsg;
     }
 
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 }

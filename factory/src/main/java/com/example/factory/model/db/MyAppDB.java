@@ -5,9 +5,9 @@ import com.dbflow5.config.DBFlowDatabase;
 
 /**
  * @author brsmsg
- * @time 2020/3/30
+ * @time 2020/4/16
  */
-@Database(version = AppDatabase.VERSION)
-public abstract class AppDatabase extends DBFlowDatabase {
+@Database(version = MyAppDB.VERSION)
+public abstract class MyAppDB extends DBFlowDatabase {
     public static final int VERSION = 1;
 }

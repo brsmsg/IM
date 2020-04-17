@@ -20,5 +20,6 @@ public class LaunchActivity extends Activity {
         super.initData();
 
         AccountActivity.show(this);
+        finish();
     }
 }

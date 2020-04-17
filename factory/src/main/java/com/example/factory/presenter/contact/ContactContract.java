@@ -20,6 +20,6 @@ public interface ContactContract extends BaseContract {
     }
 
     interface Presenter extends BasePresenter{
-        void refresh();
+        void refresh(String myId);
     }
 }

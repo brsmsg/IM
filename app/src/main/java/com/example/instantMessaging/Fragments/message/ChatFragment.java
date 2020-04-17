@@ -1,10 +1,13 @@
 package com.example.instantMessaging.Fragments.message;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -60,6 +63,11 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     private String mPublicKey;
     private String mPrivateKey;
 
+    //加密解密状态
+    private static int STATUS;
+    private static final int ENCRYPTED = 0;
+    private static final int DECRYPTED = 1;
+
     private ChatRecyclerAdapter mChatAdapter;
 
     private MyReceiver mReceiver;
@@ -104,6 +112,9 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @Override
     protected void initData() {
         super.initData();
+        //状态设为解密
+        STATUS = DECRYPTED;
+
         mRawMotionList = new ArrayList<>();
         //注册监听
         ((MessageActivity) Objects.requireNonNull(getActivity())).registerTouchListener(mTouchListener);
@@ -179,22 +190,30 @@ public class ChatFragment extends Fragment implements ChatContract.View {
      */
     @Override
     public void encryptMsg() {
-        //销毁监听
-        ((MessageActivity) Objects.requireNonNull(getActivity())).unregisterTouchListener();
-        //点击list清空
-        clearMotionList();
+        //状态设置为加密
+        STATUS = ENCRYPTED;
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //更新在ui线程执行
-                mChatAdapter.encryptRefresh();
-                Toast.makeText(getActivity(), "验证失败，消息已加密，请手动验证解密", Toast.LENGTH_SHORT).show();
-                //锁定消息发送
-                mContent.setEnabled(false);
-            }
-        });
+        if(getActivity()!=null) {
+            //刷新会话
+            mPresenter.updateSession(getActivity(), mOppositeId, "行为异常，请解锁后查看消息", mPublicKey, "encrypt");
+            //销毁监听
+            ((MessageActivity) getActivity()).unregisterTouchListener();
+            //点击list清空
+            clearMotionList();
 
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //更新在ui线程执行
+                    mChatAdapter.encryptRefresh();
+                    Toast.makeText(getActivity(), "验证失败，消息已加密，请手动验证解密", Toast.LENGTH_SHORT).show();
+                    //锁定消息发送
+                    mContent.setEnabled(false);
+                }
+            });
+
+        }
     }
 
     /**
@@ -231,6 +250,8 @@ public class ChatFragment extends Fragment implements ChatContract.View {
 
         if(!TextUtils.isEmpty(msg)) {
             mPresenter.sendMessage(msg, myPortrait, myId, mOppositeId, mPublicKey);
+            //更新会话
+            mPresenter.updateSession(getActivity(), mOppositeId, msg, mPublicKey, "send");
         }else{
             showError(R.string.err_message_empty);
         }
@@ -242,6 +263,26 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @OnClick(R.id.img_decrypt)
     void decrypt() {
         BehaviorActivity.show(getActivity(), myId, "predict");
+//
+//        //弹出输入密码对话框
+//        final EditText editText = new EditText(getActivity());
+//        AlertDialog.Builder inputDialog = new AlertDialog.Builder(getActivity());
+//        inputDialog.setTitle("请输入密码以解锁").setView(editText);
+//        inputDialog.setPositiveButton("确定",
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        SharedPreferences sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+//
+//                        String pwd = sp.getString("PASSWORD", "");
+//                        Log.d("password", pwd);
+//                        if (editText.getText().toString().trim().equals(pwd)){
+//                            mChatAdapter.decryptRefresh();
+//                            mContent.setEnabled(true);
+//                        }
+//                    }
+//                }).show();
+
     }
 
 
@@ -305,7 +346,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
                 if (TextUtils.isEmpty(lastMsg)) {
                     Toast.makeText(getActivity(), "没有需要解密的消息", Toast.LENGTH_SHORT).show();
                 } else {
-                    mPresenter.updateSession(getActivity(), mOppositeId, mChatAdapter.getLastMsg());
+                    mPresenter.updateSession(getActivity(), mOppositeId, lastMsg, mPublicKey, "decrypt");
                 }
             }
         }

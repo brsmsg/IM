@@ -63,8 +63,9 @@ public class ContactRecyclerAdapter
         holder.itemView.setTag(position);
 
         Contact contact = mContactList.get(position);
-
-        Glide.with(mContext).load(contact.getFaceImage()).into(holder.mPortrait);
+        if(contact.getFaceImage() != null){
+            Glide.with(mContext).load(contact.getFaceImage()).into(holder.mPortrait);
+        }
         holder.mDesc.setText(contact.getDescription());
         holder.mUserName.setText(contact.getUsername());
     }
@@ -80,13 +81,13 @@ public class ContactRecyclerAdapter
      */
     public void replace(List<Contact> contactList){
         DiffUtil.Callback callback = new DiffUtils<>(mContactList, contactList);
-        for(Contact c:mContactList){
+//        for(Contact c:mContactList){
 //            Log.d("oldList", c.toString());
-        }
+//        }
 
-        for(Contact c:contactList){
+//        for(Contact c:contactList){
 //            Log.d("newList", c.toString());
-        }
+//        }
 
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback);
 //        Log.d("difference", diffResult.toString());
