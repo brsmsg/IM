@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.common.app.Fragment;
 import com.example.factory.model.FriendRequest;
+import com.example.factory.model.User;
 import com.example.factory.presenter.Friend.SearchRequestContract;
 import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.Fragments.main.adapter.SearchRecyclerAdapter;
@@ -56,6 +57,7 @@ public class SearchFragment extends Fragment implements SearchRequestContract.Vi
         myId = bundle.getString(MainActivity.MY_ID);
     }
 
+    //处理好友请求成功
     @Override
     public void operateSuccess(String msg) {
 
@@ -73,9 +75,29 @@ public class SearchFragment extends Fragment implements SearchRequestContract.Vi
 
     }
 
+    //刷新好友请求列表
     @Override
     public void refreshUi(FriendRequest friendRequest) {
         mSearchAdapter.addData(friendRequest);
+
+    }
+
+
+    //搜索好友成功
+    @Override
+    public void searchSuccess(User data) {
+
+    }
+
+    //输出返回值中的错误信息
+    @Override
+    public void showError(String message) {
+
+    }
+
+    //发送好友请求成功
+    @Override
+    public void sendRequestSuccess(String msg) {
 
     }
 
@@ -85,6 +107,7 @@ public class SearchFragment extends Fragment implements SearchRequestContract.Vi
 
     }
 
+    //输出客户端给出的错误信息
     @Override
     public void showError(int string) {
 

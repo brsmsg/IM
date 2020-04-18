@@ -4,9 +4,13 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.factory.Factory;
+import com.example.factory.R;
 import com.example.factory.model.FriendRequest;
+import com.example.factory.model.User;
 import com.example.factory.model.api.friend.OperateFriendRequestModel;
+import com.example.factory.model.api.friend.SearchFriendModel;
 import com.example.factory.model.api.friend.SearchFriendRequestModel;
+import com.example.factory.model.api.friend.SendFriendRequestModel;
 import com.example.factory.utils.NetUtils;
 
 import java.util.ArrayList;
@@ -22,6 +26,12 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
 
     //处理接收到的好友请求
     private final String operateRequestUrl = "http://118.31.64.83:8080/friend/operateFriendRequest";
+
+    //搜索好友
+    private final String searchFriendUrl = "http://118.31.64.83:8080/friend/search";
+
+    //发送好友请求
+    private final String sendFriendRequestUrl = "http://118.31.64.83:8080/friend/searchFriendRequest";
 
     private SearchRequestContract.View mSearchRequestView;
 
@@ -109,6 +119,85 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
         }
 
     }
+
+    //搜索好友
+    @Override
+    public void searchFriend(final String myId, final String friendUsername) {
+        if(TextUtils.isEmpty(friendUsername)){
+            mSearchRequestView.showError(R.string.err_friendname_empty);
+        }else{
+            Factory.getInstance().getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+
+                    String result = NetUtils.postKeyValue(myId,friendUsername,searchFriendUrl);
+
+                    Log.d("searchFriend", "result");
+                    if (result != null){
+                        parseFriendResult(result);
+                    }else {
+                        mSearchRequestView.showError(R.string.err_service);
+                    }
+                }
+            });
+        }
+
+    }
+
+    //解析返回的好友信息
+    @Override
+    public void parseFriendResult(String result) {
+        SearchFriendModel searchFriendModel = Factory.getInstance()
+                .getGson().fromJson(result,SearchFriendModel.class);
+        //返回成功标志
+        String msg = searchFriendModel.getMsg();
+        //返回失败标志
+        String message = searchFriendModel.getMessage();
+        if (msg != null && msg.equals("success")){
+            User user = searchFriendModel.getData();
+            mSearchRequestView.searchSuccess(user);
+        }else{
+            //返回错误信息
+            mSearchRequestView.showError(message);
+
+        }
+    }
+
+    @Override
+    public void sendFriendRequest(final String myId, final String friendUsername) {
+        //检查能否获取当前用户名
+        if (TextUtils.isEmpty(myId)){
+            mSearchRequestView.showError(com.example.common.R.string.err_searchrequest);
+        }else{
+            Factory.getInstance().getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    String result = NetUtils.postKeyValue(myId,friendUsername,sendFriendRequestUrl);
+                    Log.d("sendFriendRequest", "result");
+                    if (result!=null){
+                        parseSendResult(result);
+                    }else{
+                        //出现服务器错误无法返回成功信息
+                        mSearchRequestView.showError(com.example.common.R.string.err_service);
+                    }
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public void parseSendResult(String result) {
+        SendFriendRequestModel sendFriendRequestModel = Factory.getInstance().getGson().fromJson(result,SendFriendRequestModel.class);
+        String msg = sendFriendRequestModel.getMsg();
+        if (msg != null && msg.equals("success")){
+            mSearchRequestView.sendRequestSuccess(msg);
+        }else{
+            mSearchRequestView.showError(com.example.common.R.string.err_service);
+        }
+
+    }
+
 
     //更新数据并初始化FriendRequest数据
     @Override
