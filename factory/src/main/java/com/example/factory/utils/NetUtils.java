@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.factory.Factory;
 import com.example.factory.model.RawMotion;
+import com.example.factory.model.api.ResponseModel;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -189,5 +190,67 @@ public class NetUtils {
 
     }
 
+    /**
+     * 三个键值对
+     * @param key1
+     * @param value1
+     * @param key2
+     * @param value2
+     * @param key3
+     * @param value3
+     * @param url
+     * @return
+     */
+    public static String postKeyValue(String key1, String value1, String key2, String value2, String key3, String value3, String url){
+        String result = null;
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody body = new FormBody.Builder()
+                .add(key1, value1)
+                .add(key2, value2)
+                .add(key3, value3)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+
+            result = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(result == null) {
+                Log.d("result", "null");
+            }else{
+                Log.d("result", result);
+            }
+            return result;
+        }
+
+    }
+
+
+
+    public static String parseUpdateResult(String result){
+        ResponseModel responseModel =  Factory.getInstance().getGson()
+                .fromJson(result, ResponseModel.class);
+        int code = responseModel.getCode();
+        if(code == 0){
+            boolean data = responseModel.isData();
+            if(data){
+                return "更新成功";
+            }else{
+                return "更新失败";
+            }
+        }else{
+            String msg = responseModel.getMsg();
+            return msg;
+        }
+    }
 
 }

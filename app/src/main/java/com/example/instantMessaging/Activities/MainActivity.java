@@ -1,8 +1,10 @@
 package com.example.instantMessaging.Activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -11,12 +13,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +37,7 @@ import com.example.common.app.Activity;
 import com.example.common.app.Fragment;
 import com.example.factory.Factory;
 import com.example.factory.model.User;
+import com.example.factory.model.api.account.update.UsernameModel;
 import com.example.factory.presenter.Session.SessionPresenter;
 import com.example.factory.presenter.contact.ContactPresenter;
 import com.example.factory.utils.NetUtils;
@@ -63,11 +68,15 @@ public class MainActivity extends Activity
     private SearchFragment mSearchFragment;
 
     private final static String updatePortraitUrl = "http://118.31.64.83:8080/account/update/portrait";
+    private final static String updateUsernameUrl = "http://118.31.64.83:8080/account/update/username";
+    private final static String updatePasswordUrl = "http://118.31.64.83:8080/account/update/password";
+    private final static String updateDescUrl = "http://118.31.64.83:8080/account/update/description";
 
     //用户id,头像，用户名以及KEY
     public final static String MY_ID = "MY_ID";
     public final static String MY_PORTRAIT = "MY_PORTRAIT";
     public final static String MY_USERNAME = "MY_USERNAME";
+    public final static String MY_DESC = "MY_DESC";
     public final static String PUBLIC_KEY = "PUBLIC_KEY";
     public final static String PRIVATE_KEY = "PRIVATE_KEY";
 
@@ -80,6 +89,7 @@ public class MainActivity extends Activity
     private String myId;
     private String myPortrait;
     private String myUsername;
+    private String myDesc;
 
     private ContactPresenter mContactPresenter;
     private SessionPresenter mSessionPresenter;
@@ -112,8 +122,12 @@ public class MainActivity extends Activity
     @BindView(R.id.img_settings)
     ImageView mSettings;
 
-    //DrawerLayout中的头像
+
+
+    //DrawerLayout中的用户名和头像
+    private TextView mPersonUsername;
     private CircleImageView mPersonPortrait;
+    private TextView mPersonDesc;
 
 
     @Override
@@ -140,6 +154,9 @@ public class MainActivity extends Activity
         //动态引用NavigationView的头部实例mPersonalPortrait并添加点击事件
         View navHeaderView = navView.inflateHeaderView(R.layout.nav_header);
         mPersonPortrait =  navHeaderView.findViewById(R.id.icon_portrait);
+        mPersonUsername = navHeaderView.findViewById(R.id.nav_header_username);
+        mPersonDesc = navHeaderView.findViewById(R.id.nav_header_desc);
+
         mPersonPortrait.setOnClickListener(v -> {
             //创建MPopupWindow实例
             mPopupWindow = new MPopupWindow(MainActivity.this,MainActivity.this);
@@ -161,6 +178,110 @@ public class MainActivity extends Activity
             });
 
         });
+
+        //点击修改用户名密码
+        navView.setNavigationItemSelectedListener(item -> {
+            switch(item.getItemId()){
+                case R.id.personal_username:
+                    //修改用户名
+                    final EditText editText = new EditText(this);
+                    AlertDialog.Builder inputDialog = new AlertDialog.Builder(this);
+                    inputDialog.setTitle("输入新用户名")
+                            .setView(editText)
+                            .setPositiveButton("确定", (dialog, which) -> {
+                                Factory.getInstance().getThreadPool().execute(() -> {
+                                //发送请求
+                                    String newUsername = editText.getText().toString().trim();
+                                    String result = NetUtils.postKeyValue("id", myId,
+                                            "username", newUsername,
+                                            updateUsernameUrl);
+                                    if(result != null){
+                                        String info = NetUtils.parseUpdateResult(result);
+                                        //提示
+                                        showToast(info);
+                                        if(info.equals("更新成功")){
+                                            //对变量以及界面更新
+                                            myUsername = newUsername;
+                                            runOnUiThread(() -> mPersonUsername.setText(newUsername));
+                                        }
+                                    }else{
+                                        //提示
+                                        showToast("网络错误");
+                                    }
+                                });
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
+
+                case R.id.personal_password:
+                    //修改密码
+                    final View updatePwdDialog = LayoutInflater.from(this).inflate(R.layout.dialog_update_pwd, null);
+                    final EditText oldPwdEditText = updatePwdDialog.findViewById(R.id.pwd_old);
+                    final EditText newPwdEditText = updatePwdDialog.findViewById(R.id.pwd_new);
+                    AlertDialog.Builder pwdInputDialog = new AlertDialog.Builder(this);
+                    pwdInputDialog.setTitle("请输入原密码以及新密码")
+                            .setView(updatePwdDialog)
+                            .setPositiveButton("确定", (dialog, which) -> {
+                                Factory.getInstance().getThreadPool().execute(() -> {
+                                    //发送请求
+                                    String oldPassword = oldPwdEditText.getText().toString().trim();
+                                    String newPassword = newPwdEditText.getText().toString().trim();
+                                    String result = NetUtils.postKeyValue("id", myId,
+                                            "oldPassword", oldPassword,
+                                            "newPassword", newPassword,
+                                            updatePasswordUrl);
+                                    if(result != null){
+                                        String info = NetUtils.parseUpdateResult(result);
+                                        //提示
+                                        showToast(info);
+                                        //退回登录界面
+                                        AccountActivity.show(this);
+                                        finish();
+                                    }else{
+                                        //提示
+                                        showToast("网络错误");
+                                    }
+                                });
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
+                case R.id.personal_desc:
+                    final EditText descEditText = new EditText(this);
+                    AlertDialog.Builder DescInputDialog = new AlertDialog.Builder(this);
+                    DescInputDialog.setTitle("输入个签")
+                            .setView(descEditText)
+                            .setPositiveButton("确定", (dialog, which) -> {
+                                Factory.getInstance().getThreadPool().execute(() -> {
+                                    //发送请求
+                                    String newDesc = descEditText.getText().toString().trim();
+                                    String result = NetUtils.postKeyValue("id", myId,
+                                            "description", newDesc,
+                                            updateDescUrl);
+                                    if(result != null){
+                                        String info = NetUtils.parseUpdateResult(result);
+                                        //提示
+                                        showToast(info);
+                                        if(info.equals("更新成功")){
+                                            //对变量以及界面更新
+                                            myDesc = newDesc;
+                                            runOnUiThread(() -> mPersonDesc.setText(newDesc));
+                                        }
+                                    }else{
+                                        //提示
+                                        showToast("网络错误");
+                                    }
+                                });
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
+            }
+
+            return false;
+        });
+
+
     }
 
     @Override
@@ -170,6 +291,7 @@ public class MainActivity extends Activity
         myId = getIntent().getExtras().getString(MY_ID);
         myUsername = getIntent().getExtras().getString(MY_USERNAME);
         myPortrait = getIntent().getExtras().getString(MY_PORTRAIT);
+        myDesc = getIntent().getExtras().getString(MY_DESC);
 
         //为bundle赋值
         bundle = new Bundle();
@@ -179,9 +301,14 @@ public class MainActivity extends Activity
 
         //传给MessageFragment
         mMessageFragment.setArguments(bundle);
+
+        //初始化用户名
+        mPersonUsername.setText(myUsername);
+        mPersonDesc.setText(myDesc);
         //初始化头像
         if ( myPortrait != null){
             Glide.with(this).load(myPortrait).into(mPortrait);
+            Glide.with(this).load(myPortrait).into(mPersonPortrait);
             Log.d("portraitUrl", myPortrait);
         }
         //初始化webSocket
@@ -198,6 +325,7 @@ public class MainActivity extends Activity
         intent.putExtra(MY_ID, user.getId());
         intent.putExtra(MY_PORTRAIT, user.getFaceImage());
         intent.putExtra(MY_USERNAME, user.getUsername());
+        intent.putExtra(MY_DESC, user.getDescription());
         intent.putExtra(PUBLIC_KEY, publicKey);
         intent.putExtra(PRIVATE_KEY, privateKey);
         Log.d("accountId", user.getId());
@@ -455,7 +583,7 @@ public class MainActivity extends Activity
                     bundle.putString(MY_PORTRAIT, myPortrait);
 
                     //发送服务器
-                    String result = null;
+                    String result;
                     result = NetUtils.postKeyValue("id", myId, "portrait", myPortrait, updatePortraitUrl);
                     if(result != null){
                         runOnUiThread(new Runnable() {
@@ -475,12 +603,15 @@ public class MainActivity extends Activity
                 }
             });
 
-
-
-
         }else{
             Toast.makeText(this,"Failed to get image",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void showToast(String message){
+        runOnUiThread(() -> {
+            Toast.makeText(getApplication(), message, Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override

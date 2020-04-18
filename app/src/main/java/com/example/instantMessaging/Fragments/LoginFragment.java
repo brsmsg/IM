@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.common.app.Fragment;
 import com.example.factory.model.User;
 import com.example.factory.presenter.account.LoginContract;
+import com.example.factory.presenter.account.LoginPresenter;
 import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.Activities.MessageActivity;
 import com.example.instantMessaging.Fragments.message.ChatFragment;
@@ -93,7 +94,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     @Override
     public void setPresenter(LoginContract.Presenter presenter) {
-        mPresenter = checkNotNull(presenter);
+        mPresenter = checkNotNull( presenter);
     }
 
     @Override
@@ -226,6 +227,13 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @OnClick(R.id.txt_register)
     public void goToRegister(){
         mTrigger.changeFragment();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        //注销监听
+        Objects.requireNonNull(getActivity()).unregisterReceiver(mReceiver);
     }
 
     class MyReceiver extends BroadcastReceiver{

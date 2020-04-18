@@ -64,41 +64,41 @@ public class ContactPresenter implements ContactContract.Presenter{
      * 从网络拿数据并更新
      */
     public void refresh(final String myId){
-        String publicKey = RsaEncryptUtil.getPublicKey();
+//        String publicKey = RsaEncryptUtil.getPublicKey();
 
-        String result = "{\n" +
-                "    \"code\": 0,\n" +
-                "    \"msg\": \"success\",\n" +
-                "    \"data\": [\n" +
-                "        {\n" +
-                "            \"id\": \"brsmsg_1586334335390388232\", \n"+
-                "            \"username\": \"15172382300\",\n" +
-                "            \"faceImage\": \"http://101.200.240.107/images/1.jpg\",\n" +
-                "            \"description\": \"123456\", \n" +
-                "            \"publicKey\": \" " + publicKey +"\" \n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"brsmsg_1585897820995103737\", \n"+
-                "            \"username\": \"18571549924\",\n" +
-                "            \"faceImage\": \"http://101.200.240.107/images/2.jpg\",\n" +
-                "            \"description\": \"kbh\", \n" +
-                "            \"publickey\": \"123456\" \n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
+//        String result = "{\n" +
+//                "    \"code\": 0,\n" +
+//                "    \"msg\": \"success\",\n" +
+//                "    \"data\": [\n" +
+//                "        {\n" +
+//                "            \"id\": \"brsmsg_1586334335390388232\", \n"+
+//                "            \"username\": \"15172382300\",\n" +
+//                "            \"faceImage\": \"http://101.200.240.107/images/1.jpg\",\n" +
+//                "            \"description\": \"123456\", \n" +
+//                "            \"publicKey\": \" " + publicKey +"\" \n" +
+//                "        },\n" +
+//                "        {\n" +
+//                "            \"id\": \"brsmsg_1585897820995103737\", \n"+
+//                "            \"username\": \"18571549924\",\n" +
+//                "            \"faceImage\": \"http://101.200.240.107/images/2.jpg\",\n" +
+//                "            \"description\": \"kbh\", \n" +
+//                "            \"publickey\": \"123456\" \n" +
+//                "        }\n" +
+//                "    ]\n" +
+//                "}";
 
         Log.d("id", myId);
-//        Factory.getInstance().getThreadPool().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                String result = NetUtils.postKeyValue("id", myId, contactUrl);
+        Factory.getInstance().getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                String result = NetUtils.postKeyValue("id", myId, contactUrl);
                 if(result != null){
                     parseContactResult(result);
                 }else{
                     mContactView.showError(R.string.err_service);
                 }
-//            }
-//        });
+            }
+        });
 
     }
 

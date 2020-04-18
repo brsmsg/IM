@@ -102,6 +102,7 @@ public class SessionPresenter implements SessionContract.Presenter {
         if(msgIdList == null ){
             return;
         }
+        //有消息待签收
         for(String msgId:msgIdList){
             if(msgIdStr.toString().equals("")){
                 msgIdStr.append(msgId);
