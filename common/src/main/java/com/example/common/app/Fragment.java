@@ -101,4 +101,11 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
         return false;
     }
 
+    //Fragment中使用ButterKnife应在onDestroyView中unbind
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mRootUnbinder.unbind();
+    }
+
 }
