@@ -23,7 +23,7 @@ public class AccountActivity extends Activity implements FragmentTrigger {
     //登录Fragment
     private LoginFragment mLoginFragment;
     //注册Fragment
-    private Fragment mRegisterFragment;
+    private RegisterFragment mRegisterFragment;
 
     //登录Presenter
     private LoginPresenter mLoginPresenter;

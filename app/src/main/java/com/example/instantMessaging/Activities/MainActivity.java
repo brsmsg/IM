@@ -33,6 +33,7 @@ import com.example.common.app.Activity;
 import com.example.common.app.Fragment;
 import com.example.factory.Factory;
 import com.example.factory.model.User;
+import com.example.factory.presenter.Friend.SearchRequestPresenter;
 import com.example.factory.presenter.Session.SessionPresenter;
 import com.example.factory.presenter.contact.ContactPresenter;
 import com.example.instantMessaging.Activities.PopWindow.MPopupWindow;
@@ -57,7 +58,7 @@ public class MainActivity extends Activity
     private MessageFragment mMessageFragment;
     //联系人界面
     private ContactFragment mContactFragment;
-    //朋友圈界面
+    //好友请求界面
     private SearchFragment mSearchFragment;
 
     //用户id,头像，用户名以及KEY
@@ -75,6 +76,7 @@ public class MainActivity extends Activity
 
     private ContactPresenter mContactPresenter;
     private SessionPresenter mSessionPresenter;
+    private SearchRequestPresenter mSearchPresenter;
 
     private Bundle bundle;
 
@@ -219,10 +221,15 @@ public class MainActivity extends Activity
                 mContactPresenter = new ContactPresenter(mContactFragment);
                 changeFragment(mContactFragment);
                 return true;
+            //改为好友请求界面
             case R.id.main_moment:
                 mTitle.setText(R.string.main_moment);
                 if(mSearchFragment == null){
                     mSearchFragment = new SearchFragment();
+                    //传值给SearchFragment,用于处理好友请求myId
+                    mSearchFragment.setArguments(bundle);
+                    //创建查询好友请求Presenter实例
+                    mSearchPresenter = new SearchRequestPresenter(mSearchFragment);
                 }
                 changeFragment(mSearchFragment);
                 return true;

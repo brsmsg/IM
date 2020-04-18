@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -113,8 +114,73 @@ public class NetUtils {
     }
 
 
-    public static String postKeyValue(String key, String value){
-        return "";
+    /**
+     * 输入要查询的ID和查询者名称来得到返回数据 查询好友和发出好友请求
+     *
+     * @param key   the key
+     * @param value the value
+     * @param url   the url
+     * @return string result
+     */
+    public static String postKeyValue(String key, String value,String url)  {
+
+        String result = null;
+
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("myId",key)
+                .add("friendUsername",value)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            result = response.body().toString();
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+
+            return result;
+        }
+
+
     }
+
+    /**
+     * 输入要查询的ID来得到返回数据 拉取联系人和查询接收到的好友请求
+     *
+     * @param key the key
+     * @param url the url
+     * @return the string
+     * @throws IOException the io exception
+     */
+    public static String postKey(String key, String url) {
+        String result =null;
+
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = new FormBody.Builder()
+                .add("myId",key)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            result = response.body().toString();
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+
+            return result;
+        }
+
+
+
+    }
+
+
 
 }

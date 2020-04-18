@@ -19,7 +19,7 @@
     <!--  主界面  -->
     <string name="main_message">消息</string>
     <string name="main_contact">联系人</string>
-    <string name="main_moment">朋友圈</string>
+    <string name="main_moment">好友请求</string>
 
     <!--  个人信息界面  -->
     <string name="change_secret">修改密码</string>
