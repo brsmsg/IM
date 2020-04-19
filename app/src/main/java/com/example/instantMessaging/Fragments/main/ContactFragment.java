@@ -104,4 +104,6 @@ public class ContactFragment extends Fragment implements ContactContract.View{
         });
 
     }
+
+
 }

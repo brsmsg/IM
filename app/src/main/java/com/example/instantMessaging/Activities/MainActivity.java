@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -13,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -38,6 +36,7 @@ import com.example.common.app.Fragment;
 import com.example.factory.Factory;
 import com.example.factory.model.User;
 import com.example.factory.model.api.account.update.UsernameModel;
+import com.example.factory.presenter.Friend.SearchFriendPresenter;
 import com.example.factory.presenter.Friend.SearchRequestPresenter;
 import com.example.factory.presenter.Session.SessionPresenter;
 import com.example.factory.presenter.contact.ContactPresenter;
@@ -47,6 +46,7 @@ import com.example.instantMessaging.Activities.PopWindow.MPopupWindow;
 import com.example.instantMessaging.Fragments.main.ContactFragment;
 import com.example.instantMessaging.Fragments.main.MessageFragment;
 import com.example.instantMessaging.Fragments.main.SearchFragment;
+import com.example.instantMessaging.Fragments.main.SearchFriendFragment;
 import com.example.instantMessaging.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -67,6 +67,8 @@ public class MainActivity extends Activity
     private ContactFragment mContactFragment;
     //好友请求界面
     private SearchFragment mSearchFragment;
+    //查询好友界面
+    private SearchFriendFragment mSearchFriendFragment;
 
     private final static String updatePortraitUrl = "http://118.31.64.83:8080/account/update/portrait";
     private final static String updateUsernameUrl = "http://118.31.64.83:8080/account/update/username";
@@ -92,9 +94,11 @@ public class MainActivity extends Activity
     private String myUsername;
     private String myDesc;
 
+    //presenter
     private ContactPresenter mContactPresenter;
     private SessionPresenter mSessionPresenter;
     private SearchRequestPresenter mSearchPresenter;
+    private SearchFriendPresenter mSearchFriendPresenter;
 
     private Bundle bundle;
 
@@ -121,10 +125,8 @@ public class MainActivity extends Activity
     @BindView(R.id.nav_view)
     NavigationView navView;
 
-    @BindView(R.id.img_settings)
+    @BindView(R.id.img_search)
     ImageView mSettings;
-
-
 
     //DrawerLayout中的用户名和头像
     private TextView mPersonUsername;
@@ -313,8 +315,8 @@ public class MainActivity extends Activity
             Glide.with(this).load(myPortrait).into(mPersonPortrait);
             Log.d("portraitUrl", myPortrait);
         }
+
         //初始化webSocket
-//        Factory.getInstance().initWebSocket("ws://echo.websocket.org",this);
         Factory.getInstance().initWebSocket("ws://118.31.64.83:8081/ws", myId, this);
     }
 
@@ -405,16 +407,25 @@ public class MainActivity extends Activity
      * 点击ToolBar头像和设置
      * @param view View
      */
-    @OnClick({R.id.img_portrait,R.id.img_settings})
+    @OnClick({R.id.img_portrait,R.id.img_search})
     public void onViewClicked(View view){
         switch(view.getId()){
             case R.id.img_portrait:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 Log.d("MainActivity","you clicked portrait");
                 break;
-            case R.id.img_settings:
+            case R.id.img_search:
                 Log.d("MainActivity","you clicked settings");
-                //菜单
+                //切换fragment到搜索
+                if(mSearchFriendFragment == null){
+                    mSearchFriendFragment = new SearchFriendFragment();
+                    //传值给SearchFragment,用于处理好友请求myId
+                    mSearchFriendFragment.setArguments(bundle);
+                    //创建查询好友请求Presenter实例
+                    mSearchFriendPresenter = new SearchFriendPresenter(mSearchFriendFragment);
+                }
+                changeFragment(mSearchFriendFragment);
+
                 break;
             default:
                 break;

@@ -44,7 +44,7 @@
                 />
 
             <ImageView
-                android:id="@+id/img_settings"
+                android:id="@+id/img_search"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="end|center_vertical"

@@ -7,13 +7,18 @@ import com.example.factory.Factory;
 import com.example.factory.R;
 import com.example.factory.model.User;
 import com.example.factory.model.api.friend.SearchFriendModel;
+import com.example.factory.model.api.friend.SendFriendRequestModel;
+import com.example.factory.model.db.Contact;
 import com.example.factory.utils.NetUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchFriendPresenter implements SearchFriendContract.Presenter{
 
     private final String searchFriendUrl = "http://118.31.64.83:8080/friend/search";
+    private final String sendFriendRequestUrl = "http://118.31.64.83:8080/friend/searchFriendRequest";
 
     private SearchFriendContract.View mSearchFriendView;
 
@@ -25,7 +30,7 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
 
     @Override
     public void start() {
-
+        mSearchFriendView.initRecycler();
     }
 
     @Override
@@ -37,9 +42,8 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
                 @Override
                 public void run() {
 
-                    String result = NetUtils.postKeyValue(myId,friendUsername,searchFriendUrl);
+                    String result = NetUtils.postKeyValue("myId",myId, "friendUsername", friendUsername,searchFriendUrl);
 
-                    Log.d("searchFriend", "result");
                     if (result != null){
                         parseFriendResult(result);
                     }else {
@@ -48,8 +52,6 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
                 }
             });
         }
-
-
     }
 
 
@@ -69,7 +71,45 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
             mSearchFriendView.showError(message);
 
         }
+    }
 
+
+    //发送好友请求
+    @Override
+    public void sendFriendRequest(final String myId, final String friendUsername) {
+        //检查能否获取当前用户名
+        if (TextUtils.isEmpty(myId)){
+            mSearchFriendView.showError(com.example.common.R.string.err_searchrequest);
+        }else{
+            Factory.getInstance().getThreadPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    String result = NetUtils.postKeyValue("myId", myId,"friendUsername", friendUsername,sendFriendRequestUrl);
+                    Log.d("sendFriendRequest", "result");
+                    if (result!=null){
+                        parseSendResult(result);
+                    }else{
+                        //出现服务器错误无法返回成功信息
+                        mSearchFriendView.showError(com.example.common.R.string.err_service);
+                    }
+                }
+            });
+        }
 
     }
+
+    //解析返回信息
+    @Override
+    public void parseSendResult(String result) {
+
+        SendFriendRequestModel sendFriendRequestModel = Factory.getInstance().getGson().fromJson(result,SendFriendRequestModel.class);
+        String msg = sendFriendRequestModel.getMsg();
+        if (msg != null && msg.equals("success")){
+            mSearchFriendView.sendRequestSuccess(msg);
+        }else{
+            mSearchFriendView.showError(com.example.common.R.string.err_service);
+        }
+
+    }
+
 }
