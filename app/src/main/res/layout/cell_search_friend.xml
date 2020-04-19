@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+
+    <ImageView
+        android:id="@+id/img_portrait_contact"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/default_portrait"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="60dp">
+
+        <TextView
+            android:id="@+id/txt_userName_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="brsmsg"/>
+
+        <TextView
+            android:id="@+id/txt_desc_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="happy every day" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btn_add_friend"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="30dp"
+        android:src="@drawable/ic_add"
+        android:clickable="true"
+        android:focusable="true" />
+</FrameLayout>
