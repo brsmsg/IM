@@ -58,8 +58,9 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
             Factory.getInstance().getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
-                    /*String result = NetUtils.postKey(myId,searchRequestUrl);*/
-                    String result = "{\n" +
+                    String result = NetUtils.postKey(myId,searchRequestUrl);
+                    //测试用数据
+                    /*String result = "{\n" +
                             "    \"code\": 0,\n" +
                             "    \"msg\": \"success\",\n" +
                             "    \"data\": [\n" +
@@ -85,7 +86,7 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                             "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
                             "        }\n" +
                             "    ]\n" +
-                            "}";
+                            "}";*/
 
                     Log.d("searchRequest", result);
                     if (result != null){
@@ -121,8 +122,6 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                 requestList.add(friendRequest);
             }
             //刷新界面，调用SearchFragment中的方法，其包含在runOnUiThread中
-            Logger.d(requestList.get(2).getSendUserId());
-
             mSearchRequestView.refreshRecycler(requestList);
         }else{
             mSearchRequestView.showError(com.example.common.R.string.err_friendrequest_null);

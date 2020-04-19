@@ -89,7 +89,7 @@ public class SearchFragment extends Fragment implements SearchRequestContract.Vi
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d("refreshRecycler",requestList.get(2).getSendUserId());
+
                 mSearchAdapter.addData(requestList);
             }
         });
@@ -120,8 +120,7 @@ public class SearchFragment extends Fragment implements SearchRequestContract.Vi
                     Toast.makeText(view.getContext(),"接受好友请求",Toast.LENGTH_SHORT).show();
                     //处理好友请求
                     mPresenter.operateRequest(myId,friendId,operateType);
-/*                    //删除处理完的数据
-                    mSearchAdapter.removeData(position);*/
+
                     break;
 
                 case R.id.refuse_friend:
@@ -130,7 +129,6 @@ public class SearchFragment extends Fragment implements SearchRequestContract.Vi
                     operateType = REFUSE;
                     Toast.makeText(view.getContext(),"拒绝好友请求",Toast.LENGTH_SHORT).show();
                     mPresenter.operateRequest(myId,friendId,operateType);
-/*                    mSearchAdapter.removeData(position);*/
                     break;
                 default:
                     break;
