@@ -12,13 +12,13 @@ import com.example.factory.model.api.friend.SearchFriendModel;
 import com.example.factory.model.api.friend.SearchFriendRequestModel;
 import com.example.factory.model.api.friend.SendFriendRequestModel;
 import com.example.factory.utils.NetUtils;
+import com.orhanobut.logger.Logger;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 /**
  * 包含查询好友请求和处理好友请求的功能
@@ -39,8 +39,8 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
 
     private SearchRequestContract.View mSearchRequestView;
 
-    //好友请求列表
-    private List<FriendRequest> requestList = new ArrayList<>();
+/*    //用于显示的好友请求列表，包含sendUserId和sendDateTime
+    private List<FriendRequest> requestList = new ArrayList<>();*/
 
 
     //构造函数
@@ -58,10 +58,38 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
             Factory.getInstance().getThreadPool().execute(new Runnable() {
                 @Override
                 public void run() {
-                    String result = NetUtils.postKey(myId,searchRequestUrl);
+                    /*String result = NetUtils.postKey(myId,searchRequestUrl);*/
+                    String result = "{\n" +
+                            "    \"code\": 0,\n" +
+                            "    \"msg\": \"success\",\n" +
+                            "    \"data\": [\n" +
+                            "        {\n" +
+                            "            \"id\": \"brsmsg_1586334335390388232\", \n"+
+                            "            \"sendUserId\": \"15172382300\",\n" +
+                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
+                            "            \"isAccept\": 0,\n" +
+                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
+                            "        },\n" +
+                            "        {\n" +
+                            "            \"id\": \"brsmsg_1585897820995103737\", \n"+
+                            "            \"sendUserId\": \"18571549924\",\n" +
+                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
+                            "            \"isAccept\": 0,\n" +
+                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
+                            "        },\n" +
+                            "        {\n" +
+                            "            \"id\": \"brsmsg_1585897820995103737\", \n"+
+                            "            \"sendUserId\": \"17354424537\",\n" +
+                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
+                            "            \"isAccept\": 0,\n" +
+                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
+                            "        }\n" +
+                            "    ]\n" +
+                            "}";
+
                     Log.d("searchRequest", result);
                     if (result != null){
-//                        String json = createJson().toString();
+                       /* Logger.json(result);*/
                         parseRequestResult(result);
                     }else{
                         mSearchRequestView.showError(com.example.common.R.string.err_friendrequest_null);
@@ -71,23 +99,6 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
         }
 
     }
-    //测试Logger库使用
-    private JSONObject createJson() {
-        try {
-            JSONObject person = new JSONObject();
-            person.put("phone", "12315");
-            JSONObject address = new JSONObject();
-            address.put("country", "china");
-            address.put("province", "fujian");
-            address.put("city", "xiamen");
-            person.put("address", address);
-            person.put("married", true);
-            return person;
-        } catch (JSONException e) {
-        }
-        return null;
-    }
-
 
 
     //解析返回的好友请求
@@ -95,18 +106,24 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
     public void parseRequestResult(String result) {
         SearchFriendRequestModel searchFriendRequestModel = Factory.getInstance()
                 .getGson().fromJson(result,SearchFriendRequestModel.class);
+
         String msg = searchFriendRequestModel.getMsg();
         if (msg != null && msg.equals("success")){
 
-            //改成list
-            List<FriendRequest> data = searchFriendRequestModel.getData();
-            //获取sendUserId和sendDateTime来构造用于显示的FriendRequest实例
+            //改成list，存放返回的所有data信息
+            List<FriendRequest> dataList =  searchFriendRequestModel.getData();
+            //循环遍历dataList，获取sendUserId和sendDateTime来构造用于显示的requestList实例
+            List<FriendRequest> requestList = new ArrayList<>();
+            for (FriendRequest data : dataList){
+                //创建用于显示的FriendRequest实例
+                FriendRequest friendRequest = new FriendRequest(data.getSendUserId(),data.getRequestDateTime());
+                //每次在列表末尾添加数据
+                requestList.add(friendRequest);
+            }
+            //刷新界面，调用SearchFragment中的方法，其包含在runOnUiThread中
+            Logger.d(requestList.get(2).getSendUserId());
 
-
-            //此处应该循环遍历List
-
-//            FriendRequest dataShow = new FriendRequest(data.getSendUserId(),data.getRequestDateTime());
-//            mSearchRequestView.refreshUi(dataShow);
+            mSearchRequestView.refreshRecycler(requestList);
         }else{
             mSearchRequestView.showError(com.example.common.R.string.err_friendrequest_null);
 
@@ -124,25 +141,24 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                 public void run() {
                     OperateFriendRequestModel operateFriendRequestModel = new OperateFriendRequestModel(myId,friendId,operateType);
                     String result = NetUtils.postJson(operateFriendRequestModel,operateRequestUrl);
-                    Log.d("operateRequest", "result");
+                    Log.d("operateRequest",result);
                     if (result != null){
-                        parseOperateResult(result);
+                        parseOperateResult(result,friendId);
                     }else{
                         mSearchRequestView.showError(com.example.common.R.string.err_service);
                     }
                 }
             });
         }
-
     }
 
     //解析处理好友请求之后的结果
     @Override
-    public void parseOperateResult(String result) {
+    public void parseOperateResult(String result, String sendUserId) {
         OperateFriendRequestModel operateFriendRequestModel = Factory.getInstance().getGson().fromJson(result,OperateFriendRequestModel.class);
         String msg = operateFriendRequestModel.getMsg();
         if (msg != null && msg.equals("success")){
-            mSearchRequestView.operateSuccess(msg);
+            mSearchRequestView.operateResult(sendUserId);
         }else{
             mSearchRequestView.showError(com.example.common.R.string.err_service);
         }
@@ -227,10 +243,10 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
     }
 
 
-    //更新数据并初始化FriendRequest数据
+    //只管初始化Recycler，传入空的requestList
     @Override
     public void start() {
-        //List<FriendRequest> requestList = new ArrayList<>();
+        List<FriendRequest> requestList = new ArrayList<>();
         mSearchRequestView.initRecycler(requestList);
 
     }

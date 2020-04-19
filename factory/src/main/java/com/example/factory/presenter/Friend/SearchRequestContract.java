@@ -12,14 +12,14 @@ public interface SearchRequestContract extends BaseContract {
 
     interface View extends BaseView<Presenter>{
 
-        //处理好友请求成功提示
-        void operateSuccess(String msg);
+        //处理好友请求后的结果提示
+        void operateResult(String sendUserId);
 
 
         //初始化好友请求列表的内容
         void initRecycler(List<FriendRequest> requestList);
-        //刷新好友请求界面，向RecyclerView中添加数据
-        void refreshUi(FriendRequest friendRequest);
+        //刷新好友请求界面
+        void refreshRecycler(List<FriendRequest> requestList);
 
 
 
@@ -47,7 +47,7 @@ public interface SearchRequestContract extends BaseContract {
         //处理好友请求
         void operateRequest(String myId,String friendId,int operateType);
         //解析处理结果
-        void parseOperateResult(String result);
+        void parseOperateResult(String result, String sendUserId);
 
 
         //查询好友

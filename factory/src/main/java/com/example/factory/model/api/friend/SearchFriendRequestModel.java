@@ -17,10 +17,12 @@ public class SearchFriendRequestModel {
     private String msg;
     private List<FriendRequest> data;
 
+/*
     //发送请求
     public SearchFriendRequestModel(String myId) {
         this.myId = myId;
     }
+*/
 
     //返回成功
     public SearchFriendRequestModel(String code, String msg, List<FriendRequest> data) {

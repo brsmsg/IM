@@ -86,7 +86,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
     }
 
     /**
-     * Remove data.
+     * 根据位置删除数据
      *
      * @param position the position
      */
@@ -99,21 +99,40 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
     }
 
     /**
-     * Add data.
+     * 遍历mRequestList，根据sendUserId来删除时数据
      *
-     * @param friendRequest the friend request
+     * @param sendUserId the send user id
      */
-    public void addData(FriendRequest friendRequest){
-        //相同的用户发出的好友申请保留最新的一条
-        for(int i = 0; i<mRequestList.size(); i++){
-            if(mRequestList.get(i).getSendUserId().equals(friendRequest.getSendUserId())){
-                Log.d("need2remove", String.valueOf(i));
+    public void removeData(String sendUserId){
+        for (int i = 0;i<mRequestList.size();i++){
+            if (mRequestList.get(i).getSendUserId().equals(sendUserId)){
                 mRequestList.remove(i);
-                notifyItemChanged(i);
+                notifyItemRemoved(i);
+                //错位删除时整体刷新
+                notifyDataSetChanged();
+
             }
         }
-        mRequestList.add(0,friendRequest);
-        notifyItemChanged(0);
+    }
+
+    /**
+     * 添加整个列表
+     *
+     * @param requestList
+     */
+    public void addData(List<FriendRequest> requestList){
+        //初始化后的mRequestList与传入的requestList进行比较，删除sendUserId相同的部分，保留最新的发送时间
+        for (int i = 0; i<requestList.size();i++){//遍历刷新的好友请求
+            for (int j = 0; j<mRequestList.size();j++){//遍历之前的好友请求
+                if (requestList.get(i).getSendUserId().equals(mRequestList.get(j).getSendUserId())){
+                    //删除mRequestList中重复的数据
+                    removeData(j);
+                }
+            }
+            mRequestList.add(0,requestList.get(i));
+            notifyItemChanged(0);
+        }
+
     }
 
 
