@@ -12,7 +12,6 @@ import com.example.factory.model.api.friend.SearchFriendModel;
 import com.example.factory.model.api.friend.SearchFriendRequestModel;
 import com.example.factory.model.api.friend.SendFriendRequestModel;
 import com.example.factory.utils.NetUtils;
-import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,10 +61,7 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                     String result = NetUtils.postKey(myId,searchRequestUrl);
                     Log.d("searchRequest", result);
                     if (result != null){
-                        Log.d("searchRequest", "result2");
-                        String json = createJson().toString();
-                        Logger.json(json);
-                        Logger.json(result);
+//                        String json = createJson().toString();
                         parseRequestResult(result);
                     }else{
                         mSearchRequestView.showError(com.example.common.R.string.err_friendrequest_null);
@@ -88,7 +84,6 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
             person.put("married", true);
             return person;
         } catch (JSONException e) {
-            Logger.e(e, "create json error occured");
         }
         return null;
     }
@@ -102,10 +97,16 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                 .getGson().fromJson(result,SearchFriendRequestModel.class);
         String msg = searchFriendRequestModel.getMsg();
         if (msg != null && msg.equals("success")){
-            FriendRequest data = searchFriendRequestModel.getData();
+
+            //改成list
+            List<FriendRequest> data = searchFriendRequestModel.getData();
             //获取sendUserId和sendDateTime来构造用于显示的FriendRequest实例
-            FriendRequest dataShow = new FriendRequest(data.getSendUserId(),data.getRequestDateTime());
-            mSearchRequestView.refreshUi(dataShow);
+
+
+            //此处应该循环遍历List
+
+//            FriendRequest dataShow = new FriendRequest(data.getSendUserId(),data.getRequestDateTime());
+//            mSearchRequestView.refreshUi(dataShow);
         }else{
             mSearchRequestView.showError(com.example.common.R.string.err_friendrequest_null);
 
@@ -201,7 +202,6 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                 @Override
                 public void run() {
                     String result = NetUtils.postKeyValue(myId,friendUsername,sendFriendRequestUrl);
-                    Log.d("sendFriendRequest", "result");
                     if (result!=null){
                         parseSendResult(result);
                     }else{

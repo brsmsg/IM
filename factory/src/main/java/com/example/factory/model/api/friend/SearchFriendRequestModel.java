@@ -2,6 +2,8 @@ package com.example.factory.model.api.friend;
 
 import com.example.factory.model.FriendRequest;
 
+import java.util.List;
+
 /**
  * 查询接收到的好友请求
  */
@@ -13,7 +15,7 @@ public class SearchFriendRequestModel {
     //返回成功
     private String code;
     private String msg;
-    private FriendRequest data;
+    private List<FriendRequest> data;
 
     //发送请求
     public SearchFriendRequestModel(String myId) {
@@ -21,7 +23,7 @@ public class SearchFriendRequestModel {
     }
 
     //返回成功
-    public SearchFriendRequestModel(String code, String msg, FriendRequest data) {
+    public SearchFriendRequestModel(String code, String msg, List<FriendRequest> data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -51,11 +53,11 @@ public class SearchFriendRequestModel {
         this.msg = msg;
     }
 
-    public FriendRequest getData() {
+    public List<FriendRequest> getData() {
         return data;
     }
 
-    public void setData(FriendRequest data) {
+    public void setData(List<FriendRequest> data) {
         this.data = data;
     }
 }

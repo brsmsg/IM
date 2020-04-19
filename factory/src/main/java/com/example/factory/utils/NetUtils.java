@@ -137,7 +137,7 @@ public class NetUtils {
                 .build();
         try{
             Response response = client.newCall(request).execute();
-            result = response.body().toString();
+            result = response.body().string();
         }catch (IOException e){
             e.printStackTrace();
         }finally {
@@ -169,7 +169,7 @@ public class NetUtils {
                 .build();
         try{
             Response response = client.newCall(request).execute();
-            result = response.body().toString();
+            result = response.body().string();
         }catch (IOException e){
             e.printStackTrace();
         }finally {
