@@ -168,7 +168,7 @@ public class MainActivity extends Activity
         mPublicKey = getIntent().getExtras().getString(PUBLIC_KEY);
         mPrivateKey = getIntent().getExtras().getString(PRIVATE_KEY);
 
-        //为bundle赋值
+        //为bundle赋值，用于fragment获取
         bundle = new Bundle();
         bundle.putString(MY_ID, myId);
         bundle.putString(MY_USERNAME, myUsername);
@@ -228,9 +228,10 @@ public class MainActivity extends Activity
                     mSearchFragment = new SearchFragment();
                     //传值给SearchFragment,用于处理好友请求myId
                     mSearchFragment.setArguments(bundle);
-                    //创建查询好友请求Presenter实例
-                    mSearchPresenter = new SearchRequestPresenter(mSearchFragment);
+
                 }
+                //创建查询好友请求Presenter实例
+                mSearchPresenter = new SearchRequestPresenter(mSearchFragment);
                 changeFragment(mSearchFragment);
                 return true;
         }

@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,17 +14,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.factory.model.FriendRequest;
 import com.example.instantMessaging.R;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAdapter.ViewHolder> {
+public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAdapter.ViewHolder> implements View.OnClickListener {
 
     //返回的好友请求列表FriendRequest类
-    private List<FriendRequest> mRequestList;
+    public List<FriendRequest> mRequestList;
     //自身的上下文
     private Context mContext;
 
@@ -51,7 +47,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         //ViewHolder内部类的构造函数
         final ViewHolder holder = new ViewHolder(view);
         //给接受按钮设置点击事件
-        holder.mAccept.setOnClickListener(new View.OnClickListener() {
+        /*holder.mAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
@@ -68,7 +64,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
                 Toast.makeText(v.getContext(),"拒绝好友请求",Toast.LENGTH_SHORT).show();
                 removeData(position);
             }
-        });
+        });*/
         return holder;
     }
 
@@ -77,6 +73,10 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
 
         //setTag为当前view添加状态，之后直接点击调用getTag便可获取其position
         holder.itemView.setTag(position);
+        //接收和拒绝按钮
+        holder.mAccept.setTag(position);
+        holder.mRefuse.setTag(position);
+
         //获取当前点击的FriendRequest实例
         FriendRequest friendRequest = mRequestList.get(position);
         //数据加载
@@ -118,20 +118,39 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
 
 
 
-
-
-
-
-
     @Override
     public int getItemCount() {
         return mRequestList.size();
     }
 
+
+    //点击事件回调
+    @Override
+    public void onClick(View v) {
+        if(mOnItemClickListener != null){
+            int pos = (int) v.getTag();//找到当前点击的部位
+            mOnItemClickListener.onItemClick(v,pos);
+        }
+
+    }
+
+    //自定义回调接口，实现click事件
+    public interface OnItemClickListener{
+        void onItemClick(View view, int position);
+    }
+    //声明自定义的接口
+    private OnItemClickListener mOnItemClickListener;
+
+    //定义方法并传给外面的使用者
+    public void setOnItemClickListener(OnItemClickListener  listener) {
+        this.mOnItemClickListener  = listener;
+    }
+
+
     /**
      * 为提高滑动效率而使用ViewHolder进行缓存
      */
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.txt_sendUserId)
         TextView mSendUserId;
@@ -145,9 +164,15 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         @BindView(R.id.refuse_friend)
         Button mRefuse;
 
+        //构造方法
          public ViewHolder(@NonNull View itemView) {
              super(itemView);
              ButterKnife.bind(this,itemView);
+
+             mAccept.setOnClickListener(SearchRecyclerAdapter.this);
+             mRefuse.setOnClickListener(SearchRecyclerAdapter.this);
          }
+
+
      }
 }

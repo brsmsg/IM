@@ -12,6 +12,11 @@ import com.example.factory.model.api.friend.SearchFriendModel;
 import com.example.factory.model.api.friend.SearchFriendRequestModel;
 import com.example.factory.model.api.friend.SendFriendRequestModel;
 import com.example.factory.utils.NetUtils;
+import com.orhanobut.logger.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +50,7 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
         mSearchRequestView.setPresenter(this);
     }
 
-    //查询接收到的好友请求
+    //查询接收到的好友请求，写入star方法中fragment创建时调用
     @Override
     public void searchRequest(final String myId) {
         if(TextUtils.isEmpty(myId)){
@@ -55,8 +60,12 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                 @Override
                 public void run() {
                     String result = NetUtils.postKey(myId,searchRequestUrl);
-                    Log.d("searchRequest", "result");
+                    Log.d("searchRequest", result);
                     if (result != null){
+                        Log.d("searchRequest", "result2");
+                        String json = createJson().toString();
+                        Logger.json(json);
+                        Logger.json(result);
                         parseRequestResult(result);
                     }else{
                         mSearchRequestView.showError(com.example.common.R.string.err_friendrequest_null);
@@ -66,6 +75,25 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
         }
 
     }
+    //测试Logger库使用
+    private JSONObject createJson() {
+        try {
+            JSONObject person = new JSONObject();
+            person.put("phone", "12315");
+            JSONObject address = new JSONObject();
+            address.put("country", "china");
+            address.put("province", "fujian");
+            address.put("city", "xiamen");
+            person.put("address", address);
+            person.put("married", true);
+            return person;
+        } catch (JSONException e) {
+            Logger.e(e, "create json error occured");
+        }
+        return null;
+    }
+
+
 
     //解析返回的好友请求
     @Override
@@ -202,9 +230,8 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
     //更新数据并初始化FriendRequest数据
     @Override
     public void start() {
-        List<FriendRequest> requestList = new ArrayList<>();
+        //List<FriendRequest> requestList = new ArrayList<>();
         mSearchRequestView.initRecycler(requestList);
-
 
     }
 }
