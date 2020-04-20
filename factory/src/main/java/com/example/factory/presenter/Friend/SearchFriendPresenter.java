@@ -18,7 +18,7 @@ import java.util.List;
 public class SearchFriendPresenter implements SearchFriendContract.Presenter{
 
     private final String searchFriendUrl = "http://118.31.64.83:8080/friend/search";
-    private final String sendFriendRequestUrl = "http://118.31.64.83:8080/friend/searchFriendRequest";
+    private final String sendFriendRequestUrl = "http://118.31.64.83:8080/friend/sendFriendRequest";
 
     private SearchFriendContract.View mSearchFriendView;
 
@@ -33,6 +33,11 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
         mSearchFriendView.initRecycler();
     }
 
+    /**
+     * 搜索好友
+     * @param myId 自己id
+     * @param friendUsername 对方用户名
+     */
     @Override
     public void searchFriend(final String myId, final String friendUsername) {
         if(TextUtils.isEmpty(friendUsername)){
@@ -69,12 +74,15 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
         }else{
             //返回错误信息
             mSearchFriendView.showError(message);
-
         }
     }
 
 
-    //发送好友请求
+    /**
+     * 发送好友请求
+     * @param myId
+     * @param friendUsername
+     */
     @Override
     public void sendFriendRequest(final String myId, final String friendUsername) {
         //检查能否获取当前用户名
@@ -85,7 +93,6 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
                 @Override
                 public void run() {
                     String result = NetUtils.postKeyValue("myId", myId,"friendUsername", friendUsername,sendFriendRequestUrl);
-                    Log.d("sendFriendRequest", "result");
                     if (result!=null){
                         parseSendResult(result);
                     }else{
@@ -107,7 +114,18 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
         if (msg != null && msg.equals("success")){
             mSearchFriendView.sendRequestSuccess(msg);
         }else{
-            mSearchFriendView.showError(com.example.common.R.string.err_service);
+            String message = sendFriendRequestModel.getMessage();
+            Log.d("result", message);
+//            mSearchFriendView.showError(com.example.common.R.string.err_service);
+            switch (message){
+                case "You can't add yourself as a friend.":
+                    mSearchFriendView.showError("您不能添加自己为好友");
+                    break;
+                case "This user has been your friend.":
+                    mSearchFriendView.showError("该用户已经是您的好友");
+
+            }
+
         }
 
     }

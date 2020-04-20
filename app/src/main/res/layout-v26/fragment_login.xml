@@ -8,21 +8,16 @@
     tools:context=".Fragments.LoginFragment">
 
     <!-- TODO: Update blank fragment layout -->
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:paddingBottom="30dp"-->
-<!--        android:paddingTop="20dp"-->
-<!--        app:title="@string/label_login"-->
-<!--        app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"-->
-<!--        >-->
-
-<!--    </androidx.appcompat.widget.Toolbar>-->
-
-    <FrameLayout
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"/>
+        android:paddingBottom="30dp"
+        android:paddingTop="20dp"
+        app:title="@string/label_login"
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"
+        >
+
+    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,7 +97,7 @@
                 android:text="记住密码"
                 android:layout_weight="1"
                 android:checked="true"
-                android:layout_marginStart="30dp"
+                android:layout_marginHorizontal="20dp"
                 />
 
             <CheckBox
@@ -111,7 +106,6 @@
                 android:layout_height="wrap_content"
                 android:text="自动登录"
                 android:layout_weight="1"
-                android:layout_marginStart="30dp"
                 />
 
         </LinearLayout>

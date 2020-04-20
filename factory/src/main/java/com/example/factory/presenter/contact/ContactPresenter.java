@@ -72,14 +72,14 @@ public class ContactPresenter implements ContactContract.Presenter{
 //                "    \"data\": [\n" +
 //                "        {\n" +
 //                "            \"id\": \"brsmsg_1586334335390388232\", \n"+
-//                "            \"username\": \"15172382300\",\n" +
+//                "            \"ic_username\": \"15172382300\",\n" +
 //                "            \"faceImage\": \"http://101.200.240.107/images/1.jpg\",\n" +
 //                "            \"description\": \"123456\", \n" +
 //                "            \"publicKey\": \" " + publicKey +"\" \n" +
 //                "        },\n" +
 //                "        {\n" +
 //                "            \"id\": \"brsmsg_1585897820995103737\", \n"+
-//                "            \"username\": \"18571549924\",\n" +
+//                "            \"ic_username\": \"18571549924\",\n" +
 //                "            \"faceImage\": \"http://101.200.240.107/images/2.jpg\",\n" +
 //                "            \"description\": \"kbh\", \n" +
 //                "            \"publickey\": \"123456\" \n" +

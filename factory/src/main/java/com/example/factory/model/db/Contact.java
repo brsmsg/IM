@@ -79,7 +79,7 @@ public class Contact extends BaseModel implements DiffUtils.Differ<Contact> {
     @Override
     public String toString() {
         return "id: " + id + "\n"
-                +"username: " + username + "\n"
+                +"ic_username: " + username + "\n"
                 +"faceImage" + faceImage + "\n"
                 +"publicKey" + publicKey + "\n";
     }

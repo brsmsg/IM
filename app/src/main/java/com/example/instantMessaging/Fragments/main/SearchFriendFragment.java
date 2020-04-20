@@ -92,7 +92,7 @@ public class SearchFriendFragment extends Fragment implements SearchFriendContra
     @Override
     public void searchSuccess(User data) {
         //recycler添加
-        getActivity().runOnUiThread(()->{mAdapter.add(data);});
+        getActivity().runOnUiThread(() -> mAdapter.add(data));
         //重置editText
         mSearchUsername.setText("");
     }
@@ -111,7 +111,9 @@ public class SearchFriendFragment extends Fragment implements SearchFriendContra
 
     @Override
     public void showError(String message) {
-
+        getActivity().runOnUiThread(()->{
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        });
     }
 
 
