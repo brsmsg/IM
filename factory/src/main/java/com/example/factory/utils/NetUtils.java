@@ -17,6 +17,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 /**
  * @author brsmsg
@@ -86,6 +88,8 @@ public class NetUtils {
 
         RequestBody body = RequestBody.create(json,
                 MediaType.parse("application/json; charset=utf-8"));
+
+        Log.d("body", body.toString());
 
         Request request = new Request.Builder()
                 .url(url)
