@@ -125,18 +125,20 @@
             <!--            android:text="@string/login_btn"-->
             <!--        />-->
 
-            <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+            <com.xuexiang.xui.widget.button.roundbutton.RoundButton
+                style="@style/RoundButton.Auto"
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:text="登录"
+                android:text="@string/login_btn"
                 android:layout_gravity="center"
                 android:padding="10dp"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/primaryColor"
-                app:qmui_borderColor="@color/primaryColor"
+                app:rb_borderColor="@color/primaryColor"
+
                 />
 
 

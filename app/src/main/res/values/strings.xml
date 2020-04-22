@@ -32,5 +32,9 @@
     <!--  消息界面  -->
     <string name="btn_message_send">发送</string>
 
+    <!--好友请求界面-->
+    <string name="accept_friend">同意</string>
+    <string name="refuse_friend">拒绝</string>
+
 
 </resources>

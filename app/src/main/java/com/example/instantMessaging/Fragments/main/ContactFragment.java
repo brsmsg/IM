@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.Activities.MessageActivity;
 import com.example.instantMessaging.Fragments.main.adapter.ContactRecyclerAdapter;
 import com.example.instantMessaging.R;
+import com.xuexiang.xui.widget.picker.wheelview.WheelView;
 
 import java.util.List;
 
@@ -92,6 +94,7 @@ public class ContactFragment extends Fragment implements ContactContract.View{
             }
         });
         mRecycler.setAdapter(mContactAdapter);
+        mRecycler.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
     @Override

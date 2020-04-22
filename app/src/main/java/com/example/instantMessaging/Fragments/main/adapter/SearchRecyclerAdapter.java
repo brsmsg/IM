@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.factory.model.FriendRequest;
 import com.example.instantMessaging.R;
 
+import com.xuexiang.xui.widget.button.ButtonView;
+import com.xuexiang.xui.widget.button.roundbutton.RoundButton;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,25 +49,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
                 .inflate(R.layout.cell_request,parent,false);
         //ViewHolder内部类的构造函数
         final ViewHolder holder = new ViewHolder(view);
-        //给接受按钮设置点击事件
-        /*holder.mAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                FriendRequest friendRequest = mRequestList.get(position);
-                Toast.makeText(v.getContext(),"接受好友请求",Toast.LENGTH_SHORT).show();
-                removeData(position);
-            }
-        });
-        holder.mRefuse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                FriendRequest friendRequest = mRequestList.get(position);
-                Toast.makeText(v.getContext(),"拒绝好友请求",Toast.LENGTH_SHORT).show();
-                removeData(position);
-            }
-        });*/
+
         return holder;
     }
 
@@ -81,7 +66,9 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         FriendRequest friendRequest = mRequestList.get(position);
         //数据加载
         holder.mSendUserId.setText(friendRequest.getSendUserId());
-        holder.mDateTime.setText(friendRequest.getRequestDateTime());
+        holder.mDateTime.setText(friendRequest.getRequestDateTime().substring(0,4)+
+                "年"+friendRequest.getRequestDateTime().substring(5,7)+
+                "月"+friendRequest.getRequestDateTime().substring(8,10)+"日");
 
     }
 
@@ -178,16 +165,15 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         TextView mDateTime;
 
         @BindView(R.id.accept_friend)
-        Button mAccept;
+        ButtonView mAccept;
 
         @BindView(R.id.refuse_friend)
-        Button mRefuse;
+        ButtonView mRefuse;
 
         //构造方法
          public ViewHolder(@NonNull View itemView) {
              super(itemView);
              ButterKnife.bind(this,itemView);
-
              mAccept.setOnClickListener(SearchRecyclerAdapter.this);
              mRefuse.setOnClickListener(SearchRecyclerAdapter.this);
          }

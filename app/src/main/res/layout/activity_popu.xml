@@ -22,6 +22,7 @@
             android:gravity="center"
             android:padding="10dip"
             android:text="拍照"
+            android:textColor="@color/black"
             />
 
         <TextView
@@ -31,6 +32,7 @@
             android:gravity="center"
             android:padding="10dip"
             android:text="从相册选取"
+            android:textColor="@color/black"
             />
 
         <TextView
@@ -40,6 +42,7 @@
             android:gravity="center"
             android:padding="10dip"
             android:text="取消"
+            android:textColor="@color/black"
             />
     </LinearLayout>
 

@@ -224,7 +224,7 @@ public class MainActivity extends Activity
                     final EditText oldPwdEditText = updatePwdDialog.findViewById(R.id.pwd_old);
                     final EditText newPwdEditText = updatePwdDialog.findViewById(R.id.pwd_new);
                     AlertDialog.Builder pwdInputDialog = new AlertDialog.Builder(this);
-                    pwdInputDialog.setTitle("请输入原密码以及新密码")
+                    pwdInputDialog.setTitle("修改密码")
                             .setView(updatePwdDialog)
                             .setPositiveButton("确定", (dialog, which) -> {
                                 Factory.getInstance().getThreadPool().execute(() -> {

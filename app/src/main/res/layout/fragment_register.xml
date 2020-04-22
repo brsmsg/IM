@@ -14,6 +14,8 @@
         android:paddingBottom="30dp"
         android:paddingTop="20dp"
         app:title="@string/label_register"
+        android:layout_gravity="center"
+        android:gravity="center"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"
         >
 
@@ -24,12 +26,19 @@
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_username"
+                android:layout_gravity="center_vertical"/>
 
             <EditText
                 android:id="@+id/reg_edit_username"
@@ -37,7 +46,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/login_username"
                 android:maxLines="1"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:layout_marginStart="10dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -46,13 +56,20 @@
             android:orientation="horizontal"
             android:paddingTop="10dp">
 
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_password"
+                android:layout_gravity="center_vertical"/>
+
             <EditText
                 android:id="@+id/reg_edit_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login_password"
                 android:maxLines="1"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                android:layout_marginStart="10dp"/>
 
         </LinearLayout>
 
@@ -76,12 +93,18 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp">
 
-        <Button
+        <com.xuexiang.xui.widget.button.roundbutton.RoundButton
+            style="@style/RoundButton.Auto"
             android:id="@+id/btn_register"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/register_btn"
+            android:padding="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:textColor="@color/primaryColor"
+            app:rb_borderColor="@color/primaryColor"
             />
 
     </FrameLayout>

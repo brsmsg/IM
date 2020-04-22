@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +18,9 @@ import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.Fragments.main.adapter.SearchRecyclerAdapter;
 import com.example.instantMessaging.R;
 
+
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 
@@ -80,6 +84,9 @@ public class SearchFragment extends Fragment implements SearchRequestContract.Vi
         mRecycler.setAdapter(mSearchAdapter);
         //设置item中的点击事件
         mSearchAdapter.setOnItemClickListener(mItemClickListener);
+        //添加分割线
+        mRecycler.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()),DividerItemDecoration.VERTICAL));
+
 
     }
 

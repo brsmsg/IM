@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import com.example.instantMessaging.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -87,6 +89,7 @@ public class SearchFriendFragment extends Fragment implements SearchFriendContra
             }
         });
         mRecycler.setAdapter(mAdapter);
+        mRecycler.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()),DividerItemDecoration.VERTICAL));
     }
 
     @Override
@@ -109,10 +112,12 @@ public class SearchFriendFragment extends Fragment implements SearchFriendContra
     }
 
 
+    //修改：将toast显示由英文改为中文
     @Override
     public void showError(String message) {
         getActivity().runOnUiThread(()->{
-            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            if (message!=null)
+            Toast.makeText(getActivity(), "用户不存在，请重新输入", Toast.LENGTH_SHORT).show();
         });
     }
 
