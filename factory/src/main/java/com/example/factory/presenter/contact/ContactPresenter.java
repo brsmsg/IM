@@ -13,6 +13,7 @@ import com.example.factory.model.db.Contact;
 import com.example.factory.model.db.MyAppDB;
 import com.example.factory.utils.NetUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,31 +108,24 @@ public class ContactPresenter implements ContactContract.Presenter{
                 .fromJson(result, GetContact.class);
         List<Contact> newContactList = getContact.getData();
 
-        if (newContactList != null) {
-//            for(Contact contact:newContactList){
-//                Log.d("before", contact.toString());
-//                contact.notNull();
-//                Log.d("after", contact.toString());
-//            }
+        if(newContactList == null){
+            newContactList = new ArrayList<Contact>();
+        }
+        mContactView.refreshContact(newContactList);
 
-            mContactView.refreshContact(newContactList);
-
-            //本地数据库更新
-            //删除数据库数据
-            SQLite.delete(Contact.class)
-                    .execute(FlowManager.getDatabase(MyAppDB.class));
-
-            ModelAdapter<Contact> adapter = FlowManager.getModelAdapter(Contact.class);
-            adapter.saveAll(newContactList, FlowManager.getDatabase(MyAppDB.class));
+        //本地数据库更新
+        //删除数据库数据
+        SQLite.delete(Contact.class)
+                .execute(FlowManager.getDatabase(MyAppDB.class));
+        ModelAdapter<Contact> adapter = FlowManager.getModelAdapter(Contact.class);
+        adapter.saveAll(newContactList, FlowManager.getDatabase(MyAppDB.class));
 
 
-            List<Contact> contactList = SQLite.select()
-                    .from(Contact.class)
-                    .queryList(FlowManager.getDatabase(MyAppDB.class));
-
-            for(Contact c:contactList){
-                Log.d("database Contact", c.toString());
-            }
+        List<Contact> contactList = SQLite.select()
+                .from(Contact.class)
+                .queryList(FlowManager.getDatabase(MyAppDB.class));
+        for(Contact c:contactList){
+            Log.d("database Contact", c.toString());
         }
     }
 }

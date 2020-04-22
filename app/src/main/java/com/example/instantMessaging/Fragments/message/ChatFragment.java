@@ -22,12 +22,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Fragment;
+import com.example.common.app.Mapper;
 import com.example.factory.Factory;
 import com.example.factory.model.MsgUI;
 import com.example.factory.model.RawMotion;
+import com.example.factory.model.api.History;
 import com.example.factory.model.api.webSocket.Msg;
 import com.example.factory.model.api.webSocket.WebSocketModel;
 import com.example.factory.presenter.Chat.ChatContract;
+import com.example.factory.utils.SpUtils;
 import com.example.factory.utils.webSocket.WebSocketUtils;
 import com.example.instantMessaging.Activities.BehaviorActivity;
 import com.example.instantMessaging.Activities.MainActivity;
@@ -65,13 +68,18 @@ public class ChatFragment extends Fragment implements ChatContract.View {
 
     //加密解密状态
     private static int STATUS;
-    private static final int ENCRYPTED = 0;
-    private static final int DECRYPTED = 1;
+    //发送消息类型
+    private static int TYPE;
+//    private static final int ENCRYPTED = 0;
+//    private static final int DECRYPTED = 1;
 
     private ChatRecyclerAdapter mChatAdapter;
 
+    //加密消息广播
     private MyReceiver mReceiver;
     private PredictReceiver mPredictReceiver;
+    //未加密消息广播
+    private UnEncryptedReceiver mUnEncryptedReceiver;
 
     private List<RawMotion> mRawMotionList;
 
@@ -112,8 +120,10 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @Override
     protected void initData() {
         super.initData();
-        //状态设为解密
-        STATUS = DECRYPTED;
+        //状态初始化为解密
+        STATUS = Mapper.CHAT_DECRYPTED;
+        //默认发送不加密消息
+        TYPE = Mapper.CHAT_DECRYPTED;
 
         mRawMotionList = new ArrayList<>();
         //注册监听
@@ -131,7 +141,15 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         predictFilter.addAction("com.example.broadcast.PREDICT");
         getActivity().registerReceiver(mPredictReceiver, predictFilter);
 
+        //注册接受未加密消息广播
+        mUnEncryptedReceiver = new UnEncryptedReceiver();
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction("com.example.broadcast.UNENCRYPTED_MESSAGE");
+        getActivity().registerReceiver(mUnEncryptedReceiver, intentFilter2);
+
         mPresenter.start();
+        //拉取聊天记录
+        mPresenter.getHistoryMessage(myId, mOppositeId);
     }
 
     @Override
@@ -142,12 +160,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @SuppressLint("ShowToast")
     @Override
     public void showError(int string) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(), getString(string), Toast.LENGTH_SHORT).show();
-            }
-        });
+        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), getString(string), Toast.LENGTH_SHORT).show());
 
     }
 
@@ -157,10 +170,15 @@ public class ChatFragment extends Fragment implements ChatContract.View {
      */
     @Override
     public void initUI(List<MsgUI> msgList) {
-        mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        mChatAdapter = new ChatRecyclerAdapter(getContext(), msgList);
+        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+            mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            mChatAdapter = new ChatRecyclerAdapter(getContext(), msgList);
 
-        mRecycler.setAdapter(mChatAdapter);
+            mRecycler.setAdapter(mChatAdapter);
+            //滚动到底部
+            mRecycler.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
+        });
+
     }
 
     /**
@@ -173,6 +191,8 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         if(item.getType() == MsgUI.TYPE_SEND){
             mContent.setText("");
         }
+        //滚动到底部
+        mRecycler.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
     }
 
     /**
@@ -191,7 +211,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @Override
     public void encryptMsg() {
         //状态设置为加密
-        STATUS = ENCRYPTED;
+        STATUS = Mapper.CHAT_ENCRYPTED;
 
         if(getActivity()!=null) {
             //刷新会话
@@ -201,20 +221,41 @@ public class ChatFragment extends Fragment implements ChatContract.View {
             //点击list清空
             clearMotionList();
 
-
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //更新在ui线程执行
-                    mChatAdapter.encryptRefresh();
-                    Toast.makeText(getActivity(), "验证失败，消息已加密，请手动验证解密", Toast.LENGTH_SHORT).show();
-                    //锁定消息发送
-                    mContent.setEnabled(false);
-                }
+            getActivity().runOnUiThread(() -> {
+                //更新在ui线程执行
+                mChatAdapter.encryptRefresh();
+                Toast.makeText(getActivity(), "验证失败，消息已加密，请手动验证解密", Toast.LENGTH_SHORT).show();
+                //锁定消息发送
+                mContent.setEnabled(false);
             });
 
         }
     }
+
+    @Override
+    public MsgUI switchMsg(History historyMsg){
+        MsgUI msgUI = new MsgUI();
+        if(historyMsg == null){
+            return null;
+        }
+
+        msgUI.setDecrypted(STATUS);
+        try {
+            msgUI.setContent(historyMsg.getMsg());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(historyMsg.getSendUserId().equals(myId)){
+            msgUI.setType(MsgUI.TYPE_SEND);
+            msgUI.setPortrait(myPortrait);
+        }else{
+            msgUI.setType(MsgUI.TYPE_RECEIVED);
+            msgUI.setPortrait(mOppositeId);
+        }
+
+        return msgUI;
+    }
+
 
     /**
      * 返回motionList
@@ -249,7 +290,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         String msg = mContent.getText().toString();
 
         if(!TextUtils.isEmpty(msg)) {
-            mPresenter.sendMessage(msg, myPortrait, myId, mOppositeId, mPublicKey);
+            mPresenter.sendMessage(msg, myPortrait, myId, mOppositeId, mPublicKey, TYPE);
             //更新会话
             mPresenter.updateSession(getActivity(), mOppositeId, msg, mPublicKey, "send");
         }else{
@@ -262,9 +303,20 @@ public class ChatFragment extends Fragment implements ChatContract.View {
      */
     @OnClick(R.id.img_decrypt)
     void decrypt() {
-        BehaviorActivity.show(getActivity(), myId, "predict");
-//
-//        //弹出输入密码对话框
+        if(TYPE == Mapper.CHAT_DECRYPTED){
+            //界面不加密情况下
+            TYPE = Mapper.CHAT_ENCRYPTED;
+            Toast.makeText(getActivity(), "您已进入加密模式, 所有信息已加密且仅当次会话可见", Toast.LENGTH_SHORT).show();
+        }else{
+            TYPE = Mapper.CHAT_DECRYPTED;
+            Toast.makeText(getActivity(), "加密模式已关闭", Toast.LENGTH_SHORT).show();
+        }
+
+
+//        BehaviorActivity.show(getActivity(), myId, "predict");
+
+
+//        弹出输入密码对话框
 //        final EditText editText = new EditText(getActivity());
 //        AlertDialog.Builder inputDialog = new AlertDialog.Builder(getActivity());
 //        inputDialog.setTitle("请输入密码以解锁").setView(editText);
@@ -277,6 +329,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
 //                        String pwd = sp.getString("PASSWORD", "");
 //                        Log.d("password", pwd);
 //                        if (editText.getText().toString().trim().equals(pwd)){
+//                            STATUS = DECRYPTED
 //                            mChatAdapter.decryptRefresh();
 //                            mContent.setEnabled(true);
 //                        }
@@ -326,6 +379,17 @@ public class ChatFragment extends Fragment implements ChatContract.View {
             mPresenter.receiveMessage(msg, mPortrait);
         }
     }
+
+
+
+    class UnEncryptedReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        }
+    }
+
+
 
     /**
      * 接受验证结果

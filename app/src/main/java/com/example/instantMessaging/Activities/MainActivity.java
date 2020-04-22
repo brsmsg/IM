@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -33,6 +34,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.bumptech.glide.Glide;
 import com.example.common.app.Activity;
 import com.example.common.app.Fragment;
+import com.example.common.app.Mapper;
 import com.example.factory.Factory;
 import com.example.factory.model.User;
 import com.example.factory.model.api.account.update.UsernameModel;
@@ -42,7 +44,9 @@ import com.example.factory.presenter.Session.SessionPresenter;
 import com.example.factory.presenter.contact.ContactPresenter;
 import com.example.factory.utils.NetUtils;
 import com.example.factory.utils.OssService;
+import com.example.factory.utils.SpUtils;
 import com.example.instantMessaging.Activities.PopWindow.MPopupWindow;
+import com.example.instantMessaging.Fragments.LoginFragment;
 import com.example.instantMessaging.Fragments.main.ContactFragment;
 import com.example.instantMessaging.Fragments.main.MessageFragment;
 import com.example.instantMessaging.Fragments.main.SearchFragment;
@@ -53,6 +57,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.security.PublicKey;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -152,7 +157,7 @@ public class MainActivity extends Activity
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.layout_container_main, mMessageFragment).commit();
         //初始化sessionPresenter
-        mSessionPresenter = new SessionPresenter(mMessageFragment);
+        mSessionPresenter = new SessionPresenter(mMessageFragment, this);
 
 
         //动态引用NavigationView的头部实例mPersonalPortrait并添加点击事件
@@ -280,6 +285,23 @@ public class MainActivity extends Activity
                             })
                             .setNegativeButton("取消", null)
                             .show();
+
+                case R.id.exit_login:
+                    //退出登录
+//                    SharedPreferences sp = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor = sp.edit();
+//                    //取消自动登录,清空用户名密码
+//                    editor.putBoolean(LoginFragment.AUTO_ISCHECK, false).commit();
+//                    editor.putString(LoginFragment.USERNAME, "").commit();
+//                    editor.putString(LoginFragment.PASSWORD, "").commit();
+
+                    SpUtils.saveData(this, Mapper.SP_USERNAME, "");
+                    SpUtils.saveData(this, Mapper.SP_PASSWORD, "");
+                    SpUtils.saveData(this, Mapper.SP_AUTO_ISCHECK, false);
+                    SpUtils.saveData(this, Mapper.SP_PUBLIC_KEY, "");
+
+                    AccountActivity.show(this);
+                    finish();
             }
 
             return false;

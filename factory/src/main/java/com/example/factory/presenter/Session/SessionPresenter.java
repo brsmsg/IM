@@ -1,16 +1,19 @@
 package com.example.factory.presenter.Session;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.dbflow5.config.FlowManager;
 import com.dbflow5.query.SQLite;
 import com.example.common.RSA.RsaEncryptUtil;
+import com.example.common.app.Mapper;
 import com.example.factory.model.SessionUI;
 import com.example.factory.model.api.webSocket.Msg;
 import com.example.factory.model.api.webSocket.WebSocketModel;
 import com.example.factory.model.db.Contact;
 import com.example.factory.model.db.Contact_Table;
 import com.example.factory.model.db.MyAppDB;
+import com.example.factory.utils.SpUtils;
 import com.example.factory.utils.webSocket.WebSocketUtils;
 
 import java.util.ArrayList;
@@ -28,10 +31,12 @@ public class SessionPresenter implements SessionContract.Presenter {
     //id 和 msgId 的key-value
     private Map<String, List<String>> msgMap = new HashMap<>();
     private List<String> msgIdList;
+    private Context mContext;
 
-    public SessionPresenter(SessionContract.View sessionView){
+    public SessionPresenter(SessionContract.View sessionView, Context context){
         mSessionView = sessionView;
         mSessionView.setPresenter(this);
+        mContext = context;
     }
 
     @Override
@@ -43,8 +48,12 @@ public class SessionPresenter implements SessionContract.Presenter {
     @Override
     public void receiveMessage(String content){
         WebSocketModel model =  WebSocketUtils.getMessage(content);
+        if(model.getAction() != 2){
+            return;
+        }
         //消息内容
         Msg msg = model.getMessage();
+
         String myId = msg.getReceiveUserId();
         String oppositeId = msg.getSendUserId();
         String msgContent = msg.getMsg();
@@ -64,7 +73,9 @@ public class SessionPresenter implements SessionContract.Presenter {
 
             SessionUI session = null;
             try {
-                session = new SessionUI(id, portrait, username, RsaEncryptUtil.decrypt(msgContent, RsaEncryptUtil.getPrivateKey()), publicKey);
+                session = new SessionUI(id, portrait, username,
+                        RsaEncryptUtil.decrypt(msgContent, (String)SpUtils.getData(mContext, Mapper.SP_PRIVATE_KEY, "")),
+                        publicKey);
             } catch (Exception e) {
                 e.printStackTrace();
             }

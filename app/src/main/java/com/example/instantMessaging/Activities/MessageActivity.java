@@ -142,7 +142,7 @@ public class MessageActivity extends Activity {
                 .add(R.id.layout_container_message, mChatFragment).commit();
 
         //初始化presenter
-        mChatPresenter = new ChatPresenter(mChatFragment);
+        mChatPresenter = new ChatPresenter(mChatFragment, this);
     }
 
     @Override

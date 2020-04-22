@@ -8,21 +8,16 @@
     tools:context=".Fragments.LoginFragment">
 
     <!-- TODO: Update blank fragment layout -->
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:paddingBottom="30dp"-->
-<!--        android:paddingTop="20dp"-->
-<!--        app:title="@string/label_login"-->
-<!--        app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"-->
-<!--        >-->
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="30dp"
+            android:paddingTop="20dp"
+            app:title="@string/label_login"
+            app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"
+            >
 
-<!--    </androidx.appcompat.widget.Toolbar>-->
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"/>
+        </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -117,27 +112,27 @@
         </LinearLayout>
 
 
-            <!--        <Button-->
-            <!--            android:id="@+id/btn_login"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_gravity="center"-->
-            <!--            android:text="@string/login_btn"-->
-            <!--        />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_login"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:text="@string/login_btn"-->
+        <!--        />-->
 
-            <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
-                android:id="@+id/btn_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:text="登录"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/primaryColor"
-                app:qmui_borderColor="@color/primaryColor"
-                />
+        <com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="登录"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/primaryColor"
+            app:qmui_borderColor="@color/primaryColor"
+            />
 
 
     </LinearLayout>

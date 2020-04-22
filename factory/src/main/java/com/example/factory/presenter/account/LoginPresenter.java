@@ -1,18 +1,19 @@
 package com.example.factory.presenter.account;
 
-import android.content.pm.PackageManager;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.common.RSA.RsaEncryptUtil;
+import com.example.common.app.Mapper;
 import com.example.factory.Factory;
 import com.example.factory.R;
 import com.example.factory.model.User;
 import com.example.factory.model.api.account.LoginModel;
 import com.example.factory.utils.NetUtils;
+import com.example.factory.utils.SpUtils;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 
 
 /**
@@ -35,7 +36,7 @@ public class LoginPresenter implements LoginContract.Presenter{
     }
 
     @Override
-    public void login(final String username, final String password) {
+    public void login(final String username, final String password, final Context context) {
         //判断用户名密码是否为空
         if(TextUtils.isEmpty(username) || TextUtils.isEmpty(password)){
             mLoginView.showError(R.string.err_account_empty_input);
@@ -45,29 +46,32 @@ public class LoginPresenter implements LoginContract.Presenter{
                 @Override
                 public void run() {
 
-                    //注册生成密钥对
-                    try {
-                        RsaEncryptUtil.genKeyPair();
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
+                    String localPublicKey = (String) SpUtils.getData(context, Mapper.SP_PUBLIC_KEY, "");
+                    String localPrivateKey = (String) SpUtils.getData(context, Mapper.SP_PRIVATE_KEY, "");
+                    String localUsername = (String) SpUtils.getData(context, Mapper.SP_USERNAME, "");
+                    Log.d("publicKey", localPublicKey);
+                    Log.d("privateKey", localPrivateKey);
+
+                    if (!(localUsername.equals(username) && !TextUtils.isEmpty(localPublicKey))){
+                        //除了本地有用户名且与登录用户名相同时，且公钥不为空的情况，均重新生成公私钥
+                        try {
+                            RsaEncryptUtil.genKeyPair();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        }
+//                        editor.putString("PUBLIC_KEY", RsaEncryptUtil.getPublicKey());
+//                        editor.putString("PRIVATE_KEY",RsaEncryptUtil.getPrivateKey());
+//                        editor.commit();
+
+                        localPublicKey = RsaEncryptUtil.getPublicKey();
+                        localPrivateKey = RsaEncryptUtil.getPrivateKey();
+
+                        SpUtils.saveData(context, Mapper.SP_PUBLIC_KEY, localPublicKey);
+                        SpUtils.saveData(context, Mapper.SP_PRIVATE_KEY, localPrivateKey);
                     }
-                    //生成公钥
-                    String publicKey = RsaEncryptUtil.getPublicKey();
-                    //生成私钥
-                    String privateKey = RsaEncryptUtil.getPrivateKey();
-
-//                    try {
-//                        String encryptStr = RsaEncryptUtil.encrypt("hello", publicKey);
-//                        Log.d("encrypt", encryptStr);
-//
-//                        String result = RsaEncryptUtil.decrypt(after, privateKey);
-//                        Log.d("decrypt", result);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
 
 
-                    LoginModel loginModel = new LoginModel(username, password, publicKey);
+                    LoginModel loginModel = new LoginModel(username, password, localPublicKey);
                     //发送json并取得返回数据
                     String result = NetUtils.postJson(loginModel, loginUrl);
 
@@ -76,7 +80,7 @@ public class LoginPresenter implements LoginContract.Presenter{
 //                        String result = null;
                         if(result != null) {
                             Log.d("return", result);
-                            parseLoginResult(result, publicKey, privateKey);
+                            parseLoginResult(result, localPublicKey, localPrivateKey);
                         }else{
                             //请求服务器出现错误
                             mLoginView.showError(R.string.err_service);

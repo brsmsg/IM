@@ -5,26 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.example.common.app.Fragment;
+import com.example.common.app.Mapper;
 import com.example.factory.model.User;
 import com.example.factory.presenter.account.LoginContract;
-import com.example.factory.presenter.account.LoginPresenter;
+import com.example.factory.utils.SpUtils;
 import com.example.instantMessaging.Activities.MainActivity;
-import com.example.instantMessaging.Activities.MessageActivity;
-import com.example.instantMessaging.Fragments.message.ChatFragment;
 import com.example.instantMessaging.R;
 
-import org.checkerframework.checker.units.qual.A;
-
-import java.time.LocalDate;
+import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -50,14 +45,16 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     private MyReceiver mReceiver;
 
     //用户名key
-    private final String USERNAME = "USERNAME";
-
+    public static final String USERNAME = "USERNAME";
     //密码key
-    private final String PASSWORD = "PASSWORD";
-    //记住密码key
-    private final String REM_ISCHECK = "REM_ISCHECK";
-    //自动登录key
-    private final String AUTO_ISCHECK = "AUTO_ISCHECK";
+    public static final String PASSWORD = "PASSWORD";
+//    //记住密码key
+//    public static final String REM_ISCHECK = "REM_ISCHECK";
+//    //自动登录key
+//    public static final String AUTO_ISCHECK = "AUTO_ISCHECK";
+//    //公钥key
+//    public static final String PUBLIC_KEY = "PUBLIC_KEY";
+//    public static final String PRIVATE_KEY = "PRIVATE_KEY";
 
     @BindView(R.id.edit_username)
     EditText mUserName;
@@ -73,8 +70,6 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     @BindView(R.id.checkbox_auto_login)
     CheckBox mAutoLogin;
-
-
 
     public LoginFragment(){ }
 
@@ -109,27 +104,41 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         Objects.requireNonNull(getActivity()).registerReceiver(mReceiver, intentFilter);
 
         //实例化sharedPreference对象
-        sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+//        sp = getActivity().getApplication().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         //实例化editor
-        editor = sp.edit();
+//        editor = sp.edit();
         //默认记住联系人
-        mUserName.setText(sp.getString("USERNAME", ""));
+//        mUserName.setText(sp.getString("USERNAME", ""));
+
+        mUserName.setText((String) SpUtils.getData(getActivity(), Mapper.SP_USERNAME, ""));
         //获得登录状态
 
         //test 不自动登录
 //        editor.putBoolean(AUTO_ISCHECK, false).commit();
 
-        mRemember.setChecked(sp.getBoolean(REM_ISCHECK, true));
-        mAutoLogin.setChecked(sp.getBoolean(AUTO_ISCHECK, false));
+//        mRemember.setChecked(sp.getBoolean(REM_ISCHECK, true));
+//        mAutoLogin.setChecked(sp.getBoolean(AUTO_ISCHECK, false));
+
+        mRemember.setChecked((boolean) SpUtils.getData(getActivity(), Mapper.SP_REM_ISCHECK, true));
+        mAutoLogin.setChecked((boolean) SpUtils.getData(getActivity(), Mapper.SP_AUTO_ISCHECK, true));
 
         //判断密码多选框状态
-        if(sp.getBoolean(REM_ISCHECK, true)){
-            mPassword.setText(sp.getString("PASSWORD", ""));
+        if((boolean)SpUtils.getData(getActivity(), Mapper.SP_REM_ISCHECK, true)){
+            mPassword.setText((String)SpUtils.getData(getActivity(), Mapper.SP_PASSWORD, ""));
             //自动登录选中
-            if(sp.getBoolean(AUTO_ISCHECK, false)){
+            if((boolean)SpUtils.getData(getActivity(), Mapper.SP_AUTO_ISCHECK, false)){
                 login();
             }
         }
+//        if(sp.getBoolean(REM_ISCHECK, true)){
+//            mPassword.setText(sp.getString("PASSWORD", ""));
+
+
+            //自动登录选中
+//            if(sp.getBoolean(AUTO_ISCHECK, false)){
+//                login();
+//            }
+//        }
 
     }
 
@@ -139,16 +148,13 @@ public class LoginFragment extends Fragment implements LoginContract.View {
      */
     @Override
     public void showError(int string) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(), getString(string), Toast.LENGTH_SHORT).show();
+        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+            Toast.makeText(getActivity(), getString(string), Toast.LENGTH_SHORT).show();
 
-                //登录控件可以重新使用
-                mUserName.setEnabled(true);
-                mPassword.setEnabled(true);
-                mLogin.setEnabled(true);
-            }
+            //登录控件可以重新使用
+            mUserName.setEnabled(true);
+            mPassword.setEnabled(true);
+            mLogin.setEnabled(true);
         });
 
 
@@ -161,12 +167,14 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @OnClick(R.id.btn_login)
     public void login(){
         //保存记住密码自动登录选项
-        editor.putBoolean(REM_ISCHECK, mRemember.isChecked());
-        editor.putBoolean(AUTO_ISCHECK, mAutoLogin.isChecked());
+//        editor.putBoolean(REM_ISCHECK, mRemember.isChecked());
+//        editor.putBoolean(AUTO_ISCHECK, mAutoLogin.isChecked());
 
         String userName = mUserName.getText().toString().trim();
         String password = mPassword.getText().toString().trim();
-        mPresenter.login(userName, password);
+
+
+        mPresenter.login(userName, password, getActivity());
     }
 
     @OnCheckedChanged({R.id.checkbox_rmb_pwd,R.id.checkbox_auto_login})
@@ -175,23 +183,29 @@ public class LoginFragment extends Fragment implements LoginContract.View {
             case R.id.checkbox_rmb_pwd:
                 //是否勾选记住密码
                 if(mRemember.isChecked()){
-                    editor.putBoolean(REM_ISCHECK, true).commit();
+//                    editor.putBoolean(REM_ISCHECK, true).commit();
+                    SpUtils.saveData(getActivity(), Mapper.SP_REM_ISCHECK, true);
                 }else{
                     //不记住密码后会自动取消自动给登录
-                    editor.putBoolean(REM_ISCHECK, false).commit();
+//                    editor.putBoolean(REM_ISCHECK, false).commit();
+                    SpUtils.saveData(getActivity(), Mapper.SP_REM_ISCHECK, false);
                     mAutoLogin.setChecked(false);
-                    editor.putBoolean(AUTO_ISCHECK, false).commit();
+                    SpUtils.saveData(getActivity(), Mapper.SP_AUTO_ISCHECK, false);
+//                    editor.putBoolean(AUTO_ISCHECK, false).commit();
                 }
                 break;
             case R.id.checkbox_auto_login:
                 //是否勾选自动登录
                 if(mAutoLogin.isChecked()){
                     //勾选自动登录后会自动记住密码
-                    editor.putBoolean(AUTO_ISCHECK, true).commit();
+//                    editor.putBoolean(AUTO_ISCHECK, true).commit();
+                    SpUtils.saveData(getActivity(), Mapper.SP_AUTO_ISCHECK, true);
                     mRemember.setChecked(true);
-                    editor.putBoolean(REM_ISCHECK, true).commit();
+//                    editor.putBoolean(REM_ISCHECK, true).commit();
+                    SpUtils.saveData(getActivity(), Mapper.SP_REM_ISCHECK, true);
                 }else{
-                    editor.putBoolean(AUTO_ISCHECK, false).commit();
+                    SpUtils.saveData(getActivity(), Mapper.SP_AUTO_ISCHECK, false);
+//                    editor.putBoolean(AUTO_ISCHECK, false).commit();
                 }
                 break;
         }
@@ -202,17 +216,14 @@ public class LoginFragment extends Fragment implements LoginContract.View {
      */
     @Override
     public void loginSuccess(User user, String publicKey, String privateKey) {
-        getActivity().runOnUiThread(new Runnable(){
-            @Override
-            public void run() {
-                Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show();
-            }
-        });
+        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show());
         //登录成功才记住用户名以及密码
         if(mRemember.isChecked()){
-            editor.putString(USERNAME, mUserName.getText().toString().trim());
-            editor.putString(PASSWORD, mPassword.getText().toString().trim());
-            editor.commit();
+//            editor.putString(USERNAME, mUserName.getText().toString().trim());
+//            editor.putString(PASSWORD, mPassword.getText().toString().trim());
+//            editor.commit();
+            SpUtils.saveData(getActivity(), Mapper.SP_USERNAME, mUserName.getText().toString().trim());
+            SpUtils.saveData(getActivity(), Mapper.SP_PASSWORD, mPassword.getText().toString().trim());
         }
 
         MainActivity.show(getActivity(), user, publicKey, privateKey);

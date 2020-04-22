@@ -45,6 +45,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
             //初始化根布局，不在创建时添加到container里
             View root = inflater.inflate(layId, container, false);
             initWidget(root);
+            initData();
             mRoot = root;
         }else{
             if(mRoot.getParent()!=null){
@@ -61,7 +62,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initData();
+//        initData();
     }
 
     /**

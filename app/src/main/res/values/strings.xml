@@ -28,6 +28,8 @@
     <string name="change_password">修改密码</string>
     <string name="change_username">修改用户名</string>
     <string name="change_desc">修改个签</string>
+    <string name="exit_login">退出登录</string>
+
 
     <!--  消息界面  -->
     <string name="btn_message_send">发送</string>

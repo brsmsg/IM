@@ -114,10 +114,12 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
             //循环遍历dataList，获取sendUserId和sendDateTime来构造用于显示的requestList实例
             List<FriendRequest> requestList = new ArrayList<>();
             for (FriendRequest data : dataList){
-                //创建用于显示的FriendRequest实例
-                FriendRequest friendRequest = new FriendRequest(data.getSendUserId(),data.getRequestDateTime());
-                //每次在列表末尾添加数据
-                requestList.add(friendRequest);
+                if(data.getIsAccept() == 0){
+                    //没有接受才加入列表，创建用于显示的FriendRequest实例
+                    FriendRequest friendRequest = new FriendRequest(data.getSendUserId(),data.getRequestDateTime());
+                    //每次在列表末尾添加数据
+                    requestList.add(friendRequest);}
+
             }
             //刷新界面，调用SearchFragment中的方法，其包含在runOnUiThread中
             mSearchRequestView.refreshRecycler(requestList);

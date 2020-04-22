@@ -69,7 +69,7 @@ public class AccountActivity extends Activity implements FragmentTrigger {
             }
             mCurrentFragment = mRegisterFragment;
 
-            mRegisterPresenter = new RegisterPresenter((RegisterFragment) mCurrentFragment);
+            mRegisterPresenter = new RegisterPresenter((RegisterFragment) mCurrentFragment, this);
         }else{
             mCurrentFragment = mLoginFragment;
         }

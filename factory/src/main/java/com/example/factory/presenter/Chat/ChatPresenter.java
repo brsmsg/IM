@@ -7,17 +7,23 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.common.RSA.RsaEncryptUtil;
+import com.example.common.app.Mapper;
 import com.example.factory.Factory;
+import com.example.factory.R;
 import com.example.factory.model.MsgUI;
 import com.example.factory.model.RawMotion;
+import com.example.factory.model.api.History;
+import com.example.factory.model.api.message.HistoryModel;
 import com.example.factory.model.api.webSocket.Msg;
 import com.example.factory.model.api.webSocket.WebSocketModel;
 import com.example.factory.utils.NetUtils;
+import com.example.factory.utils.SpUtils;
 import com.example.factory.utils.webSocket.WebSocketUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,7 +35,8 @@ public class ChatPresenter implements ChatContract.Presenter {
 
     private static final String predictUrl = "http://101.200.240.107:8000/predict";
 
-    String resultDemo = "brsmsg_1586334335390388232,brsmsg_1586334335390388232";
+    private static final String historyUrl = "http://118.31.64.83:8080/message/history";
+
 
     //准确率阀值
     private static final double THRESHOLD = 0.5;
@@ -40,7 +47,12 @@ public class ChatPresenter implements ChatContract.Presenter {
 
     private List<RawMotion> mRawMotionList;
 
+    private Context mContext;
+
     private String myId;
+    private String myPortrait;
+    private String receiverId;
+    private String receiverPortrait;
 
     //定时器
     private Timer mTimer;
@@ -48,18 +60,18 @@ public class ChatPresenter implements ChatContract.Presenter {
 
     private List<String> resultIdList;
 
-    private String resultStr = "";
 
-
-    public ChatPresenter(ChatContract.View chatView){
+    public ChatPresenter(ChatContract.View chatView, Context context){
         mChatView = chatView;
         mChatView.setPresenter(this);
+        mContext = context;
     }
 
     @Override
     public void start() {
+        //初始化消息list
         msgList = new ArrayList<>();
-        mChatView.initUI(msgList);
+//        mChatView.initUI(msgList);
 
         //初始化结果list
         resultIdList = new ArrayList<>();
@@ -75,17 +87,15 @@ public class ChatPresenter implements ChatContract.Presenter {
                     //没有滑动或者只滑动一次不进行判断
                     if(mRawMotionList.size() > 1){
                         //预测返回结果
-                        resultStr = NetUtils.postJson(mRawMotionList, predictUrl);
-//                        resultStr = resultDemo;
-                    }
-                    if(!TextUtils.isEmpty(resultStr)){
-                        resultIdList = Arrays.asList(resultStr.split(","));
-                        for(String s:resultIdList){
-                            Log.d("id", s);
+                        String resultStr = NetUtils.postJson(mRawMotionList, predictUrl);
+                        if(resultStr != null){
+                            resultIdList = Arrays.asList(resultStr.split(","));
+                            for(String s:resultIdList){
+                                Log.d("id", s);
+                            }
+
                         }
-
                     }
-
 
                     Log.d("benren?", String.valueOf(mChatView.classify(resultIdList)));
                     //判断是否是本人，不是本人就加密消息
@@ -100,7 +110,7 @@ public class ChatPresenter implements ChatContract.Presenter {
             }
         };
         //延迟60s，周期60s
-        mTimer.schedule(mTimerTask, 0, 10*1000);
+        mTimer.schedule(mTimerTask, 0, 60*1000);
 
     }
 
@@ -114,22 +124,27 @@ public class ChatPresenter implements ChatContract.Presenter {
      */
     @Override
     public void sendMessage(String content, String myPortrait,
-                            String myId, String oppositeId, String publicKey) {
+                            String myId, String oppositeId, String publicKey, int type) {
 
-        String encryptedMsg = "";
-        //公钥加密
-        try {
-            encryptedMsg = RsaEncryptUtil.encrypt(content, publicKey);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(!TextUtils.isEmpty(encryptedMsg)) {
-            //发送消息
-            WebSocketUtils.sendMessgae(myId, oppositeId, encryptedMsg, "");
+        if(type == Mapper.CHAT_ENCRYPTED){
+            //加密模式
+            String encryptedMsg = "";
+            //公钥加密
+            try {
+                encryptedMsg = RsaEncryptUtil.encrypt(content, publicKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(!TextUtils.isEmpty(encryptedMsg)) {
+                //发送加密消息
+                WebSocketUtils.sendMessgae(myId, oppositeId, encryptedMsg, "", Mapper.CHAT_ENCRYPTED);
+            }
+        }else{
+            //发送未加密消息
+            WebSocketUtils.sendMessgae(myId, oppositeId, content, "", Mapper.CHAT_DECRYPTED);
         }
         //对聊天UI进行更新
         MsgUI msgUI = new MsgUI(content, myPortrait, MsgUI.TYPE_SEND, MsgUI.DECRYPTED);
-
         mChatView.refreshUI(msgUI);
     }
 
@@ -141,22 +156,33 @@ public class ChatPresenter implements ChatContract.Presenter {
     @Override
     public void receiveMessage(String content, String oppositePortrait){
         WebSocketModel model =  WebSocketUtils.getMessage(content);
+
+        int action = model.getAction();
         Msg msg = model.getMessage();
         String myId = msg.getReceiveUserId();
         String oppositeId = msg.getSendUserId();
         String msgContent = msg.getMsg();
         String msgId = msg.getMsgId();
 
-        String decryptedMsg =  "";
-        try {
-            //直接解密
-            decryptedMsg = RsaEncryptUtil.decrypt(msgContent, RsaEncryptUtil.getPrivateKey());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if(action == 2){
+            String decryptedMsg =  "";
+            try {
+                //直接解密
+//            decryptedMsg = RsaEncryptUtil.decrypt(msgContent, RsaEncryptUtil.getPrivateKey());
+                decryptedMsg = RsaEncryptUtil.decrypt(msgContent, (String) SpUtils.getData(mContext, Mapper.SP_PRIVATE_KEY, ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        if(!TextUtils.isEmpty(decryptedMsg)){
-            MsgUI msgUI = new MsgUI(decryptedMsg, oppositePortrait, MsgUI.TYPE_RECEIVED, MsgUI.DECRYPTED);
+            if(!TextUtils.isEmpty(decryptedMsg)){
+                MsgUI msgUI = new MsgUI(decryptedMsg, oppositePortrait, MsgUI.TYPE_RECEIVED, MsgUI.DECRYPTED);
+                Log.d("receive", content);
+                mChatView.refreshUI(msgUI);
+                //直接签收消息
+                WebSocketUtils.sign(msgId);
+            }
+        }else if(action == 6){
+            MsgUI msgUI = new MsgUI(msgContent, oppositePortrait, MsgUI.TYPE_RECEIVED, MsgUI.DECRYPTED);
             Log.d("receive", content);
             mChatView.refreshUI(msgUI);
             //直接签收消息
@@ -229,6 +255,10 @@ public class ChatPresenter implements ChatContract.Presenter {
         int size = resultIdList.size();
         int rightCount = 0;
 
+        if(resultIdList.size() == 0){
+            return true;
+        }
+
         for(int i = 0; i< size; i++){
             if(resultIdList.get(i).equals(myId)){
                 rightCount ++;
@@ -238,6 +268,38 @@ public class ChatPresenter implements ChatContract.Presenter {
 
         Log.d("precision", String.valueOf(precision));
         return precision >= THRESHOLD;
+    }
+
+    @Override
+    public void getHistoryMessage(final String myId, final String receiverId){
+        Factory.getInstance().getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                String result = NetUtils.postKeyValue("myId", myId, "receiverId", receiverId, historyUrl);
+                if (result != null) {
+                    parseHistoryResult(result);
+                } else {
+                    mChatView.showError(R.string.err_service);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void parseHistoryResult(String result){
+        HistoryModel historyModel = Factory.getInstance()
+                .getGson().fromJson(result, HistoryModel.class);
+        String msg = historyModel.getMsg();
+        if(msg.equals("success")){
+            List<History> historyList = historyModel.getData();
+            for(History history:historyList){
+                MsgUI msgUI = mChatView.switchMsg(history);
+                if(msgUI != null) {
+                    msgList.add(msgUI);
+                }
+            }
+            mChatView.initUI(msgList);
+        }
     }
 
 }

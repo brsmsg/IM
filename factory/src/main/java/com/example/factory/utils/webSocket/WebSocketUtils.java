@@ -2,6 +2,7 @@ package com.example.factory.utils.webSocket;
 
 import android.util.Log;
 
+import com.example.common.app.Mapper;
 import com.example.factory.Factory;
 import com.example.factory.model.api.webSocket.Msg;
 import com.example.factory.model.api.webSocket.WebSocketModel;
@@ -25,9 +26,16 @@ public class WebSocketUtils {
         return model;
     }
 
-    public static void sendMessgae(String myId, String oppositeId, String content, String msgId){
+    public static void sendMessgae(String myId, String oppositeId, String content, String msgId, int type){
         Msg msg = new Msg(myId, oppositeId, content, msgId);
-        WebSocketModel model = new WebSocketModel(2, msg, "");
+        WebSocketModel model;
+        if(type == Mapper.CHAT_ENCRYPTED){
+            //加密发送
+            model = new WebSocketModel(2, msg, "");
+        }else{
+            //解密发送
+            model = new WebSocketModel(6, msg, "");
+        }
         String jsonStr = transJson(model);
         Log.d("sendMessage", jsonStr);
         Factory.getInstance().getWebSocket().send(jsonStr);

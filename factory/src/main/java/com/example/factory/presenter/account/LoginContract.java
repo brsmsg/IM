@@ -1,5 +1,7 @@
 package com.example.factory.presenter.account;
 
+import android.content.Context;
+
 import com.example.common.factory.base.BaseContract;
 import com.example.common.factory.base.BasePresenter;
 import com.example.common.factory.base.BaseView;
@@ -19,7 +21,7 @@ public interface LoginContract extends BaseContract {
 
     interface Presenter extends BasePresenter{
         //发起登录请求/
-        void login(String userName, String password);
+        void login(String userName, String password, Context context);
 
         //解析登录请求的返回数据
         void parseLoginResult(String result, String publicKey, String privateKey);

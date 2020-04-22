@@ -97,16 +97,13 @@ public class MessageFragment extends Fragment implements SessionContract.View {
     public void initRecycler(List<SessionUI> sessionList){
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mSessionAdapter = new SessionRecyclerAdapter(sessionList, getContext());
-        mSessionAdapter.setOnItemClickLIstener(new SessionRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, SessionUI session) {
-                //展示MessageActivity
-                MessageActivity.show(getActivity(), session, myId, myPortrait);
-                Log.d("publicKey", session.getPublicKey());
+        mSessionAdapter.setOnItemClickLIstener((view, session) -> {
+            //展示MessageActivity
+            MessageActivity.show(getActivity(), session, myId, myPortrait);
+            Log.d("publicKey", session.getPublicKey());
 
-                //签收消息
-                mPresenter.signMessage(session.getId());
-            }
+            //签收消息
+            mPresenter.signMessage(session.getId());
         });
 
         mRecycler.setAdapter(mSessionAdapter);
@@ -137,7 +134,6 @@ public class MessageFragment extends Fragment implements SessionContract.View {
         @Override
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getExtras().getString("MSG");
-
             mPresenter.receiveMessage(msg);
         }
     }

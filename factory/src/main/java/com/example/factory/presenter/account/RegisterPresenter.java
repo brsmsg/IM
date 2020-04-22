@@ -1,14 +1,17 @@
 package com.example.factory.presenter.account;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.common.RSA.RsaEncryptUtil;
+import com.example.common.app.Mapper;
 import com.example.factory.Factory;
 import com.example.factory.R;
 import com.example.factory.model.api.account.AccountModel;
 import com.example.factory.model.api.account.RegisterModel;
 import com.example.factory.utils.NetUtils;
+import com.example.factory.utils.SpUtils;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -22,9 +25,12 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
     private RegisterContract.View mRegisterView;
 
-    public RegisterPresenter(RegisterContract.View registerView){
+    private Context mContext;
+
+    public RegisterPresenter(RegisterContract.View registerView, Context context){
         mRegisterView = registerView;
         mRegisterView.setPresenter(this);
+        mContext = context;
     }
 
     @Override
@@ -42,6 +48,10 @@ public class RegisterPresenter implements RegisterContract.Presenter{
                 public void run() {
 
                     AccountModel accountModel = new AccountModel(userName, password);
+
+                    //储存到本地
+                    SpUtils.saveData(mContext, Mapper.SP_USERNAME, userName);
+                    SpUtils.saveData(mContext, Mapper.SP_PASSWORD, password);
 
                     String result = NetUtils.postJson(accountModel, registerUrl);
 //                    String result = "{\"status\": \"success\"}";
@@ -66,7 +76,6 @@ public class RegisterPresenter implements RegisterContract.Presenter{
         String msg = registerModel.getMsg();
         if(msg != null && msg.equals("success")){
             String id = registerModel.getData();
-
             mRegisterView.registerSuccess(id);
         }else{
             mRegisterView.showError(R.string.err_duplicate);
