@@ -73,6 +73,9 @@ public class MessageFragment extends Fragment implements SessionContract.View {
         decryptedFilter.addAction("com.example.broadcast.UPDATE_SESSION");
         getActivity().registerReceiver(mDecryptedReceiver, decryptedFilter);
 
+
+
+
         mPresenter.start();
     }
 

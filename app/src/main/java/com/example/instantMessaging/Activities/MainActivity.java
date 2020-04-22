@@ -285,6 +285,7 @@ public class MainActivity extends Activity
                             })
                             .setNegativeButton("取消", null)
                             .show();
+                    break;
 
                 case R.id.exit_login:
                     //退出登录
@@ -605,54 +606,42 @@ public class MainActivity extends Activity
             mPersonPortrait.setImageBitmap(bitmap);
             mPortrait.setImageBitmap(bitmap);
 
-
             //上传图片到阿里云oss
-            Factory.getInstance().getThreadPool().execute(new Runnable() {
-                @Override
-                public void run() {
-                    //初始化OssService类，参数分别是Content，accessKeyId，accessKeySecret，endpoint，bucketName（后4个参数是您自己阿里云Oss中参数）
-                    OssService ossService = new OssService(getApplicationContext(), OSS_ACCESS_KEY, OSS_ACCESS_SECRET, OSS_ENDPOINT, OSS_BUCKET_NAME);
-                    //初始化OSSClient
-                    ossService.initOSSClient();
-                    //开始上传，参数分别为content，上传的文件名filename，上传的文件路径filePath
-                    ossService.beginupload(getApplication(), myId, imagePath);
+            Factory.getInstance().getThreadPool().execute(() -> {
+                String filename = myId + "/" + Math.random();
 
-                    //更新url
-                    myPortrait = OSS_URL + myId;
-                    //更新bundle
-                    bundle.remove(MY_PORTRAIT);
-                    bundle.putString(MY_PORTRAIT, myPortrait);
+                //初始化OssService类，参数分别是Content，accessKeyId，accessKeySecret，endpoint，bucketName（后4个参数是您自己阿里云Oss中参数）
+                OssService ossService = new OssService(getApplicationContext(), OSS_ACCESS_KEY, OSS_ACCESS_SECRET, OSS_ENDPOINT, OSS_BUCKET_NAME);
+                //初始化OSSClient
+                ossService.initOSSClient();
+                //开始上传，参数分别为content，上传的文件名filename，上传的文件路径filePath
+                ossService.beginupload(getApplication(), filename, imagePath);
 
-                    //发送服务器
-                    String result;
-                    result = NetUtils.postKeyValue("id", myId, "portrait", myPortrait, updatePortraitUrl);
-                    if(result != null){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplication(), "更换头像成功", Toast.LENGTH_SHORT);
-                            }
-                        });
-                    }else{
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplication(), "服务器错误，请重试", Toast.LENGTH_SHORT);
-                            }
-                        });
-                    }
+                //更新url
+                myPortrait = OSS_URL + filename;
+                Log.d("头像", myPortrait);
+                //更新bundle
+                bundle.remove(MY_PORTRAIT);
+                bundle.putString(MY_PORTRAIT, myPortrait);
+
+                //发送服务器
+                String result = NetUtils.postKeyValue("id", myId, "portrait", myPortrait, updatePortraitUrl);
+                Log.d("myPortrait", myPortrait);
+                if(result != null){
+                    runOnUiThread(() -> Toast.makeText(getApplication(), "更换头像成功", Toast.LENGTH_SHORT));
+                }else{
+                    runOnUiThread(() -> Toast.makeText(getApplication(), "服务器错误，请重试", Toast.LENGTH_SHORT));
                 }
             });
 
         }else{
             Toast.makeText(this,"Failed to get image",Toast.LENGTH_SHORT).show();
         }
+
     }
 
     public void showToast(String message){
-        runOnUiThread(() -> {
-            Toast.makeText(getApplication(), message, Toast.LENGTH_SHORT).show();
-        });
+        runOnUiThread(() -> Toast.makeText(getApplication(), message, Toast.LENGTH_SHORT).show());
     }
 
     @Override

@@ -7,7 +7,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.common.app.Fragment;
+import com.example.common.app.Mapper;
 import com.example.factory.presenter.account.RegisterContract;
+import com.example.factory.utils.SpUtils;
 import com.example.instantMessaging.Activities.BehaviorActivity;
 import com.example.instantMessaging.R;
 

@@ -26,6 +26,8 @@ public class ContactPresenter implements ContactContract.Presenter{
 
     private String contactUrl = "http://118.31.64.83:8080/friend/getFriend";
 
+    private String defaultPortraitUrl = "https://kbh.oss-cn-beijing.aliyuncs.com/default_portrait.jpg";
+
     public ContactPresenter(ContactContract.View contactView ){
         mContactView = contactView;
         mContactView.setPresenter(this);
@@ -110,6 +112,11 @@ public class ContactPresenter implements ContactContract.Presenter{
 
         if(newContactList == null){
             newContactList = new ArrayList<Contact>();
+        }
+        for(Contact contact:newContactList){
+            if (contact.getFaceImage() == null){
+                contact.setFaceImage(defaultPortraitUrl);
+            }
         }
         mContactView.refreshContact(newContactList);
 

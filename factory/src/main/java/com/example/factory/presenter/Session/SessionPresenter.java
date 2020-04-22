@@ -48,7 +48,8 @@ public class SessionPresenter implements SessionContract.Presenter {
     @Override
     public void receiveMessage(String content){
         WebSocketModel model =  WebSocketUtils.getMessage(content);
-        if(model.getAction() != 2){
+
+        if(model.getAction() != 2 && model.getAction() != 6){
             return;
         }
         //消息内容
@@ -58,7 +59,6 @@ public class SessionPresenter implements SessionContract.Presenter {
         String oppositeId = msg.getSendUserId();
         String msgContent = msg.getMsg();
         String msgId = msg.getMsgId();
-
         //根据id查询其他信息数据
         Contact contact = SQLite.select()
                 .from(Contact.class)
@@ -72,12 +72,17 @@ public class SessionPresenter implements SessionContract.Presenter {
             String publicKey = contact.getPublicKey();
 
             SessionUI session = null;
-            try {
-                session = new SessionUI(id, portrait, username,
-                        RsaEncryptUtil.decrypt(msgContent, (String)SpUtils.getData(mContext, Mapper.SP_PRIVATE_KEY, "")),
-                        publicKey);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            if(model.getAction() == 2){
+                try {
+                    session = new SessionUI(id, portrait, username,
+                            RsaEncryptUtil.decrypt(msgContent, (String)SpUtils.getData(mContext, Mapper.SP_PRIVATE_KEY, "")),
+                            publicKey);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if(model.getAction() == 6){
+                session = new SessionUI(id, portrait, username, msgContent, publicKey);
             }
 
             //未读消息的HashMap更新
@@ -91,13 +96,6 @@ public class SessionPresenter implements SessionContract.Presenter {
                 msgMap.put(id, msgIdList);
             }
 
-
-//            for(Map.Entry<String, List<String>> e:msgMap.entrySet()){
-//                Log.d("id", e.getKey());
-//                for(String s:e.getValue()) {
-//                    Log.d("list", s);
-//                }
-//            }
 
             //UI 更新
             mSessionView.refreshUI(session);

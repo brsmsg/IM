@@ -61,22 +61,28 @@ public class AccountActivity extends Activity implements FragmentTrigger {
      */
     @Override
     public void changeFragment(){
+        Fragment fragment = mCurrentFragment;
         //判断切换哪一个fragment
         if(mCurrentFragment == mLoginFragment){
             if(mRegisterFragment == null){
                 mRegisterFragment = new RegisterFragment();
-
             }
             mCurrentFragment = mRegisterFragment;
+
+            //切换fragment进行显示
+            getSupportFragmentManager().beginTransaction()
+                    .hide(fragment)
+                    .add(R.id.layout_container, mCurrentFragment).commit();
 
             mRegisterPresenter = new RegisterPresenter((RegisterFragment) mCurrentFragment, this);
         }else{
             mCurrentFragment = mLoginFragment;
+            getSupportFragmentManager().beginTransaction()
+                    .hide(fragment)
+                    .show(mCurrentFragment).commit();
         }
 
-        //切换fragment进行显示
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.layout_container, mCurrentFragment).commit();
+
     }
 
 }

@@ -112,7 +112,7 @@ public class ContactFragment extends Fragment implements ContactContract.View{
 
     @Override
     public void refreshContact(List<Contact> contactList) {
-        getActivity().runOnUiThread(() -> mContactAdapter.replace(contactList));
+        getActivity().runOnUiThread(() -> mContactAdapter.replaceAll(contactList));
     }
 
     @Override
