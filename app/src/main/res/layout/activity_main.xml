@@ -18,10 +18,12 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            android:background="?attr/colorPrimary"
+            >
+            <!--android:theme="@style/ThemeOverlay.AppCompat.Light"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
 
-            <ImageView
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
                 android:id="@+id/img_portrait"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -30,28 +32,31 @@
                 android:src="@drawable/default_portrait"
                 android:clickable="true"
                 android:focusable="true"
+                app:riv_is_circle="true"
                 />
 
             <TextView
                 android:id="@+id/txt_title"
-                android:textSize="25sp"
+                android:textSize="18sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/main_message"
                 android:gravity="center"
-                android:textColor="#8a8a8a"
+                android:textColor="@color/white"
                 />
 
             <ImageView
                 android:id="@+id/img_search"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="15dp"
                 android:src="@drawable/ic_icon_addperson"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"
+                />
+
         </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout

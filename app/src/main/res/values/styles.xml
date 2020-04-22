@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="QMUI.Compat.NoActionBar">
+    <style name="AppTheme" parent="XUITheme.Phone">
         <!-- Customize your theme here. -->
 <!--        <item name="colorPrimary">@color/primaryColor</item>-->
 <!--        <item name="colorPrimaryDark">@color/white</item>-->
@@ -9,12 +9,12 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryColor</item>
         <item name="colorAccent">@color/primaryColor</item>
-        <item name="colorControlNormal">@color/qmui_config_color_white</item>
+
+        <item name="colorControlNormal">@color/xui_config_color_white</item>
         <item name="android:textColorPrimary">@color/primaryColor</item>
         <item name="android:textColorSecondary">@color/primaryColor</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:editTextColor">@color/black</item>
-
     </style>
 
 
@@ -22,7 +22,8 @@
     <style name="popuwindow_from_bottom">
         <item name="android:windowEnterAnimation">@anim/popu_show_from_bottom</item>
         <item name="android:windowExitAnimation">@anim/popu_hiden_from_top</item>
-
     </style>
+
+
 
 </resources>

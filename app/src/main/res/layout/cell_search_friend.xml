@@ -24,19 +24,23 @@
             android:id="@+id/txt_userName_contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="brsmsg"/>
+            android:text="brsmsg"
+            android:textColor="@color/black"
+            android:textSize="15sp"/>
 
         <TextView
             android:id="@+id/txt_desc_contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="happy every day" />
+            android:text="happy every day"
+            android:textColor="@color/black"
+            android:textSize="15sp"/>
     </LinearLayout>
 
     <ImageView
         android:id="@+id/btn_add_friend"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="center_vertical|end"
         android:layout_marginEnd="30dp"
         android:src="@drawable/ic_add"
