@@ -88,7 +88,7 @@ public class ContactPresenter implements ContactContract.Presenter{
 //                "    ]\n" +
 //                "}";
 
-        Log.d("id", myId);
+//        Log.d("id", myId);
         Factory.getInstance().getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
@@ -124,8 +124,8 @@ public class ContactPresenter implements ContactContract.Presenter{
         List<Contact> contactList = SQLite.select()
                 .from(Contact.class)
                 .queryList(FlowManager.getDatabase(MyAppDB.class));
-        for(Contact c:contactList){
-            Log.d("database Contact", c.toString());
-        }
+//        for(Contact c:contactList){
+//            Log.d("database Contact", c.toString());
+//        }
     }
 }

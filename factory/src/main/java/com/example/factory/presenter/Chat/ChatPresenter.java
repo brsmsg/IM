@@ -3,8 +3,10 @@ package com.example.factory.presenter.Chat;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Mapper;
@@ -37,6 +39,8 @@ public class ChatPresenter implements ChatContract.Presenter {
 
     private static final String historyUrl = "http://118.31.64.83:8080/message/history";
 
+    //周期
+    private static final int PERIOD = 10*1000;
 
     //准确率阀值
     private static final double THRESHOLD = 0.5;
@@ -88,20 +92,24 @@ public class ChatPresenter implements ChatContract.Presenter {
                     if(mRawMotionList.size() > 1){
                         //预测返回结果
                         String resultStr = NetUtils.postJson(mRawMotionList, predictUrl);
-                        if(resultStr != null){
+                        if(resultStr != null && resultStr.subSequence(0,1).equals("[") ){
                             resultIdList = Arrays.asList(resultStr.split(","));
                             for(String s:resultIdList){
                                 Log.d("id", s);
                             }
 
+                            Log.d("benren?", String.valueOf(mChatView.classify(resultIdList)));
+                            //判断是否是本人，不是本人就加密消息
+                            if(!mChatView.classify(resultIdList)){
+                                mChatView.encryptMsg();
+                            }
+                        }else{
+                            Looper.prepare();
+                            Toast.makeText(mContext, "服务器返回错误", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
                         }
                     }
 
-                    Log.d("benren?", String.valueOf(mChatView.classify(resultIdList)));
-                    //判断是否是本人，不是本人就加密消息
-                    if(!mChatView.classify(resultIdList)){
-                        mChatView.encryptMsg();
-                    }
                     //清空存放滑动数据的list
                     mRawMotionList.clear();
                     mChatView.clearMotionList();
@@ -110,7 +118,7 @@ public class ChatPresenter implements ChatContract.Presenter {
             }
         };
         //延迟60s，周期60s
-        mTimer.schedule(mTimerTask, 0, 60*1000);
+        mTimer.schedule(mTimerTask, 0, PERIOD);
 
     }
 
@@ -126,7 +134,7 @@ public class ChatPresenter implements ChatContract.Presenter {
     public void sendMessage(String content, String myPortrait,
                             String myId, String oppositeId, String publicKey, int type) {
 
-        if(type == Mapper.CHAT_ENCRYPTED){
+        if(type == MsgUI.UNDECRYPTED){
             //加密模式
             String encryptedMsg = "";
             //公钥加密
@@ -137,11 +145,11 @@ public class ChatPresenter implements ChatContract.Presenter {
             }
             if(!TextUtils.isEmpty(encryptedMsg)) {
                 //发送加密消息
-                WebSocketUtils.sendMessgae(myId, oppositeId, encryptedMsg, "", Mapper.CHAT_ENCRYPTED);
+                WebSocketUtils.sendMessgae(myId, oppositeId, encryptedMsg, "", MsgUI.UNDECRYPTED);
             }
         }else{
             //发送未加密消息
-            WebSocketUtils.sendMessgae(myId, oppositeId, content, "", Mapper.CHAT_DECRYPTED);
+            WebSocketUtils.sendMessgae(myId, oppositeId, content, "", MsgUI.DECRYPTED);
         }
         //对聊天UI进行更新
         MsgUI msgUI = new MsgUI(content, myPortrait, MsgUI.TYPE_SEND, MsgUI.DECRYPTED);

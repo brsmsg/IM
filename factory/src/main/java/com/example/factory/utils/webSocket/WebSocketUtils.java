@@ -2,8 +2,8 @@ package com.example.factory.utils.webSocket;
 
 import android.util.Log;
 
-import com.example.common.app.Mapper;
 import com.example.factory.Factory;
+import com.example.factory.model.MsgUI;
 import com.example.factory.model.api.webSocket.Msg;
 import com.example.factory.model.api.webSocket.WebSocketModel;
 import com.google.gson.Gson;
@@ -29,7 +29,7 @@ public class WebSocketUtils {
     public static void sendMessgae(String myId, String oppositeId, String content, String msgId, int type){
         Msg msg = new Msg(myId, oppositeId, content, msgId);
         WebSocketModel model;
-        if(type == Mapper.CHAT_ENCRYPTED){
+        if(type == MsgUI.UNDECRYPTED){
             //加密发送
             model = new WebSocketModel(2, msg, "");
         }else{

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.common.AES.AesEncryptUtil;
 import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Mapper;
 import com.example.factory.model.MsgUI;
@@ -21,6 +22,7 @@ import com.example.factory.utils.SpUtils;
 import com.example.instantMessaging.R;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,12 +98,13 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
         }
         for(MsgUI msgItem:mMsgUIList){
             if(msgItem.getDecrypted() == MsgUI.DECRYPTED){
-                String decryptedContent = msgItem.getContent();
+                String content = msgItem.getContent();
                 String encryptedContent = "";
 
-                Log.d("key", (String)SpUtils.getData(mContext, Mapper.SP_PUBLIC_KEY, ""));
                 try {
-                    encryptedContent = RsaEncryptUtil.encrypt(decryptedContent, (String)SpUtils.getData(mContext, Mapper.SP_PUBLIC_KEY, ""));
+//                    encryptedContent = RsaEncryptUtil.encrypt(decryptedContent, (String)SpUtils.getData(mContext, Mapper.SP_PUBLIC_KEY, ""));
+                    encryptedContent = AesEncryptUtil.encrypt(content,
+                            (String) Objects.requireNonNull(SpUtils.getData(mContext, Mapper.SP_PASSWORD, "")));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -129,7 +132,9 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
                 String decryptedContent = "";
                 // 进行解密
                 try {
-                    decryptedContent = RsaEncryptUtil.decrypt(encryptedContent, RsaEncryptUtil.getPrivateKey());
+//                    decryptedContent = RsaEncryptUtil.decrypt(encryptedContent, RsaEncryptUtil.getPrivateKey());
+                    decryptedContent = AesEncryptUtil.decrypt(encryptedContent,
+                            (String) Objects.requireNonNull(SpUtils.getData(mContext, Mapper.SP_PASSWORD, "")));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

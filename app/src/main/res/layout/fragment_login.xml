@@ -8,21 +8,16 @@
     tools:context=".Fragments.LoginFragment">
 
     <!-- TODO: Update blank fragment layout -->
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:paddingBottom="30dp"-->
-<!--        android:paddingTop="20dp"-->
-<!--        app:title="@string/label_login"-->
-<!--        app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"-->
-<!--        >-->
-
-<!--    </androidx.appcompat.widget.Toolbar>-->
-
-    <FrameLayout
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"/>
+        android:paddingBottom="30dp"
+        android:paddingTop="20dp"
+        app:title="@string/label_login"
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"
+        >
+
+    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,7 +97,6 @@
                 android:text="记住密码"
                 android:layout_weight="1"
                 android:checked="true"
-                android:layout_marginStart="30dp"
                 />
 
             <CheckBox
@@ -111,35 +105,32 @@
                 android:layout_height="wrap_content"
                 android:text="自动登录"
                 android:layout_weight="1"
-                android:layout_marginStart="30dp"
                 />
 
         </LinearLayout>
 
 
-            <!--        <Button-->
-            <!--            android:id="@+id/btn_login"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_gravity="center"-->
-            <!--            android:text="@string/login_btn"-->
-            <!--        />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_login"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:text="@string/login_btn"-->
+        <!--        />-->
 
-            <com.xuexiang.xui.widget.button.roundbutton.RoundButton
-                style="@style/RoundButton.Auto"
-                android:id="@+id/btn_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:text="@string/login_btn"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/primaryColor"
-                app:rb_borderColor="@color/primaryColor"
-
-                />
+        <com.xuexiang.xui.widget.button.roundbutton.RoundButton
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="登录"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/primaryColor"
+            app:rb_borderColor="@color/primaryColor"
+            />
 
 
     </LinearLayout>

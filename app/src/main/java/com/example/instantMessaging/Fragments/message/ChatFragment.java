@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Fragment;
-import com.example.common.app.Mapper;
-import com.example.factory.Factory;
 import com.example.factory.model.MsgUI;
 import com.example.factory.model.RawMotion;
 import com.example.factory.model.api.History;
@@ -121,9 +120,9 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     protected void initData() {
         super.initData();
         //状态初始化为解密
-        STATUS = Mapper.CHAT_DECRYPTED;
+        STATUS = MsgUI.DECRYPTED;
         //默认发送不加密消息
-        TYPE = Mapper.CHAT_DECRYPTED;
+        TYPE = MsgUI.DECRYPTED;
 
         mRawMotionList = new ArrayList<>();
         //注册监听
@@ -176,7 +175,10 @@ public class ChatFragment extends Fragment implements ChatContract.View {
 
             mRecycler.setAdapter(mChatAdapter);
             //滚动到底部
-            mRecycler.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
+            if(mChatAdapter.getItemCount() > 0) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) mRecycler.getLayoutManager();
+                layoutManager.scrollToPositionWithOffset(mChatAdapter.getItemCount() - 1, 0);
+            }
         });
 
     }
@@ -192,6 +194,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
             mContent.setText("");
         }
         //滚动到底部
+        Log.d("size", String.valueOf(mChatAdapter.getItemCount() - 1));
         mRecycler.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
     }
 
@@ -211,7 +214,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @Override
     public void encryptMsg() {
         //状态设置为加密
-        STATUS = Mapper.CHAT_ENCRYPTED;
+        STATUS = MsgUI.UNDECRYPTED;
 
         if(getActivity()!=null) {
             //刷新会话
@@ -250,7 +253,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
             msgUI.setPortrait(myPortrait);
         }else{
             msgUI.setType(MsgUI.TYPE_RECEIVED);
-            msgUI.setPortrait(mOppositeId);
+            msgUI.setPortrait(mPortrait);
         }
 
         return msgUI;
@@ -298,17 +301,25 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         }
     }
 
+
+    @OnClick(R.id.btn_decrypt)
+    void evaluate(){
+        BehaviorActivity.show(getActivity(), myId, "predict");
+    }
+
+
+
     /**
      * 点击解密img
      */
     @OnClick(R.id.img_decrypt)
     void decrypt() {
-        if(TYPE == Mapper.CHAT_DECRYPTED){
+        if(TYPE == MsgUI.DECRYPTED){
             //界面不加密情况下
-            TYPE = Mapper.CHAT_ENCRYPTED;
+            TYPE = MsgUI.UNDECRYPTED;
             Toast.makeText(getActivity(), "您已进入加密模式, 所有信息已加密且仅当次会话可见", Toast.LENGTH_SHORT).show();
         }else{
-            TYPE = Mapper.CHAT_DECRYPTED;
+            TYPE = MsgUI.DECRYPTED;
             Toast.makeText(getActivity(), "加密模式已关闭", Toast.LENGTH_SHORT).show();
         }
 
@@ -346,8 +357,10 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         //注销广播
         Objects.requireNonNull(getActivity()).unregisterReceiver(mReceiver);
         getActivity().unregisterReceiver(mPredictReceiver);
+        getActivity().unregisterReceiver(mUnEncryptedReceiver);
         //注销监听
         ((MessageActivity) getActivity()).unregisterTouchListener();
+
     }
 
 

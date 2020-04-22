@@ -88,7 +88,9 @@ public class SessionRecyclerAdapter
 
         holder.mUsername.setText(session.getUsername());
         holder.mLastMsg.setText(session.getLastMsg());
-        Glide.with(mContext).load(session.getPortrait()).into(holder.mPortrait);
+        if(session.getPortrait() != null){
+            Glide.with(mContext).load(session.getPortrait()).into(holder.mPortrait);
+        }
     }
 
     @Override
