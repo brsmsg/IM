@@ -29,6 +29,15 @@
             />
 
 
+        <Button
+            android:id="@+id/btn_decrypt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="50dp"
+            android:text="验证"/>
+
+
         <ImageView
             android:id="@+id/img_decrypt"
             android:layout_width="30dp"

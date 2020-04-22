@@ -13,6 +13,7 @@ import com.example.factory.model.db.Contact;
 import com.example.factory.model.db.MyAppDB;
 import com.example.factory.utils.NetUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public class ContactPresenter implements ContactContract.Presenter{
     private ContactContract.View mContactView;
 
     private String contactUrl = "http://118.31.64.83:8080/friend/getFriend";
+
+    private String defaultPortraitUrl = "https://kbh.oss-cn-beijing.aliyuncs.com/default_portrait.jpg";
 
     public ContactPresenter(ContactContract.View contactView ){
         mContactView = contactView;
@@ -87,7 +90,7 @@ public class ContactPresenter implements ContactContract.Presenter{
 //                "    ]\n" +
 //                "}";
 
-        Log.d("id", myId);
+//        Log.d("id", myId);
         Factory.getInstance().getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
@@ -107,31 +110,29 @@ public class ContactPresenter implements ContactContract.Presenter{
                 .fromJson(result, GetContact.class);
         List<Contact> newContactList = getContact.getData();
 
-        if (newContactList != null) {
-//            for(Contact contact:newContactList){
-//                Log.d("before", contact.toString());
-//                contact.notNull();
-//                Log.d("after", contact.toString());
-//            }
-
-            mContactView.refreshContact(newContactList);
-
-            //本地数据库更新
-            //删除数据库数据
-            SQLite.delete(Contact.class)
-                    .execute(FlowManager.getDatabase(MyAppDB.class));
-
-            ModelAdapter<Contact> adapter = FlowManager.getModelAdapter(Contact.class);
-            adapter.saveAll(newContactList, FlowManager.getDatabase(MyAppDB.class));
-
-
-            List<Contact> contactList = SQLite.select()
-                    .from(Contact.class)
-                    .queryList(FlowManager.getDatabase(MyAppDB.class));
-
-            for(Contact c:contactList){
-                Log.d("database Contact", c.toString());
+        if(newContactList == null){
+            newContactList = new ArrayList<Contact>();
+        }
+        for(Contact contact:newContactList){
+            if (contact.getFaceImage() == null){
+                contact.setFaceImage(defaultPortraitUrl);
             }
         }
+        mContactView.refreshContact(newContactList);
+
+        //本地数据库更新
+        //删除数据库数据
+        SQLite.delete(Contact.class)
+                .execute(FlowManager.getDatabase(MyAppDB.class));
+        ModelAdapter<Contact> adapter = FlowManager.getModelAdapter(Contact.class);
+        adapter.saveAll(newContactList, FlowManager.getDatabase(MyAppDB.class));
+
+
+        List<Contact> contactList = SQLite.select()
+                .from(Contact.class)
+                .queryList(FlowManager.getDatabase(MyAppDB.class));
+//        for(Contact c:contactList){
+//            Log.d("database Contact", c.toString());
+//        }
     }
 }

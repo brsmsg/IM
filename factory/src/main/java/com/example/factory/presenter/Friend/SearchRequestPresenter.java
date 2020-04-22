@@ -57,35 +57,35 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                 @Override
                 public void run() {
                     Log.d("searchRequest", "result");
-                    //String result = NetUtils.postKeyValue("myId", myId,searchRequestUrl);
+                    String result = NetUtils.postKeyValue("myId", myId,searchRequestUrl);
                     //测试用数据
-                    String result = "{\n" +
-                            "    \"code\": 0,\n" +
-                            "    \"msg\": \"success\",\n" +
-                            "    \"data\": [\n" +
-                            "        {\n" +
-                            "            \"id\": \"brsmsg_1586334335390388232\", \n"+
-                            "            \"sendUserId\": \"15172382300\",\n" +
-                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
-                            "            \"isAccept\": 0,\n" +
-                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
-                            "        },\n" +
-                            "        {\n" +
-                            "            \"id\": \"brsmsg_1585897820995103737\", \n"+
-                            "            \"sendUserId\": \"18571549924\",\n" +
-                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
-                            "            \"isAccept\": 0,\n" +
-                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
-                            "        },\n" +
-                            "        {\n" +
-                            "            \"id\": \"brsmsg_1585897820995103737\", \n"+
-                            "            \"sendUserId\": \"17354424537\",\n" +
-                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
-                            "            \"isAccept\": 0,\n" +
-                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
-                            "        }\n" +
-                            "    ]\n" +
-                            "}";
+//                    String result = "{\n" +
+//                            "    \"code\": 0,\n" +
+//                            "    \"msg\": \"success\",\n" +
+//                            "    \"data\": [\n" +
+//                            "        {\n" +
+//                            "            \"id\": \"brsmsg_1586334335390388232\", \n"+
+//                            "            \"sendUserId\": \"15172382300\",\n" +
+//                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
+//                            "            \"isAccept\": 0,\n" +
+//                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
+//                            "        },\n" +
+//                            "        {\n" +
+//                            "            \"id\": \"brsmsg_1585897820995103737\", \n"+
+//                            "            \"sendUserId\": \"18571549924\",\n" +
+//                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
+//                            "            \"isAccept\": 0,\n" +
+//                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
+//                            "        },\n" +
+//                            "        {\n" +
+//                            "            \"id\": \"brsmsg_1585897820995103737\", \n"+
+//                            "            \"sendUserId\": \"17354424537\",\n" +
+//                            "            \"receiveUserId\": \"brsmsg_1584881024758574067\",\n" +
+//                            "            \"isAccept\": 0,\n" +
+//                            "            \"requestDateTime\": \"2020-03-23T13:03:46\"\n" +
+//                            "        }\n" +
+//                            "    ]\n" +
+//                            "}";
 
                     Log.d("searchRequest", result);
                     if (result != null){
@@ -114,10 +114,13 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
             //循环遍历dataList，获取sendUserId和sendDateTime来构造用于显示的requestList实例
             List<FriendRequest> requestList = new ArrayList<>();
             for (FriendRequest data : dataList){
-                //创建用于显示的FriendRequest实例
-                FriendRequest friendRequest = new FriendRequest(data.getSendUserId(),data.getRequestDateTime());
-                //每次在列表末尾添加数据
-                requestList.add(friendRequest);
+                if(data.getIsAccept() == 0){
+                    //没有接受才加入列表，创建用于显示的FriendRequest实例
+//                    FriendRequest friendRequest = new FriendRequest(data.getUsername(),data.getRequestDateTime());
+                    //每次在列表末尾添加数据
+                    requestList.add(data);
+                }
+
             }
             //刷新界面，调用SearchFragment中的方法，其包含在runOnUiThread中
             mSearchRequestView.refreshRecycler(requestList);
@@ -137,7 +140,8 @@ public class SearchRequestPresenter implements SearchRequestContract.Presenter {
                 @Override
                 public void run() {
                     OperateFriendRequestModel operateFriendRequestModel = new OperateFriendRequestModel(myId,friendId,operateType);
-                    String result = NetUtils.postJson(operateFriendRequestModel,operateRequestUrl);
+//                    String result = NetUtils.postKeyValue("myId", myId, "friendId",friendId,"operateType", String.valueOf(operateType), operateRequestUrl);
+                    String result = NetUtils.postJson(operateFriendRequestModel, operateRequestUrl);
                     Log.d("operateRequest",result);
                     if (result != null){
                         parseOperateResult(result,friendId);

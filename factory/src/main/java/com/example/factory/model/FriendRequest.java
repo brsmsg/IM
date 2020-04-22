@@ -14,17 +14,21 @@ public class FriendRequest {
     private int isAccept;
     //发送请求的时间
     private String requestDateTime;
+    //用户名
+    private String username;
 
-    public FriendRequest(String id, String sendUserId, String receiveUserId, int isAccept, String requestDateTime) {
+
+    public FriendRequest(String id, String sendUserId, String receiveUserId, int isAccept, String requestDateTime, String username) {
         this.id = id;
         this.sendUserId = sendUserId;
         this.receiveUserId = receiveUserId;
         this.isAccept = isAccept;
         this.requestDateTime = requestDateTime;
+        this.username = username;
     }
 
-    public FriendRequest(String sendUserId, String requestDateTime) {
-        this.sendUserId = sendUserId;
+    public FriendRequest(String username, String requestDateTime) {
+        this.username = username;
         this.requestDateTime = requestDateTime;
     }
 
@@ -66,5 +70,13 @@ public class FriendRequest {
 
     public void setRequestDateTime(String requestDateTime) {
         this.requestDateTime = requestDateTime;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

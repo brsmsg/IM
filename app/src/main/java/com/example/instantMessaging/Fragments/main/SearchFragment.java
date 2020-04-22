@@ -90,13 +90,23 @@ public class SearchFragment extends Fragment implements SearchRequestContract.Vi
 
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {  //不在最前端界面显示
+
+        } else {  //重新显示到最前端刷新
+            mPresenter.searchRequest(myId);
+        }
+    }
+
+
     //刷新好友请求列表
     @Override
     public void refreshRecycler(List<FriendRequest> requestList) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 mSearchAdapter.addData(requestList);
             }
         });

@@ -13,6 +13,10 @@
             android:id="@+id/personal_desc"
             android:icon="@drawable/ic_desc"
             android:title="@string/change_desc"/>
+        <item
+            android:id="@+id/exit_login"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/exit_login"/>
 
     </group>
 

@@ -22,6 +22,9 @@ public class MsgUI {
     //是否解密
     private int decrypted;
 
+    public MsgUI() {
+    }
+
     public MsgUI(String content, String portrait, int type, int decrypted) {
         this.content = content;
         this.portrait = portrait;

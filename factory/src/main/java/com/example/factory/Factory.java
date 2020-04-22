@@ -3,6 +3,7 @@ package com.example.factory;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.dbflow5.config.FlowConfig;
@@ -42,7 +43,6 @@ public class Factory {
 
     //全局websocketclient
     private static WebSocket mWebSocket;
-
 
     //全局webSocket监听
     private static ClientWebSocketListener mWebSocketListener = new ClientWebSocketListener(){

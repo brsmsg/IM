@@ -65,7 +65,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         //获取当前点击的FriendRequest实例
         FriendRequest friendRequest = mRequestList.get(position);
         //数据加载
-        holder.mSendUserId.setText(friendRequest.getSendUserId());
+        holder.mUsername.setText(friendRequest.getUsername());
         holder.mDateTime.setText(friendRequest.getRequestDateTime().substring(0,4)+
                 "年"+friendRequest.getRequestDateTime().substring(5,7)+
                 "月"+friendRequest.getRequestDateTime().substring(8,10)+"日");
@@ -159,7 +159,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.txt_sendUserId)
-        TextView mSendUserId;
+        TextView mUsername;
 
         @BindView(R.id.txt_requestDateTime)
         TextView mDateTime;

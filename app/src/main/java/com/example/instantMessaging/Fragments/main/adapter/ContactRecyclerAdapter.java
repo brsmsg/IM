@@ -64,6 +64,7 @@ public class ContactRecyclerAdapter
 
         Contact contact = mContactList.get(position);
         if(contact.getFaceImage() != null){
+//            Log.d("contact with portrait", contact.getUsername());
             Glide.with(mContext).load(contact.getFaceImage()).into(holder.mPortrait);
         }
         holder.mDesc.setText(contact.getDescription());
