@@ -92,7 +92,7 @@ public class ChatPresenter implements ChatContract.Presenter {
                     if(mRawMotionList.size() > 1){
                         //预测返回结果
                         String resultStr = NetUtils.postJson(mRawMotionList, predictUrl);
-                        if(resultStr != null && resultStr.subSequence(0,1).equals("[") ){
+                        if(resultStr != null && resultStr.subSequence(0,1).equals("b") ){
                             resultIdList = Arrays.asList(resultStr.split(","));
                             for(String s:resultIdList){
                                 Log.d("id", s);
@@ -164,8 +164,14 @@ public class ChatPresenter implements ChatContract.Presenter {
     @Override
     public void receiveMessage(String content, String oppositePortrait){
         WebSocketModel model =  WebSocketUtils.getMessage(content);
-
         int action = model.getAction();
+
+        if(action == 7){
+            //强制下线
+            mChatView.conflict();
+            return;
+        }
+
         Msg msg = model.getMessage();
         String myId = msg.getReceiveUserId();
         String oppositeId = msg.getSendUserId();

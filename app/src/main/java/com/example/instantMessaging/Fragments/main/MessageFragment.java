@@ -1,7 +1,9 @@
 package com.example.instantMessaging.Fragments.main;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -21,6 +23,8 @@ import com.example.factory.model.db.Contact;
 import com.example.factory.model.db.Contact_Table;
 import com.example.factory.model.db.MyAppDB;
 import com.example.factory.presenter.Session.SessionContract;
+import com.example.factory.utils.SpUtils;
+import com.example.instantMessaging.Activities.AccountActivity;
 import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.Activities.MessageActivity;
 import com.example.instantMessaging.Fragments.main.adapter.ContactRecyclerAdapter;
@@ -73,9 +77,6 @@ public class MessageFragment extends Fragment implements SessionContract.View {
         decryptedFilter.addAction("com.example.broadcast.UPDATE_SESSION");
         getActivity().registerReceiver(mDecryptedReceiver, decryptedFilter);
 
-
-
-
         mPresenter.start();
     }
 
@@ -121,6 +122,23 @@ public class MessageFragment extends Fragment implements SessionContract.View {
     public void refreshMsg(String id, String content) {
         mSessionAdapter.refresh(id, content);
 
+    }
+
+    @Override
+    public void conflict(){
+        AlertDialog.Builder conflictDialog = new AlertDialog.Builder(getActivity());
+        conflictDialog.setMessage("您的账号异地登录，请重新登录。如果不是本人操作，请修改密码！")
+                .setPositiveButton("确定", (dialog, which) -> {
+                    AccountActivity.show(getActivity());
+                    getActivity().finish();
+                })
+//                点返回按钮直接关闭activity
+                .setOnCancelListener(dialog -> getActivity().finish());
+
+//        点击外面区域禁止取消dialog
+            AlertDialog dialog = conflictDialog.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
     @Override

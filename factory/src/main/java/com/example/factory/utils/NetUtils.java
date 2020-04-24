@@ -7,12 +7,14 @@ import com.example.factory.model.RawMotion;
 import com.example.factory.model.api.ResponseModel;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -70,8 +72,13 @@ public class NetUtils {
      */
     public static String postJson(List<RawMotion> objectList, String url){
         String result = null;
-
+//        Log.d("post", "123");
+//        for(RawMotion r:objectList){
+//            Log.d("jsonObject", r.toString());
+//        }
         String json = Factory.getInstance().getGson().toJson(objectList);
+
+
         if(json.length() > 4000){
             for(int i =0; i<json.length(); i+= 4000){
                 if(i+4000<json.length()) {
@@ -238,7 +245,48 @@ public class NetUtils {
 
     }
 
+    /**
+     * 发送图片
+     * @param filePath
+     * @param url
+     * @return
+     */
+    public static String postImage(String filePath, String url, String myPortrait){
+        String result = null;
 
+        OkHttpClient okHttpClient = new OkHttpClient();
+        File file = new File(filePath);
+
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", myPortrait, RequestBody.create(file, MediaType.parse("image/png")))
+                .build();
+
+        Log.d("filePath", myPortrait);
+
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        try {
+            Response response = okHttpClient.newCall(request).execute();
+            result = response.body().string();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(result == null) {
+                Log.d("result", "null");
+            }else{
+                Log.d("result", result);
+            }
+            return result;
+        }
+
+
+    }
 
     public static String parseUpdateResult(String result){
         ResponseModel responseModel =  Factory.getInstance().getGson()

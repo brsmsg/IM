@@ -24,16 +24,19 @@ public interface ChatContract extends BaseContract {
         void refreshUI(MsgUI item);
 
         //历史消息转换为MsgUI类
-        public MsgUI switchMsg(History historyMsg);
+        MsgUI switchMsg(History historyMsg);
 
         List<RawMotion> getRawMotionList();
 
         void clearMotionList();
 
         //判断是否是本人
-        public boolean classify(List<String> resultIdList);
+        boolean classify(List<String> resultIdList);
 
         void encryptMsg();
+
+        //强制下线
+        void conflict();
     }
 
     interface Presenter extends BasePresenter{

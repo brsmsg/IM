@@ -77,8 +77,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     //加密消息广播
     private MyReceiver mReceiver;
     private PredictReceiver mPredictReceiver;
-    //未加密消息广播
-    private UnEncryptedReceiver mUnEncryptedReceiver;
+
 
     private List<RawMotion> mRawMotionList;
 
@@ -139,12 +138,6 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         IntentFilter predictFilter = new IntentFilter();
         predictFilter.addAction("com.example.broadcast.PREDICT");
         getActivity().registerReceiver(mPredictReceiver, predictFilter);
-
-        //注册接受未加密消息广播
-        mUnEncryptedReceiver = new UnEncryptedReceiver();
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("com.example.broadcast.UNENCRYPTED_MESSAGE");
-        getActivity().registerReceiver(mUnEncryptedReceiver, intentFilter2);
 
         mPresenter.start();
         //拉取聊天记录
@@ -277,6 +270,11 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         mRawMotionList.clear();
     }
 
+    @Override
+    public void conflict(){
+        getActivity().finish();
+    }
+
     /**
      * 点击返回按钮
      */
@@ -357,7 +355,6 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         //注销广播
         Objects.requireNonNull(getActivity()).unregisterReceiver(mReceiver);
         getActivity().unregisterReceiver(mPredictReceiver);
-        getActivity().unregisterReceiver(mUnEncryptedReceiver);
         //注销监听
         ((MessageActivity) getActivity()).unregisterTouchListener();
 
@@ -390,15 +387,6 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getExtras().getString("MSG");
             mPresenter.receiveMessage(msg, mPortrait);
-        }
-    }
-
-
-
-    class UnEncryptedReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
         }
     }
 

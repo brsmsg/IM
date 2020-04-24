@@ -57,24 +57,37 @@
                 android:focusable="true"
                 />
 
+
         </androidx.appcompat.widget.Toolbar>
 
-        <FrameLayout
+
+    </LinearLayout>
+
+
+
+    <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp">
+
+        <LinearLayout
             android:id="@+id/layout_container_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp">
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical"/>
 
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="bottom"
-                android:background="#FFFFFF"
-                android:id="@+id/bottom_bar"
-                app:menu="@menu/navigation_items" />
-        </FrameLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        android:id="@+id/bottom_bar"
+        app:menu="@menu/navigation_items" />
 
-    </LinearLayout>
+    </FrameLayout>
+
 
 
     <com.google.android.material.navigation.NavigationView
@@ -83,7 +96,6 @@
         android:id="@+id/nav_view"
         android:layout_gravity="start"
         app:menu="@menu/nav_menu"
-
         />
 
 </androidx.drawerlayout.widget.DrawerLayout>
