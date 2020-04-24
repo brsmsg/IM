@@ -88,7 +88,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
 
             <CheckBox
                 android:id="@+id/checkbox_rmb_pwd"
@@ -119,19 +120,19 @@
             <!--            android:text="@string/login_btn"-->
             <!--        />-->
 
-            <com.xuexiang.xui.widget.button.roundbutton.RoundButton
-                android:id="@+id/btn_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:text="登录"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/primaryColor"
-                app:rb_borderColor="@color/primaryColor"
-                />
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/btn_login"
+            android:text="@string/login_btn"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            android:background="@drawable/shape"
+            />
 
 
     </LinearLayout>

@@ -12,6 +12,7 @@ import com.example.factory.presenter.account.RegisterContract;
 import com.example.factory.utils.SpUtils;
 import com.example.instantMessaging.Activities.BehaviorActivity;
 import com.example.instantMessaging.R;
+import com.xuexiang.xui.widget.button.ButtonView;
 
 import butterknife.BindView;
 import butterknife.OnClick;

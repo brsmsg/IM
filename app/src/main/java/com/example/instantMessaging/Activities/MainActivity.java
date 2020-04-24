@@ -336,9 +336,15 @@ public class MainActivity extends Activity
         mPersonDesc.setText(myDesc);
         //初始化头像
         if ( myPortrait != null){
-            Glide.with(this).load(myPortrait).into(mPortrait);
-            Glide.with(this).load(myPortrait).into(mPersonPortrait);
+            //加载出错，显示默认原始图片
+            Glide.with(this).load(myPortrait).error(R.drawable.origin_portrait).into(mPortrait);
+            Glide.with(this).load(myPortrait).error(R.drawable.origin_portrait).into(mPersonPortrait);
             Log.d("portraitUrl", myPortrait);
+        }else{
+            //如果返回头像为空，加载默认原始图片
+            Glide.with(this).load(R.drawable.origin_portrait).into(mPortrait);
+            Glide.with(this).load(R.drawable.origin_portrait).into(mPersonPortrait);
+
         }
 
         //初始化webSocket
