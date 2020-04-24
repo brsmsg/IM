@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -112,12 +113,14 @@ public class SearchFriendFragment extends Fragment implements SearchFriendContra
     }
 
 
-    //修改：将toast显示由英文改为中文
+
     @Override
     public void showError(String message) {
         getActivity().runOnUiThread(()->{
-            if (message!=null)
-            Toast.makeText(getActivity(), "用户不存在，请重新输入", Toast.LENGTH_SHORT).show();
+            if (message!=null){
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+            }
         });
     }
 
@@ -129,4 +132,12 @@ public class SearchFriendFragment extends Fragment implements SearchFriendContra
         mPresenter.searchFriend(myId, username);
     }
 
+    //重写父类fragment的方法,返回值true表示拦截处理返回键
+    @Override
+    public boolean onBackPress() {
+        super.onBackPress();
+        getFragmentManager().popBackStack();
+        
+        return true;
+    }
 }

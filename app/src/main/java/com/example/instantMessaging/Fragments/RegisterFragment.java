@@ -7,12 +7,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.common.app.Fragment;
-import com.example.common.app.Mapper;
 import com.example.factory.presenter.account.RegisterContract;
-import com.example.factory.utils.SpUtils;
 import com.example.instantMessaging.Activities.BehaviorActivity;
 import com.example.instantMessaging.R;
-import com.xuexiang.xui.widget.button.ButtonView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -102,15 +99,24 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
 //    }
 
     /**
-     * 注册成功返回登录界面
+     * 注册成功进入行为获取界面
      */
     @Override
     public void registerSuccess(String id) {
         getActivity().runOnUiThread(() -> {
             Toast.makeText(getActivity(), "注册成功", Toast.LENGTH_SHORT).show();
             BehaviorActivity.show(getActivity(), id, mRegUserName.getText().toString().trim(), mRegPassword.getText().toString().trim(), "register");
-            mTrigger.changeFragment();
+            //进入行为获取Activity的同时，通过类型2切换为登陆fragment
+            mTrigger.changeFragment(2);
         });
 
+    }
+
+    //接管返回事件
+    @Override
+    public boolean onBackPress() {
+        super.onBackPress();
+        getFragmentManager().popBackStack();
+        return true;
     }
 }
