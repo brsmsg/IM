@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Fragment;
+import com.example.common.app.Mapper;
 import com.example.factory.model.MsgUI;
 import com.example.factory.model.RawMotion;
 import com.example.factory.model.api.History;
@@ -43,6 +44,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.internal.Util;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -152,8 +154,9 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @SuppressLint("ShowToast")
     @Override
     public void showError(int string) {
-        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), getString(string), Toast.LENGTH_SHORT).show());
-
+        if(getActivity()!= null) {
+            getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), getString(string), Toast.LENGTH_SHORT).show());
+        }
     }
 
     /**
@@ -223,6 +226,21 @@ public class ChatFragment extends Fragment implements ChatContract.View {
                 Toast.makeText(getActivity(), "验证失败，消息已加密，请手动验证解密", Toast.LENGTH_SHORT).show();
                 //锁定消息发送
                 mContent.setEnabled(false);
+
+                final EditText editText = new EditText(getActivity());
+                AlertDialog.Builder inputDialog = new AlertDialog.Builder(getActivity());
+                inputDialog.setTitle("请输入密码以解锁").setView(editText);
+                inputDialog.setPositiveButton("确定",
+                        (dialog, which) -> {
+                            String pwd = (String) SpUtils.getData(getContext(), Mapper.SP_PASSWORD, "");
+                            if (editText.getText().toString().trim().equals(pwd)){
+//                                    STATUS = MsgUI.DECRYPTED;
+                                mChatAdapter.decryptRefresh();
+                                mContent.setEnabled(true);
+                            }
+                        }).show();
+
+
             });
 
         }
@@ -386,7 +404,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         @Override
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getExtras().getString("MSG");
-            mPresenter.receiveMessage(msg, mPortrait);
+            mPresenter.receiveMessage(msg, mPortrait, mOppositeId);
         }
     }
 

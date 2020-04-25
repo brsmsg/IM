@@ -44,7 +44,7 @@ public interface ChatContract extends BaseContract {
         void sendMessage(String content, String myPortrait, String myId, String oppositeId, String publicKey, int type);
 
         //接受消息
-        void receiveMessage(String content, String oppositePortrait);
+        void receiveMessage(String content, String oppositePortrait, String mOppositeId);
 
         //更新会话界面
         void updateSession(Context context, String oppositeId, String lastMsg, String publicKey, String action);

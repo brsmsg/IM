@@ -40,7 +40,7 @@ public class ChatPresenter implements ChatContract.Presenter {
     private static final String historyUrl = "http://118.31.64.83:8080/message/history";
 
     //周期
-    private static final int PERIOD = 10*1000;
+    private static final int PERIOD = 60*1000;
 
     //准确率阀值
     private static final double THRESHOLD = 0.5;
@@ -162,7 +162,7 @@ public class ChatPresenter implements ChatContract.Presenter {
      * @param oppositePortrait 对方头像
      */
     @Override
-    public void receiveMessage(String content, String oppositePortrait){
+    public void receiveMessage(String content, String oppositePortrait, String mOppositeId){
         WebSocketModel model =  WebSocketUtils.getMessage(content);
         int action = model.getAction();
 
@@ -191,16 +191,23 @@ public class ChatPresenter implements ChatContract.Presenter {
             if(!TextUtils.isEmpty(decryptedMsg)){
                 MsgUI msgUI = new MsgUI(decryptedMsg, oppositePortrait, MsgUI.TYPE_RECEIVED, MsgUI.DECRYPTED);
                 Log.d("receive", content);
-                mChatView.refreshUI(msgUI);
-                //直接签收消息
-                WebSocketUtils.sign(msgId);
+
+                if(oppositeId.equals(mOppositeId)){
+                    mChatView.refreshUI(msgUI);
+                    //直接签收消息
+                    WebSocketUtils.sign(msgId);
+                }
+
             }
         }else if(action == 6){
             MsgUI msgUI = new MsgUI(msgContent, oppositePortrait, MsgUI.TYPE_RECEIVED, MsgUI.DECRYPTED);
             Log.d("receive", content);
-            mChatView.refreshUI(msgUI);
-            //直接签收消息
-            WebSocketUtils.sign(msgId);
+
+            if(oppositeId.equals(mOppositeId)){
+                mChatView.refreshUI(msgUI);
+                //直接签收消息
+                WebSocketUtils.sign(msgId);
+            }
         }
     }
 

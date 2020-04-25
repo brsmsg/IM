@@ -173,7 +173,7 @@ public class BehaviorActivity extends Activity {
 
 
         RawMotion rawMotion = new RawMotion(id, event.getX(), event.getY(),
-                event.getPressure(), event.getSize(),
+                event.getPressure(), event. getSize(),
                 event.getAction(), event.getEventTime());
 //        Log.d("ActionDown", rawMotion.toString());
         mRawMotionList.add(rawMotion);
@@ -184,7 +184,7 @@ public class BehaviorActivity extends Activity {
                 Toast.makeText(this, "还需向上滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
             } else if (mTimes == 30) {
 
-                Toast.makeText(this, "请点击上传按钮上传数据", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "请点击上传按钮上传数据后，再向下滑动10次", Toast.LENGTH_SHORT).show();
                 mBehaviorId.setText(id + "请向下滑动10次");
                 for(RawMotion rawMotion1:mRawMotionList){
                     Log.d("upRawMotion", rawMotion1.toString());
@@ -195,7 +195,7 @@ public class BehaviorActivity extends Activity {
                 Toast.makeText(this, "还需向下滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
             } else if (mTimes == 20) {
 
-                Toast.makeText(this, "请点击上传按钮上传数据", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "请点击上传按钮上传数据后，再向左滑动10次", Toast.LENGTH_SHORT).show();
                 mBehaviorId.setText(id + "请向左滑动10次");
                 //                    Log.d("downRawMotion", rawMotion1.toString());
                 //用新list储存
@@ -206,7 +206,7 @@ public class BehaviorActivity extends Activity {
                 Toast.makeText(this, "还需向左滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
             } else if (mTimes == 10) {
 
-                Toast.makeText(this, "请点击上传按钮上传数据", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "请点击上传按钮上传数据后，再向右滑动10次", Toast.LENGTH_SHORT).show();
                 mBehaviorId.setText(id + "请向右滑动10次");
                 //新list储存
                 //                    Log.d("downRawMotion", rawMotion1.toString());
