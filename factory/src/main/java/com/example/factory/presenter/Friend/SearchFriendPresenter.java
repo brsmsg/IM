@@ -73,7 +73,8 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
             mSearchFriendView.searchSuccess(user);
         }else{
             //返回错误信息
-            mSearchFriendView.showError(message);
+            if (message!=null && message.equals("User doesn't exist."))
+            mSearchFriendView.showError("用户不存在，请重新输入");
         }
     }
 
@@ -117,12 +118,16 @@ public class SearchFriendPresenter implements SearchFriendContract.Presenter{
             String message = sendFriendRequestModel.getMessage();
             Log.d("result", message);
 //            mSearchFriendView.showError(com.example.common.R.string.err_service);
+            //根据服务器返回类型进行显示
             switch (message){
                 case "You can't add yourself as a friend.":
-                    mSearchFriendView.showError("您不能添加自己为好友");
+                    mSearchFriendView.showError("您不能添加自己为好友，请重新输入");
                     break;
                 case "This user has been your friend.":
-                    mSearchFriendView.showError("该用户已经是您的好友");
+                    mSearchFriendView.showError("该用户已经是您的好友，请勿重复添加");
+                    break;
+                default:
+                    break;
 
             }
 

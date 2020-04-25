@@ -456,8 +456,25 @@ public class MainActivity extends Activity
                     //创建查询好友请求Presenter实例
                     mSearchFriendPresenter = new SearchFriendPresenter(mSearchFriendFragment);
                 }
-                changeFragment(mSearchFriendFragment);
-
+/*                changeFragment(mSearchFriendFragment);*/
+                //搜索好友界面添加返回栈功能
+                if (mCurrentFragment != mSearchFriendFragment){
+                    if(!mSearchFriendFragment.isAdded()){
+                        getSupportFragmentManager().beginTransaction()
+                                .hide(mCurrentFragment)
+                                .add(R.id.layout_container_main, mSearchFriendFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }else{
+                        getSupportFragmentManager().beginTransaction()
+                                .hide(mCurrentFragment)
+                                .show(mSearchFriendFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                    //mCurrentFragment用于保护入栈之前的fragment，不能改动
+                    //mCurrentFragment = mSearchFriendFragment;
+                }
                 break;
             default:
                 break;

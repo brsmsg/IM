@@ -7,6 +7,7 @@ import com.example.common.app.Activity;
 import com.example.common.app.Fragment;
 import com.example.factory.presenter.account.LoginPresenter;
 import com.example.factory.presenter.account.RegisterPresenter;
+import com.example.instantMessaging.Activities.PopWindow.MPopupWindow;
 import com.example.instantMessaging.Fragments.FragmentTrigger;
 import com.example.instantMessaging.Fragments.LoginFragment;
 import com.example.instantMessaging.Fragments.RegisterFragment;
@@ -57,32 +58,33 @@ public class AccountActivity extends Activity implements FragmentTrigger {
     }
 
     /**
-     * 切换fragment
+     * 切换fragment，做出修改，监听返回按键实现从注册返回登陆
+     * @param type
      */
     @Override
-    public void changeFragment(){
-        Fragment fragment = mCurrentFragment;
-        //判断切换哪一个fragment
-        if(mCurrentFragment == mLoginFragment){
+    public void changeFragment(int type){
+        //Fragment fragment = mLoginFragment;
+        //从登陆切换到注册
+        if(type==1){
             if(mRegisterFragment == null){
                 mRegisterFragment = new RegisterFragment();
             }
-            mCurrentFragment = mRegisterFragment;
 
+            //mCurrentFragment = mRegisterFragment;
             //切换fragment进行显示
             getSupportFragmentManager().beginTransaction()
-                    .hide(fragment)
-                    .add(R.id.layout_container, mCurrentFragment).commit();
+                    .hide(mLoginFragment)
+                    .add(R.id.layout_container, mRegisterFragment)
+                    .addToBackStack(null)
+                    .commit();
 
-            mRegisterPresenter = new RegisterPresenter((RegisterFragment) mCurrentFragment, this);
-        }else{
-            mCurrentFragment = mLoginFragment;
+            mRegisterPresenter = new RegisterPresenter( mRegisterFragment, this);
+        }else{//进入行为获取界面的同时，切换为登陆
+            //mCurrentFragment = mLoginFragment;
             getSupportFragmentManager().beginTransaction()
-                    .hide(fragment)
-                    .show(mCurrentFragment).commit();
+                    .hide(mRegisterFragment)
+                    .show(mLoginFragment).commit();
         }
-
-
     }
 
 }

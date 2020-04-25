@@ -87,7 +87,7 @@ public abstract class Activity extends AppCompatActivity {
             for(Fragment fragment:fragments){
                 //判断是否为我们能处理的fragment类型
                 if(fragment instanceof com.example.common.app.Fragment){
-                    //判断是否拦截了返回按钮
+                    //判断是否拦截了返回按钮，如果拦截了，则在Fragment中处理返回事件
                     if(((com.example.common.app.Fragment) fragment).onBackPress()){
                         return;
                     }

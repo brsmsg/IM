@@ -5,5 +5,5 @@ package com.example.instantMessaging.Fragments;
  * @time 2020/3/10
  */
 public interface FragmentTrigger {
-    void changeFragment();
+    void changeFragment(int type);
 }

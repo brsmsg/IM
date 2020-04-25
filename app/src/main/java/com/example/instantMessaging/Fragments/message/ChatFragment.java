@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -83,6 +84,8 @@ public class ChatFragment extends Fragment implements ChatContract.View {
 
     private List<RawMotion> mRawMotionList;
 
+
+
     @BindView(R.id.txt_contact)
     TextView contactName;
 
@@ -91,6 +94,9 @@ public class ChatFragment extends Fragment implements ChatContract.View {
 
     @BindView(R.id.recycler_msg)
     RecyclerView mRecycler;
+
+    @BindView(R.id.chat_background)
+    View chatBackground;
 
 
     @Override
@@ -115,6 +121,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     protected void initWidget(View root) {
         super.initWidget(root);
         contactName.setText(mContactName);
+
     }
 
     @Override
@@ -334,9 +341,11 @@ public class ChatFragment extends Fragment implements ChatContract.View {
             //界面不加密情况下
             TYPE = MsgUI.UNDECRYPTED;
             Toast.makeText(getActivity(), "您已进入加密模式, 所有信息已加密且仅当次会话可见", Toast.LENGTH_SHORT).show();
+            chatBackground.setBackgroundColor(getResources().getColor(R.color.black));
         }else{
             TYPE = MsgUI.DECRYPTED;
             Toast.makeText(getActivity(), "加密模式已关闭", Toast.LENGTH_SHORT).show();
+            chatBackground.setBackgroundColor(getResources().getColor(R.color.white));
         }
 
 

@@ -18,9 +18,7 @@ import com.example.factory.presenter.account.LoginContract;
 import com.example.factory.utils.SpUtils;
 import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.R;
-import com.xuexiang.xui.widget.button.ButtonView;
 
-import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -238,7 +236,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
      */
     @OnClick(R.id.txt_register)
     public void goToRegister(){
-        mTrigger.changeFragment();
+        //通过类型1明确执行从登陆到注册的fragment转换
+        mTrigger.changeFragment(1);
     }
 
     @Override

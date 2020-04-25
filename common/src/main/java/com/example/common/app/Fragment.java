@@ -106,7 +106,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mRootUnbinder.unbind();
+        //mRootUnbinder.unbind();
     }
 
 }
