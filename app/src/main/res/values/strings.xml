@@ -18,6 +18,7 @@
     <!--行为界面-->
     <string name="btn_upload">上传</string>
     <string name="btn_predict">验证</string>
+    <string name="label_behavior">行为采集</string>
 
     <!--  主界面  -->
     <string name="main_message">消息</string>
