@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import okhttp3.OkHttpClient;
@@ -36,7 +37,7 @@ public class Factory {
     private static Factory mFactory = new Factory();
 
     //全局线程池
-    private static Executor executor = Executors.newFixedThreadPool(4);
+    private static ExecutorService executor = Executors.newFixedThreadPool(4);
 
     //全局Gson
     private static Gson gson = new Gson();
@@ -68,7 +69,7 @@ public class Factory {
      * 获取全局线程池
      * @return executor
      */
-    public Executor getThreadPool(){
+    public ExecutorService getThreadPool(){
         return executor;
     }
 

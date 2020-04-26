@@ -48,6 +48,10 @@ public class SessionPresenter implements SessionContract.Presenter {
     @Override
     public void receiveMessage(String content){
         WebSocketModel model =  WebSocketUtils.getMessage(content);
+        //强制下线
+        if(model.getAction() == 7){
+            mSessionView.conflict();
+        }
 
         if(model.getAction() != 2 && model.getAction() != 6){
             return;

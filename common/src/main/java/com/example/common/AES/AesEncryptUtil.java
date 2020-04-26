@@ -18,7 +18,7 @@ public class AesEncryptUtil {
         //1.构造密钥生成器，指定为AES算法,不区分大小写
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         //2.根据password规则初始化密钥生成器
-        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG", new CryptoProvider());
         secureRandom.setSeed(password.getBytes("UTF-8"));
         keyGenerator.init(128, secureRandom);
         //3.产生原始对称密钥
@@ -45,7 +45,7 @@ public class AesEncryptUtil {
         //1.构造密钥生成器，指定为AES算法,不区分大小写
         KeyGenerator keygen = KeyGenerator.getInstance("AES");
         //2.根据password规则初始化密钥生成器
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+        SecureRandom random = SecureRandom.getInstance("SHA1PRNG", new CryptoProvider());
         random.setSeed(password.getBytes("UTF-8"));
         keygen.init(128, random);
         //3.产生原始对称密钥

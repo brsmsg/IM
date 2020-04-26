@@ -1,6 +1,7 @@
 package com.example.instantMessaging.Activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -13,6 +14,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -79,6 +82,8 @@ public class MainActivity extends Activity
     private final static String updateUsernameUrl = "http://118.31.64.83:8080/account/update/username";
     private final static String updatePasswordUrl = "http://118.31.64.83:8080/account/update/password";
     private final static String updateDescUrl = "http://118.31.64.83:8080/account/update/description";
+    private final static String uploadPortraitUrl = "http://101.200.240.107:8000/uploadImage";
+    private final static String basePath = "http://101.200.240.107/images/im_portraits/";
 
     //用户id,头像，用户名以及KEY
     public final static String MY_ID = "MY_ID";
@@ -106,6 +111,12 @@ public class MainActivity extends Activity
     private SearchFriendPresenter mSearchFriendPresenter;
 
     private Bundle bundle;
+
+    //第一次点返回按钮时间
+    private long firstPressedTime;
+    //是否打开搜索界面
+    public static boolean isSearchFriend = false;
+
 
     //设置更换头像相关参数
     private File outputImage;
@@ -445,6 +456,8 @@ public class MainActivity extends Activity
                 Log.d("MainActivity","you clicked portrait");
                 break;
             case R.id.img_search:
+                //tag 改为true
+                isSearchFriend = true;
                 Log.d("MainActivity","you clicked settings");
                 //切换fragment到搜索
                 if(mSearchFriendFragment == null){
@@ -471,7 +484,7 @@ public class MainActivity extends Activity
                                 .commit();
                     }
                     //mCurrentFragment用于保护入栈之前的fragment，不能改动
-                    //mCurrentFragment = mSearchFriendFragment;
+//                    mCurrentFragment = mSearchFriendFragment;
                 }
                 break;
             default:
@@ -629,38 +642,50 @@ public class MainActivity extends Activity
             mPersonPortrait.setImageBitmap(bitmap);
             mPortrait.setImageBitmap(bitmap);
 
-            //上传图片到阿里云oss
-            Factory.getInstance().getThreadPool().execute(() -> {
-                String filename = myId + "/" + Math.random();
+            String filename = myId +":"+ System.currentTimeMillis() + ".jpg";
 
-                //初始化OssService类，参数分别是Content，accessKeyId，accessKeySecret，endpoint，bucketName（后4个参数是您自己阿里云Oss中参数）
-                OssService ossService = new OssService(getApplicationContext(), OSS_ACCESS_KEY, OSS_ACCESS_SECRET, OSS_ENDPOINT, OSS_BUCKET_NAME);
-                //初始化OSSClient
-                ossService.initOSSClient();
-                //开始上传，参数分别为content，上传的文件名filename，上传的文件路径filePath
-                ossService.beginupload(getApplication(), filename, imagePath);
+//            //初始化OssService类，参数分别是Content，accessKeyId，accessKeySecret，endpoint，bucketName（后4个参数是您自己阿里云Oss中参数）
+//            OssService ossService = new OssService(getApplicationContext(), OSS_ACCESS_KEY, OSS_ACCESS_SECRET, OSS_ENDPOINT, OSS_BUCKET_NAME);
+//            //初始化OSSClient
+//            ossService.initOSSClient();
+//            //开始上传，参数分别为content，上传的文件名filename，上传的文件路径filePath
+//            ossService.beginupload(getApplication(), filename, imagePath);
 
-                //更新url
-                myPortrait = OSS_URL + filename;
-                Log.d("头像", myPortrait);
-                //更新bundle
-                bundle.remove(MY_PORTRAIT);
-                bundle.putString(MY_PORTRAIT, myPortrait);
 
-                //发送服务器
-                String result = NetUtils.postKeyValue("id", myId, "portrait", myPortrait, updatePortraitUrl);
-                Log.d("myPortrait", myPortrait);
-                if(result != null){
-                    runOnUiThread(() -> Toast.makeText(getApplication(), "更换头像成功", Toast.LENGTH_SHORT));
-                }else{
-                    runOnUiThread(() -> Toast.makeText(getApplication(), "服务器错误，请重试", Toast.LENGTH_SHORT));
-                }
-            });
+            //更新url
+            myPortrait = basePath + filename;
+            Log.d("头像", myPortrait);
+            //更新bundle
+            bundle.remove(MY_PORTRAIT);
+            bundle.putString(MY_PORTRAIT, myPortrait);
 
+            updatePortrait(imagePath, filename);
         }else{
             Toast.makeText(this,"Failed to get image",Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void updatePortrait(String imagePath, String myPortrait){
+
+        Factory.getInstance().getThreadPool().execute(() -> {
+            String result = NetUtils.postImage(imagePath, uploadPortraitUrl, myPortrait);
+            if(result != null && !result.equals("error")){
+                String updateResult = NetUtils.postKeyValue("id", myId, "portrait", basePath + myPortrait, updatePortraitUrl);
+                Log.d("myPortrait", myPortrait);
+
+
+                if(updateResult != null){
+                    runOnUiThread(() -> Toast.makeText(getApplication(), "更换头像成功", Toast.LENGTH_SHORT).show());
+                }else{
+                    runOnUiThread(() -> Toast.makeText(getApplication(), "服务器错误，请重试", Toast.LENGTH_SHORT).show());
+                }
+            }
+
+//
+//            //发送服务器
+
+        });
     }
 
     public void showToast(String message){
@@ -672,6 +697,24 @@ public class MainActivity extends Activity
         super.onDestroy();
         if(mPopupWindow!=null){
             mPopupWindow.dismiss();
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        //判断是否在搜索界面
+        if (!isSearchFriend) {
+            if (System.currentTimeMillis() - firstPressedTime < 2000) {
+                super.onBackPressed();
+                Factory.getInstance().getWebSocket().close(1000, "exit");
+                finish();
+            } else {
+                Toast.makeText(MainActivity.this, "再点击一次返回退出", Toast.LENGTH_SHORT).show();
+                firstPressedTime = System.currentTimeMillis();
+            }
+        }else{
+            super.onBackPressed();
         }
     }
 }

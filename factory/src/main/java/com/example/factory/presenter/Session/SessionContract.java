@@ -18,6 +18,8 @@ public interface SessionContract extends BaseContract {
         void refreshUI(SessionUI session);
 
         void refreshMsg(String id, String content);
+
+        void conflict();
     }
 
     interface Presenter extends BasePresenter{

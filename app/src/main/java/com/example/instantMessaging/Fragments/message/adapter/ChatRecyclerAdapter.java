@@ -132,9 +132,9 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
                 String decryptedContent = "";
                 // 进行解密
                 try {
-//                    decryptedContent = RsaEncryptUtil.decrypt(encryptedContent, RsaEncryptUtil.getPrivateKey());
                     decryptedContent = AesEncryptUtil.decrypt(encryptedContent,
                             (String) Objects.requireNonNull(SpUtils.getData(mContext, Mapper.SP_PASSWORD, "")));
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

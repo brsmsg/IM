@@ -24,16 +24,19 @@ public interface ChatContract extends BaseContract {
         void refreshUI(MsgUI item);
 
         //历史消息转换为MsgUI类
-        public MsgUI switchMsg(History historyMsg);
+        MsgUI switchMsg(History historyMsg);
 
         List<RawMotion> getRawMotionList();
 
         void clearMotionList();
 
         //判断是否是本人
-        public boolean classify(List<String> resultIdList);
+        boolean classify(List<String> resultIdList);
 
         void encryptMsg();
+
+        //强制下线
+        void conflict();
     }
 
     interface Presenter extends BasePresenter{
@@ -41,7 +44,7 @@ public interface ChatContract extends BaseContract {
         void sendMessage(String content, String myPortrait, String myId, String oppositeId, String publicKey, int type);
 
         //接受消息
-        void receiveMessage(String content, String oppositePortrait);
+        void receiveMessage(String content, String oppositePortrait, String mOppositeId);
 
         //更新会话界面
         void updateSession(Context context, String oppositeId, String lastMsg, String publicKey, String action);

@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Fragment;
+import com.example.common.app.Mapper;
 import com.example.factory.model.MsgUI;
 import com.example.factory.model.RawMotion;
 import com.example.factory.model.api.History;
@@ -44,6 +45,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.internal.Util;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -78,8 +80,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     //加密消息广播
     private MyReceiver mReceiver;
     private PredictReceiver mPredictReceiver;
-    //未加密消息广播
-    private UnEncryptedReceiver mUnEncryptedReceiver;
+
 
     private List<RawMotion> mRawMotionList;
 
@@ -147,12 +148,6 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         predictFilter.addAction("com.example.broadcast.PREDICT");
         getActivity().registerReceiver(mPredictReceiver, predictFilter);
 
-        //注册接受未加密消息广播
-        mUnEncryptedReceiver = new UnEncryptedReceiver();
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("com.example.broadcast.UNENCRYPTED_MESSAGE");
-        getActivity().registerReceiver(mUnEncryptedReceiver, intentFilter2);
-
         mPresenter.start();
         //拉取聊天记录
         mPresenter.getHistoryMessage(myId, mOppositeId);
@@ -166,8 +161,9 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @SuppressLint("ShowToast")
     @Override
     public void showError(int string) {
-        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), getString(string), Toast.LENGTH_SHORT).show());
-
+        if(getActivity()!= null) {
+            getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), getString(string), Toast.LENGTH_SHORT).show());
+        }
     }
 
     /**
@@ -237,6 +233,33 @@ public class ChatFragment extends Fragment implements ChatContract.View {
                 Toast.makeText(getActivity(), "验证失败，消息已加密，请手动验证解密", Toast.LENGTH_SHORT).show();
                 //锁定消息发送
                 mContent.setEnabled(false);
+
+                final EditText editText = new EditText(getActivity());
+                final AlertDialog inputDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle("请输入密码以解锁").setView(editText)
+                        .setPositiveButton("确定",null)
+                        .setCancelable(false)
+                        .create();
+                inputDialog.setCanceledOnTouchOutside(false);
+                inputDialog.show();
+
+                inputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String pwd = (String) SpUtils.getData(getContext(), Mapper.SP_PASSWORD, "");
+                        if(editText.getText().toString().trim().equals(pwd)){
+                            STATUS = MsgUI.DECRYPTED;
+                            mChatAdapter.decryptRefresh();
+                            mContent.setEnabled(true);
+                            Toast.makeText(getContext(), "验证成功", Toast.LENGTH_SHORT).show();
+                            inputDialog.dismiss();
+                        }else{
+                            Toast.makeText(getContext(), "输入密码错误", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                });
+
             });
 
         }
@@ -282,6 +305,11 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     @Override
     public void clearMotionList(){
         mRawMotionList.clear();
+    }
+
+    @Override
+    public void conflict(){
+        getActivity().finish();
     }
 
     /**
@@ -366,7 +394,6 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         //注销广播
         Objects.requireNonNull(getActivity()).unregisterReceiver(mReceiver);
         getActivity().unregisterReceiver(mPredictReceiver);
-        getActivity().unregisterReceiver(mUnEncryptedReceiver);
         //注销监听
         ((MessageActivity) getActivity()).unregisterTouchListener();
 
@@ -398,16 +425,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         @Override
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getExtras().getString("MSG");
-            mPresenter.receiveMessage(msg, mPortrait);
-        }
-    }
-
-
-
-    class UnEncryptedReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
+            mPresenter.receiveMessage(msg, mPortrait, mOppositeId);
         }
     }
 
