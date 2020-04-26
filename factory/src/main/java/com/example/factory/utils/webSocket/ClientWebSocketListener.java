@@ -47,18 +47,22 @@ public class ClientWebSocketListener extends WebSocketListener {
     public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
         //准备关闭连接
         super.onClosing(webSocket, code, reason);
+        Log.d("onClosing", "onClosing");
     }
 
     @Override
     public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
         //连接完全关闭
         super.onClosed(webSocket, code, reason);
+        Log.d("onClosed", "onClosed");
     }
 
     @Override
     public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
         //连接失败
         super.onFailure(webSocket, t, response);
+
+
     }
 
 }

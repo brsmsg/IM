@@ -235,18 +235,30 @@ public class ChatFragment extends Fragment implements ChatContract.View {
                 mContent.setEnabled(false);
 
                 final EditText editText = new EditText(getActivity());
-                AlertDialog.Builder inputDialog = new AlertDialog.Builder(getActivity());
-                inputDialog.setTitle("请输入密码以解锁").setView(editText);
-                inputDialog.setPositiveButton("确定",
-                        (dialog, which) -> {
-                            String pwd = (String) SpUtils.getData(getContext(), Mapper.SP_PASSWORD, "");
-                            if (editText.getText().toString().trim().equals(pwd)){
-//                                    STATUS = MsgUI.DECRYPTED;
-                                mChatAdapter.decryptRefresh();
-                                mContent.setEnabled(true);
-                            }
-                        }).show();
+                final AlertDialog inputDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle("请输入密码以解锁").setView(editText)
+                        .setPositiveButton("确定",null)
+                        .setCancelable(false)
+                        .create();
+                inputDialog.setCanceledOnTouchOutside(false);
+                inputDialog.show();
 
+                inputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String pwd = (String) SpUtils.getData(getContext(), Mapper.SP_PASSWORD, "");
+                        if(editText.getText().toString().trim().equals(pwd)){
+                            STATUS = MsgUI.DECRYPTED;
+                            mChatAdapter.decryptRefresh();
+                            mContent.setEnabled(true);
+                            Toast.makeText(getContext(), "验证成功", Toast.LENGTH_SHORT).show();
+                            inputDialog.dismiss();
+                        }else{
+                            Toast.makeText(getContext(), "输入密码错误", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                });
 
             });
 

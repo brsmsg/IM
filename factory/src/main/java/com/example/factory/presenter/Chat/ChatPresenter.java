@@ -85,6 +85,7 @@ public class ChatPresenter implements ChatContract.Presenter {
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
+                Log.d("loop", "loop");
                 if(mChatView.getRawMotionList().size() > 0){
                     //获取motionEvent并移除点击事件
                     mRawMotionList = removeClickEvent(mChatView.getRawMotionList());

@@ -1,6 +1,7 @@
 package com.example.instantMessaging.Activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -13,6 +14,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -108,6 +111,12 @@ public class MainActivity extends Activity
     private SearchFriendPresenter mSearchFriendPresenter;
 
     private Bundle bundle;
+
+    //第一次点返回按钮时间
+    private long firstPressedTime;
+    //是否打开搜索界面
+    public static boolean isSearchFriend = false;
+
 
     //设置更换头像相关参数
     private File outputImage;
@@ -447,6 +456,8 @@ public class MainActivity extends Activity
                 Log.d("MainActivity","you clicked portrait");
                 break;
             case R.id.img_search:
+                //tag 改为true
+                isSearchFriend = true;
                 Log.d("MainActivity","you clicked settings");
                 //切换fragment到搜索
                 if(mSearchFriendFragment == null){
@@ -473,7 +484,7 @@ public class MainActivity extends Activity
                                 .commit();
                     }
                     //mCurrentFragment用于保护入栈之前的fragment，不能改动
-                    //mCurrentFragment = mSearchFriendFragment;
+//                    mCurrentFragment = mSearchFriendFragment;
                 }
                 break;
             default:
@@ -686,6 +697,24 @@ public class MainActivity extends Activity
         super.onDestroy();
         if(mPopupWindow!=null){
             mPopupWindow.dismiss();
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        //判断是否在搜索界面
+        if (!isSearchFriend) {
+            if (System.currentTimeMillis() - firstPressedTime < 2000) {
+                super.onBackPressed();
+                Factory.getInstance().getWebSocket().close(1000, "exit");
+                finish();
+            } else {
+                Toast.makeText(MainActivity.this, "再点击一次返回退出", Toast.LENGTH_SHORT).show();
+                firstPressedTime = System.currentTimeMillis();
+            }
+        }else{
+            super.onBackPressed();
         }
     }
 }

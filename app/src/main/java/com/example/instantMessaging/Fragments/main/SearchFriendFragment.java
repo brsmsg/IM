@@ -137,7 +137,7 @@ public class SearchFriendFragment extends Fragment implements SearchFriendContra
     public boolean onBackPress() {
         super.onBackPress();
         getFragmentManager().popBackStack();
-        
+        MainActivity.isSearchFriend = false;
         return true;
     }
 }
