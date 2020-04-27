@@ -40,7 +40,7 @@ public class ChatPresenter implements ChatContract.Presenter {
     private static final String historyUrl = "http://118.31.64.83:8080/message/history";
 
     //周期
-    private static final int PERIOD = 60*1000;
+    private static final int PERIOD = 30*1000;
 
     //准确率阀值
     private static final double THRESHOLD = 0.5;

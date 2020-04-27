@@ -247,7 +247,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
                     @Override
                     public void onClick(View v) {
                         String pwd = (String) SpUtils.getData(getContext(), Mapper.SP_PASSWORD, "");
-                        if(editText.getText().toString().trim().equals(pwd)){
+                        if(editText.getText().toString().trim().equals(pwd) && !TextUtils.isEmpty(editText.getText())){
                             STATUS = MsgUI.DECRYPTED;
                             mChatAdapter.decryptRefresh();
                             mContent.setEnabled(true);
