@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="30dp"
+        android:paddingTop="20dp"
+        app:title="@string/label_behavior"
+        android:layout_gravity="center"
+        android:gravity="center"
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"
+        >
+
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/txt_behavior"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="15dp"
-        android:text="请单手滑动屏幕10次"
-        android:textSize="20dp"
+        android:padding="10dp"
+        android:text="请向上滑动10次后点击上传按钮"
+        android:textSize="20sp"
         android:textColor="@color/black"
         />
 
-    <TextView
+    <!--<TextView
         android:id="@+id/x"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,28 +60,47 @@
         android:id="@+id/action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="动作" />
+        android:text="动作" />-->
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
 
-       <Button
+       <com.xuexiang.xui.widget.button.CountDownButton
+           style="@style/Button.Blue"
+           app:cdbt_countDown="7000"
            android:id="@+id/btn_upload"
            android:layout_width="0dp"
            android:layout_height="wrap_content"
            android:layout_weight="1"
            android:text="@string/btn_upload"
-            />
+           android:textColor="@color/white"
+           android:layout_marginRight="10dp"
+           android:layout_marginLeft="10dp"
+           app:cdbt_enableCountDown="false"
+   />
 
-        <Button
+        <com.xuexiang.xui.widget.button.CountDownButton
+            style="@style/Button.Blue"
+            app:cdbt_countDown="7000"
             android:id="@+id/btn_predict"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/btn_predict"
-             />
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:cdbt_enableCountDown="false"
+/>
     </LinearLayout>
 
 </LinearLayout>

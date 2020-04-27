@@ -1,5 +1,6 @@
 package com.example.instantMessaging.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 
@@ -85,7 +86,7 @@ public class BehaviorActivity extends Activity {
 
     private static String id;
 
-    @BindView(R.id.x)
+/*    @BindView(R.id.x)
     TextView mX;
 
     @BindView(R.id.y)
@@ -98,7 +99,7 @@ public class BehaviorActivity extends Activity {
     TextView mArea;
 
     @BindView(R.id.action)
-    TextView mAction;
+    TextView mAction;*/
 
     @BindView(R.id.btn_upload)
     Button mUpload;
@@ -150,7 +151,7 @@ public class BehaviorActivity extends Activity {
     @Override
     protected void initWidget() {
         super.initWidget();
-        mBehaviorId.setText(id + "请向上滑动10次");
+        mBehaviorId.setText("请在空白处向上滑动10次后上传");
         if(mStatus.equals("register")){
             mUpload.setVisibility(View.VISIBLE);
             mPredict.setVisibility(View.INVISIBLE);
@@ -162,14 +163,15 @@ public class BehaviorActivity extends Activity {
         }
     }
 
+    @SuppressLint({"WrongConstant", "ShowToast"})
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        mX.setText(String.valueOf(event.getX()));
+/*        mX.setText(String.valueOf(event.getX()));
         mY.setText(String.valueOf(event.getY()));
         mPressure.setText(String.valueOf(event.getPressure()));
         mAction.setText(String.valueOf(event.getAction()));
-        mArea.setText(String.valueOf(event.getSize()));
+        mArea.setText(String.valueOf(event.getSize()));*/
 
 
         RawMotion rawMotion = new RawMotion(id, event.getX(), event.getY(),
@@ -181,33 +183,45 @@ public class BehaviorActivity extends Activity {
         if (event.getAction() == 1) {
             mTimes--;
             if (mTimes > 30) {
-                Toast.makeText(this, "还需向上滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
+                //自定义Toast
+                showShort(this,"还需向上滑动" + mTimes % 10 + "次",500);
+                //Toast.makeText(this, "还需向上滑动" + mTimes % 10 + "次",500).show();
             } else if (mTimes == 30) {
 
-                Toast.makeText(this, "请点击上传按钮上传数据后，再向下滑动10次", Toast.LENGTH_SHORT).show();
-                mBehaviorId.setText(id + "请向下滑动10次");
+                Toast.makeText(this, "请上传数据，再向下滑动10次", Toast.LENGTH_SHORT).show();
+                mBehaviorId.setText("请向下滑动10次后点击上传按钮");
                 for(RawMotion rawMotion1:mRawMotionList){
                     Log.d("upRawMotion", rawMotion1.toString());
                 }
 //                mOrientation = "down";
                 mUpload.setEnabled(true);
             } else if (mTimes > 20) {
-                Toast.makeText(this, "还需向下滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
+
+                //向下滑动期间，上传不可用
+                mUpload.setEnabled(false);
+
+                showShort(this,"还需向下滑动" + mTimes % 10 + "次",500);
+                //Toast.makeText(this, "还需向下滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
             } else if (mTimes == 20) {
 
-                Toast.makeText(this, "请点击上传按钮上传数据后，再向左滑动10次", Toast.LENGTH_SHORT).show();
-                mBehaviorId.setText(id + "请向左滑动10次");
+                Toast.makeText(this, "请上传数据，再向左滑动10次", Toast.LENGTH_SHORT).show();
+                mBehaviorId.setText( "请向左滑动10次后点击上传按钮");
                 //                    Log.d("downRawMotion", rawMotion1.toString());
                 //用新list储存
                 mDownRawMotionList.addAll(mRawMotionList);
                 mOrientation = "down";
                 mUpload.setEnabled(true);
             } else if (mTimes > 10) {
-                Toast.makeText(this, "还需向左滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
+
+                //向左滑动期间，上传不可用
+                mUpload.setEnabled(false);
+
+                showShort(this,"还需向左滑动" + mTimes % 10 + "次",500);
+                //Toast.makeText(this, "还需向左滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
             } else if (mTimes == 10) {
 
-                Toast.makeText(this, "请点击上传按钮上传数据后，再向右滑动10次", Toast.LENGTH_SHORT).show();
-                mBehaviorId.setText(id + "请向右滑动10次");
+                Toast.makeText(this, "请上传数据，再向右滑动10次", Toast.LENGTH_SHORT).show();
+                mBehaviorId.setText("请向右滑动10次后点击上传按钮");
                 //新list储存
                 //                    Log.d("downRawMotion", rawMotion1.toString());
                 mLeftRawMotionList.addAll(mRawMotionList);
@@ -215,7 +229,12 @@ public class BehaviorActivity extends Activity {
                 mUpload.setEnabled(true);
 
             } else if (mTimes > 0) {
-                Toast.makeText(this, "还需向右滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
+
+                //向右滑动期间，按键不可用
+                mUpload.setEnabled(false);
+
+                showShort(this,"还需向右滑动" + mTimes % 10 + "次",500);
+                //Toast.makeText(this, "还需向右滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
             } else if (mTimes == 0) {
                 //训练向右的数据
                 //新list储存
@@ -223,7 +242,7 @@ public class BehaviorActivity extends Activity {
                 mRightRawMotionList.addAll(mRawMotionList);
                 mOrientation ="right";
                 mUpload.setEnabled(true);
-                Toast.makeText(this, "数据收集完成，请点击上传", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "数据收集全部完成，请点击上传", Toast.LENGTH_SHORT).show();
             }
         }
         return super.onTouchEvent(event);
@@ -317,6 +336,23 @@ public class BehaviorActivity extends Activity {
         });
 
 
+    }
+
+    /**
+     * 自定义Toast来缩短显示时间
+     *
+     * @param context  the contex
+     * @param msg      the msg
+     * @param duration the duration
+     */
+    public static void showShort(Context context, String msg, int duration) {
+        final Toast toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);
+        toast.show();
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                toast.cancel();
+            }
+        }, duration);
     }
 
 }
