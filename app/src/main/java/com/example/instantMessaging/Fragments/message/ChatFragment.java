@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.common.RSA.RsaEncryptUtil;
 import com.example.common.app.Fragment;
 import com.example.common.app.Mapper;
+import com.example.factory.Factory;
 import com.example.factory.model.MsgUI;
 import com.example.factory.model.RawMotion;
 import com.example.factory.model.api.History;
@@ -33,6 +34,7 @@ import com.example.factory.model.api.webSocket.WebSocketModel;
 import com.example.factory.presenter.Chat.ChatContract;
 import com.example.factory.utils.SpUtils;
 import com.example.factory.utils.webSocket.WebSocketUtils;
+import com.example.instantMessaging.Activities.AccountActivity;
 import com.example.instantMessaging.Activities.BehaviorActivity;
 import com.example.instantMessaging.Activities.MainActivity;
 import com.example.instantMessaging.Activities.MessageActivity;
@@ -198,7 +200,7 @@ public class ChatFragment extends Fragment implements ChatContract.View {
         }
         //滚动到底部
         Log.d("size", String.valueOf(mChatAdapter.getItemCount() - 1));
-        mRecycler.smoothScrollToPosition(mChatAdapter.getItemCount()-1);
+        mRecycler.smoothScrollToPosition(mChatAdapter.getItemCount() - 1);
     }
 
     /**
@@ -246,15 +248,24 @@ public class ChatFragment extends Fragment implements ChatContract.View {
                 inputDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String pwd = (String) SpUtils.getData(getContext(), Mapper.SP_PASSWORD, "");
-                        if(editText.getText().toString().trim().equals(pwd) && !TextUtils.isEmpty(editText.getText())){
+                        String pwd = (String) SpUtils.getData(getContext(), Mapper.SP_PASSWORD_CURRENT, "");
+                        if(TextUtils.isEmpty(editText.getText())){
+                            Toast.makeText(getContext(), "输入密码为空", Toast.LENGTH_SHORT).show();
+                        }else if(editText.getText().toString().trim().equals(pwd)){
                             STATUS = MsgUI.DECRYPTED;
                             mChatAdapter.decryptRefresh();
                             mContent.setEnabled(true);
                             Toast.makeText(getContext(), "验证成功", Toast.LENGTH_SHORT).show();
                             inputDialog.dismiss();
                         }else{
-                            Toast.makeText(getContext(), "输入密码错误", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "输入密码错误,请重新登录", Toast.LENGTH_SHORT).show();
+                            //关掉所有activity,启动login
+                            SpUtils.saveData(getContext(), Mapper.SP_PASSWORD, "");
+                            //关闭websocket
+                            Factory.getInstance().getWebSocket().close(1000, "exit");
+                            Intent intent = new Intent(getContext(), AccountActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
                             return;
                         }
                     }
@@ -337,11 +348,6 @@ public class ChatFragment extends Fragment implements ChatContract.View {
     }
 
 
-    @OnClick(R.id.btn_decrypt)
-    void evaluate(){
-        BehaviorActivity.show(getActivity(), myId, "predict");
-    }
-
 
 
     /**
@@ -360,29 +366,6 @@ public class ChatFragment extends Fragment implements ChatContract.View {
             chatBackground.setBackgroundColor(getResources().getColor(R.color.white));
         }
 
-
-//        BehaviorActivity.show(getActivity(), myId, "predict");
-
-
-//        弹出输入密码对话框
-//        final EditText editText = new EditText(getActivity());
-//        AlertDialog.Builder inputDialog = new AlertDialog.Builder(getActivity());
-//        inputDialog.setTitle("请输入密码以解锁").setView(editText);
-//        inputDialog.setPositiveButton("确定",
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        SharedPreferences sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-//
-//                        String pwd = sp.getString("PASSWORD", "");
-//                        Log.d("password", pwd);
-//                        if (editText.getText().toString().trim().equals(pwd)){
-//                            STATUS = DECRYPTED
-//                            mChatAdapter.decryptRefresh();
-//                            mContent.setEnabled(true);
-//                        }
-//                    }
-//                }).show();
 
     }
 

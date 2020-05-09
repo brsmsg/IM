@@ -216,11 +216,9 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     public void loginSuccess(User user, String publicKey, String privateKey) {
         getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_SHORT).show());
+        SpUtils.saveData(getActivity(), Mapper.SP_PASSWORD_CURRENT, mPassword.getText().toString().trim());
         //登录成功才记住用户名以及密码
         if(mRemember.isChecked()){
-//            editor.putString(USERNAME, mUserName.getText().toString().trim());
-//            editor.putString(PASSWORD, mPassword.getText().toString().trim());
-//            editor.commit();
             SpUtils.saveData(getActivity(), Mapper.SP_USERNAME, mUserName.getText().toString().trim());
             SpUtils.saveData(getActivity(), Mapper.SP_PASSWORD, mPassword.getText().toString().trim());
         }

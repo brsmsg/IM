@@ -93,11 +93,6 @@ public class MainActivity extends Activity
     public final static String PUBLIC_KEY = "PUBLIC_KEY";
     public final static String PRIVATE_KEY = "PRIVATE_KEY";
 
-    private final static String OSS_ACCESS_KEY = "LTAI4GFdaTqVVh6ysNsTZHWA";
-    private final static String OSS_ACCESS_SECRET = "QiAs0nubviXOoLXxiQeQ5l7TZDN03M";
-    private final static String OSS_ENDPOINT = "oss-cn-beijing.aliyuncs.com";
-    private final static String OSS_BUCKET_NAME = "kbh";
-    private final static String OSS_URL = "https://kbh.oss-cn-beijing.aliyuncs.com/";
 
     private String myId;
     private String myPortrait;
@@ -306,7 +301,7 @@ public class MainActivity extends Activity
 //                    editor.putBoolean(LoginFragment.AUTO_ISCHECK, false).commit();
 //                    editor.putString(LoginFragment.USERNAME, "").commit();
 //                    editor.putString(LoginFragment.PASSWORD, "").commit();
-
+                    Factory.getInstance().getWebSocket().close(1000, "exit");
                     SpUtils.saveData(this, Mapper.SP_USERNAME, "");
                     SpUtils.saveData(this, Mapper.SP_PASSWORD, "");
                     SpUtils.saveData(this, Mapper.SP_AUTO_ISCHECK, false);

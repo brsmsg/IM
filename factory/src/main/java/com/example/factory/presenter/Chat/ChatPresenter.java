@@ -2,6 +2,7 @@ package com.example.factory.presenter.Chat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.icu.util.LocaleData;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -85,7 +86,7 @@ public class ChatPresenter implements ChatContract.Presenter {
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
-                Log.d("loop", "loop");
+//                Log.d("loop", "loop");
                 if(mChatView.getRawMotionList().size() > 0){
                     //获取motionEvent并移除点击事件
                     mRawMotionList = removeClickEvent(mChatView.getRawMotionList());
@@ -98,8 +99,7 @@ public class ChatPresenter implements ChatContract.Presenter {
                             for(String s:resultIdList){
                                 Log.d("id", s);
                             }
-
-                            Log.d("benren?", String.valueOf(mChatView.classify(resultIdList)));
+//                            Log.d("benren?", String.valueOf(mChatView.classify(resultIdList)));
                             //判断是否是本人，不是本人就加密消息
                             if(!mChatView.classify(resultIdList)){
                                 mChatView.encryptMsg();
@@ -141,6 +141,7 @@ public class ChatPresenter implements ChatContract.Presenter {
             //公钥加密
             try {
                 encryptedMsg = RsaEncryptUtil.encrypt(content, publicKey);
+                Log.i("发送的加密消息", encryptedMsg);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -182,6 +183,7 @@ public class ChatPresenter implements ChatContract.Presenter {
         if(action == 2){
             String decryptedMsg =  "";
             try {
+                Log.i("收到的加密消息", msgContent);
                 //直接解密
 //            decryptedMsg = RsaEncryptUtil.decrypt(msgContent, RsaEncryptUtil.getPrivateKey());
                 decryptedMsg = RsaEncryptUtil.decrypt(msgContent, (String) SpUtils.getData(mContext, Mapper.SP_PRIVATE_KEY, ""));

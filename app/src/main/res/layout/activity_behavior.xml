@@ -88,19 +88,19 @@
            app:cdbt_enableCountDown="false"
    />
 
-        <com.xuexiang.xui.widget.button.CountDownButton
-            style="@style/Button.Blue"
-            app:cdbt_countDown="7000"
-            android:id="@+id/btn_predict"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_predict"
-            android:textColor="@color/white"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            app:cdbt_enableCountDown="false"
-/>
+<!--        <com.xuexiang.xui.widget.button.CountDownButton-->
+<!--            style="@style/Button.Blue"-->
+<!--            app:cdbt_countDown="7000"-->
+<!--            android:id="@+id/btn_predict"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="@string/btn_predict"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            app:cdbt_enableCountDown="false"-->
+<!--        />-->
     </LinearLayout>
 
 </LinearLayout>

@@ -11,6 +11,7 @@ public class Mapper {
     //用户名密码
     public static final String SP_USERNAME = "SP_USERNAME";
     public static final String SP_PASSWORD = "SP_PASSWORD";
+    public static final String SP_PASSWORD_CURRENT = "SP_PASSWORD_CURRENT";
     //记住密码，自动登录
     public static final String SP_REM_ISCHECK = "SP_REM_ISCHECK";
     public static final String SP_AUTO_ISCHECK = "SP_AUTO_ISCHECK";

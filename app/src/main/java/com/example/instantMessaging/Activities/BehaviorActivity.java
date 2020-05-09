@@ -104,8 +104,8 @@ public class BehaviorActivity extends Activity {
     @BindView(R.id.btn_upload)
     Button mUpload;
 
-    @BindView(R.id.btn_predict)
-    Button mPredict;
+//    @BindView(R.id.btn_predict)
+//    Button mPredict;
 
     @BindView(R.id.txt_behavior)
     TextView mBehaviorId;
@@ -141,7 +141,7 @@ public class BehaviorActivity extends Activity {
         mPassword = bundle.getString(KEY_PASSWORD);
         mContext = this;
         mChances = 3;
-        mTimes = 40;
+        mTimes = 44;
         mLeft = mRight = mUp = mDown = 10;
         //最先传向上滑动
         mOrientation = "up";
@@ -154,12 +154,12 @@ public class BehaviorActivity extends Activity {
         mBehaviorId.setText("请在空白处向上滑动10次后上传");
         if(mStatus.equals("register")){
             mUpload.setVisibility(View.VISIBLE);
-            mPredict.setVisibility(View.INVISIBLE);
+//            mPredict.setVisibility(View.INVISIBLE);
             //上传按钮不能使用
             mUpload.setEnabled(false);
         }else{
             mUpload.setVisibility(View.INVISIBLE);
-            mPredict.setVisibility(View.VISIBLE);
+//            mPredict.setVisibility(View.VISIBLE);
         }
     }
 
@@ -182,28 +182,24 @@ public class BehaviorActivity extends Activity {
 
         if (event.getAction() == 1) {
             mTimes--;
-            if (mTimes > 30) {
+            if (mTimes > 34) {
                 //自定义Toast
-                showShort(this,"还需向上滑动" + mTimes % 10 + "次",500);
+                showShort(this,"还需向上滑动" + (mTimes - 4) % 10  + "次",500);
                 //Toast.makeText(this, "还需向上滑动" + mTimes % 10 + "次",500).show();
-            } else if (mTimes == 30) {
+            } else if (mTimes == 34) {
 
                 Toast.makeText(this, "请上传数据，再向下滑动10次", Toast.LENGTH_SHORT).show();
                 mBehaviorId.setText("请向下滑动10次后点击上传按钮");
-                for(RawMotion rawMotion1:mRawMotionList){
-                    Log.d("upRawMotion", rawMotion1.toString());
-                }
 //                mOrientation = "down";
                 mUpload.setEnabled(true);
-            } else if (mTimes > 20) {
-
+            } else if (mTimes > 23) {
                 //向下滑动期间，上传不可用
                 mUpload.setEnabled(false);
-
-                showShort(this,"还需向下滑动" + mTimes % 10 + "次",500);
+                if((mTimes - 3)%10 != 0){
+                    showShort(this,"还需向下滑动" + (mTimes-3) % 10  + "次",500);
+                }
                 //Toast.makeText(this, "还需向下滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
-            } else if (mTimes == 20) {
-
+            } else if (mTimes == 23) {
                 Toast.makeText(this, "请上传数据，再向左滑动10次", Toast.LENGTH_SHORT).show();
                 mBehaviorId.setText( "请向左滑动10次后点击上传按钮");
                 //                    Log.d("downRawMotion", rawMotion1.toString());
@@ -211,15 +207,15 @@ public class BehaviorActivity extends Activity {
                 mDownRawMotionList.addAll(mRawMotionList);
                 mOrientation = "down";
                 mUpload.setEnabled(true);
-            } else if (mTimes > 10) {
+            } else if (mTimes > 12) {
 
                 //向左滑动期间，上传不可用
                 mUpload.setEnabled(false);
-
-                showShort(this,"还需向左滑动" + mTimes % 10 + "次",500);
+                if((mTimes-2)%10!=0) {
+                    showShort(this, "还需向左滑动" + (mTimes - 2) % 10 + "次", 500);
+                }
                 //Toast.makeText(this, "还需向左滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
-            } else if (mTimes == 10) {
-
+            } else if (mTimes == 12) {
                 Toast.makeText(this, "请上传数据，再向右滑动10次", Toast.LENGTH_SHORT).show();
                 mBehaviorId.setText("请向右滑动10次后点击上传按钮");
                 //新list储存
@@ -228,14 +224,15 @@ public class BehaviorActivity extends Activity {
                 mOrientation = "left";
                 mUpload.setEnabled(true);
 
-            } else if (mTimes > 0) {
+            } else if (mTimes > 1) {
 
                 //向右滑动期间，按键不可用
                 mUpload.setEnabled(false);
-
-                showShort(this,"还需向右滑动" + mTimes % 10 + "次",500);
+                if((mTimes-1)%10!=0) {
+                    showShort(this, "还需向右滑动" + (mTimes - 1) % 10 + "次", 500);
+                }
                 //Toast.makeText(this, "还需向右滑动" + mTimes % 10 + "次", Toast.LENGTH_SHORT).show();
-            } else if (mTimes == 0) {
+            } else if (mTimes == 1) {
                 //训练向右的数据
                 //新list储存
                 //                    Log.d("downRawMotion", rawMotion1.toString());
@@ -253,13 +250,11 @@ public class BehaviorActivity extends Activity {
         for(RawMotion r1:mRawMotionList){
             Log.d("submit", r1.toString());
         }
+        mRawMotionList.remove(mRawMotionList.get(mRawMotionList.size() - 1 ));
         switch (mOrientation){
             case "up":
                 Log.d("up", "up");
                 Factory.getInstance().getThreadPool().execute(() -> {
-                    for(RawMotion r:mRawMotionList){
-                        Log.d("thread", r.toString());
-                    }
                     NetUtils.postJson(mRawMotionList, trainUpUrl);
                     Log.d("size", String.valueOf(mRawMotionList.size()));
                     mRawMotionList.clear();
@@ -305,38 +300,38 @@ public class BehaviorActivity extends Activity {
 
     }
 
-    @OnClick(R.id.btn_predict)
-    void predict(){
-        Factory.getInstance().getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                String result = NetUtils.postJson(mRawMotionList, predictUrl);
-                mRawMotionList.clear();
-                Log.d("myId", id);
-                Log.d("predict", result);
-                Looper.prepare();
-                if(result.equals(id)){
-                    Toast.makeText(getApplication(), "验证成功", Toast.LENGTH_SHORT).show();
-
-                    //发送广播通知chatFragment更新
-                    Intent intent = new Intent();
-                    intent.putExtra("PREDICT", "success");
-                    intent.setAction("com.example.broadcast.PREDICT");
-                    mContext.sendBroadcast(intent);
-                    finish();
-                }else{
-                    mChances -= 1;
-                    if(mChances == 0){
-                        finish();
-                    }
-                    Toast.makeText(getApplication(), "验证失败，还有"+String.valueOf(mChances) + "机会", Toast.LENGTH_SHORT).show();
-                }
-                Looper.loop();
-            }
-        });
-
-
-    }
+//    @OnClick(R.id.btn_predict)
+//    void predict(){
+//        Factory.getInstance().getThreadPool().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                String result = NetUtils.postJson(mRawMotionList, predictUrl);
+//                mRawMotionList.clear();
+//                Log.d("myId", id);
+//                Log.d("predict", result);
+//                Looper.prepare();
+//                if(result.equals(id)){
+//                    Toast.makeText(getApplication(), "验证成功", Toast.LENGTH_SHORT).show();
+//
+//                    //发送广播通知chatFragment更新
+//                    Intent intent = new Intent();
+//                    intent.putExtra("PREDICT", "success");
+//                    intent.setAction("com.example.broadcast.PREDICT");
+//                    mContext.sendBroadcast(intent);
+//                    finish();
+//                }else{
+//                    mChances -= 1;
+//                    if(mChances == 0){
+//                        finish();
+//                    }
+//                    Toast.makeText(getApplication(), "验证失败，还有"+String.valueOf(mChances) + "机会", Toast.LENGTH_SHORT).show();
+//                }
+//                Looper.loop();
+//            }
+//        });
+//
+//
+//    }
 
     /**
      * 自定义Toast来缩短显示时间

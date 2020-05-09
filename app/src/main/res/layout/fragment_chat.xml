@@ -31,17 +31,17 @@
             />
 
 
-        <com.xuexiang.xui.widget.button.roundbutton.RoundButton
-            style="@style/RoundButton.Auto"
-            android:id="@+id/btn_decrypt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="60dp"
-            android:text="验证"
-            android:textSize="15sp"
-            android:textColor="@color/primaryColor"
-            app:rb_borderColor="@color/primaryColor"/>
+<!--        <com.xuexiang.xui.widget.button.roundbutton.RoundButton-->
+<!--            style="@style/RoundButton.Auto"-->
+<!--            android:id="@+id/btn_decrypt"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="end|center_vertical"-->
+<!--            android:layout_marginEnd="60dp"-->
+<!--            android:text="验证"-->
+<!--            android:textSize="15sp"-->
+<!--            android:textColor="@color/primaryColor"-->
+<!--            app:rb_borderColor="@color/primaryColor"/>-->
 
 
         <ImageView
